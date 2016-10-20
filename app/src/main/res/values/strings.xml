@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Carona_Rsa</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Olá essa é a sessão: %1$d</string>
+    <string name="title_activity_login">Bem-Vindo</string>
+
+    <!-- Strings relacionadas to login -->
+    <string name="prompt_matricula">Matricula</string>
+    <string name="prompt_senha">senha</string>
+    <string name="sexo_usuario">Sexo</string>
+    <string name="cnh_usuario">CNH</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_matricula">O número da matricula é invalido</string>
+    <string name="error_invalid_password">Esta senha é muito curta</string>
+    <string name="error_incorrect_password">A senha está incorreta</string>
+    <string name="error_field_required">Este campo é obrigatório</string>
+    <string-array name="sexo_usuario">
+         <item>Masculino</item>
+         <item>Feminino</item>
+    </string-array>
+
+    <string-array name="cnh_usuario">
+        <item>Sim</item>
+        <item>Não</item>
+    </string-array>
+
+</resources>
