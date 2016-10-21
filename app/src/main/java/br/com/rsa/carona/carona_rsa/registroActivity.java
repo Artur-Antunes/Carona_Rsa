@@ -2,14 +2,23 @@ package br.com.rsa.carona.carona_rsa;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class registroActivity extends AppCompatActivity {
 
-    private Spinner sexo;
-    private Spinner cnh;
+    private Spinner sexoRegistro;
+    private Switch cnhRegistro;
     private EditText nomeRegistro;
     private EditText emailRegistro;
     private EditText sobrenomeRegistro;
@@ -17,6 +26,7 @@ public class registroActivity extends AppCompatActivity {
     private EditText senhaRegistro;
     private EditText senha2Registro;
     private EditText telefoneRegistro;
+    private Button btnCadastrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +35,8 @@ public class registroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario,android.R.layout.simple_spinner_item);
-        sexo = (Spinner) findViewById(R.id.sexo);
-        sexo.setAdapter(adapter);
-
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.cnh_usuario,android.R.layout.simple_spinner_item);
-        cnh = (Spinner) findViewById(R.id.cnh);
-        cnh.setAdapter(adapter2);
+        sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
+        sexoRegistro.setAdapter(adapter);
 
         nomeRegistro =(EditText)findViewById(R.id.nome_registro);
         sobrenomeRegistro =(EditText)findViewById(R.id.sobrenome_registro);
@@ -39,6 +45,48 @@ public class registroActivity extends AppCompatActivity {
         emailRegistro =(EditText)findViewById(R.id.email_registro);
         senhaRegistro =(EditText)findViewById(R.id.senha_registro);
         senha2Registro =(EditText)findViewById(R.id.senha2_registro);
+        btnCadastrar=(Button) findViewById(R.id.b_cadastrar);
+        cnhRegistro=(Switch) findViewById(R.id.cnh_registro);
+        //PEGAR VALORES APÓS CLICAR NO BOTÃO CADASTRAR E SALVAR NO BANCO.
+        btnCadastrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //VERIFICANDO DE OS CAMPOS ESTÃO PREENCHIDOS
+                 if(!nomeRegistro.getText().toString().trim().equals("") &&
+                         !sobrenomeRegistro.getText().toString().trim().equals("") &&
+                         !matriculaRegistro.getText().toString().trim().equals("") &&
+                         !telefoneRegistro.getText().toString().trim().equals("") &&
+                         !emailRegistro.getText().toString().trim().equals("") &&
+                         !senhaRegistro.getText().toString().trim().equals("") &&
+                         !senha2Registro.getText().toString().trim().equals("")
+                         ){
+                    if(senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
+                        String nome = nomeRegistro.getText().toString();
+                        String sobrenome = sobrenomeRegistro.getText().toString();
+                        String matricula = matriculaRegistro.getText().toString();
+                        String telefone = telefoneRegistro.getText().toString();
+                        String email = emailRegistro.getText().toString();
+                        String senha = senhaRegistro.getText().toString();
+                        boolean cnh = cnhRegistro.isChecked();
+                        String sexo = sexoRegistro.getSelectedItem().toString();
+                        Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
+                        usuario.setSenha(senha);
+                        usuario.setAtivo(1);
+                        RequisicoesServidor rs= new RequisicoesServidor(registroActivity.this);
+                                rs.gravaDadosDoUsuario(usuario, new GetRetorno() {
+                                    @Override
+                                    public void concluido(Object object) {
 
+                                        Toast.makeText(registroActivity.this,"o resultado foi:"+object,Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else{
+                        Toast.makeText(registroActivity.this,"as senhas não conferem",Toast.LENGTH_SHORT).show();
+                        }
+                 }else{
+                     Toast.makeText(registroActivity.this,"Preencha todos os campos",Toast.LENGTH_SHORT).show();
+                 }
+            }
+        });
     }
 }
