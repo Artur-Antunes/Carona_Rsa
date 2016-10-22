@@ -3,37 +3,30 @@ package br.com.rsa.carona.carona_rsa;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 /**
  * A tela de login que oferece o login via matricula / Senha.
@@ -108,6 +101,41 @@ public class LoginActivity extends AppCompatActivity{
     public void logar(View view) {
 
 
+        String usuarioInformado=this.mMatriculaView.getText().toString(); //String recebe o valor do campo de classe "usuario".
+        String senhaInformada=this.mSenhaView.getText().toString(); //String recebe o valor do campo de classe "senha".
+
+        Usuario usuarioLogado=new Usuario(usuarioInformado,senhaInformada); //Instanciando um objeto do tipo usuario com o nome e a senha !
+        autenticar(usuarioLogado);
+
+    }
+
+    public void autenticar(Usuario usuario){
+
+        RequisicoesServidor rs= new RequisicoesServidor(LoginActivity.this);
+        rs.buscaDadosDoUsuario(usuario, new GetRetorno() {
+
+            @Override
+            public void concluido(Object object) {
+                if(object==null) {    //Se não existir o usuário informado.
+                    mostrarMensagemErro();
+                }else{
+                    logarUsuario(object);	//Realizar o login.
+                }
+
+            }
+        });
+
+    }
+
+    private void mostrarMensagemErro() {	//Quando não existir nenhum usuário com o nome e senha repassados.
+
+        Toast.makeText(LoginActivity.this,"Usuario não encontrado",Toast.LENGTH_SHORT).show();
+    }
+
+    private void logarUsuario(Object object) {	//Usuário existente.
+        Usuario usuario=(Usuario) object;
+        Toast.makeText(LoginActivity.this,"Bem-Vindo",Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private boolean isPasswordValid(String password) {

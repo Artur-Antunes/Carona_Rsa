@@ -28,6 +28,12 @@ public class Usuario {
         this.cnh=cnh;
     }
 
+    public Usuario(String matricula,String senha){
+
+        this.matricula=matricula;
+        this.senha=senha;
+    }
+
     public String getNome() {
         return nome;
     }
