@@ -18,6 +18,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
+
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -26,12 +27,15 @@
         <activity android:name=".recuperarSenhaActivity" >
         </activity>
         <activity android:name=".registroActivity" >
+        </activity>
+        <activity
+            android:name=".Criar_Carona"
+            android:label="@string/title_activity_criar__carona" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

@@ -20,14 +20,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class RequisicoesServidor {
 
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
-    public static final int TEMPO_CONEXAO = 1000 * 35; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
+    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -47,6 +50,14 @@ public class RequisicoesServidor {
         Log.e("entrou","boraaa");
         progressDialog.show();// Mostra a barra de dialogo.
         new BuscaDadosUsuarioAsyncTask(usuario,retorno).execute();	//Criando um novo obj de de BDU passando dois objetos como parâmetro.
+    }
+    public void gravaCarona(Carona carona, GetRetorno retorno) {
+        progressDialog.show();
+        new armazenaCaronaAsyncTask(carona, retorno).execute();
+    }
+    public void buscaCaronas(Usuario usuario,GetRetorno retorno){	//Método que busca a classe que vai receber os dados do usuario.
+        progressDialog.show();// Mostra a barra de dialogo.
+        new BuscaCaronasAsyncTask(usuario,retorno).execute();	//Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     //classe que armazena dados de usuario no banco de modo  que economiza recursos do celular
@@ -210,4 +221,132 @@ public class RequisicoesServidor {
             }//Fim método.
 
         }//Fim classe.
+    public class armazenaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
+        Carona carona;
+        GetRetorno retorno;
+
+        //contrutor requer um usuario uma interface com metodo previamente escrito.
+        public armazenaCaronaAsyncTask(Carona carona, GetRetorno retorno) {
+            this.carona = carona;
+            this.retorno = retorno;
+
+        }
+
+        @Override //metodo que � execudado em segundo plano para economia de recursos
+        protected Object doInBackground(Void... params) {
+            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
+            //adicionado dados no arraylist para ser enviado
+
+            dadosParaEnvio.add(new BasicNameValuePair("origem", carona.getOrigem()));
+            dadosParaEnvio.add(new BasicNameValuePair("destino", carona.getDestino()));
+            dadosParaEnvio.add(new BasicNameValuePair("horario", carona.getHorario()));
+            dadosParaEnvio.add(new BasicNameValuePair("tipoVeiculo", carona.getTipoVeiculo()));
+            dadosParaEnvio.add(new BasicNameValuePair("ponto", carona.getPonto()));
+            dadosParaEnvio.add(new BasicNameValuePair("restricao", carona.getRestricao()));
+            dadosParaEnvio.add(new BasicNameValuePair("vagas", carona.getVagas() + ""));
+
+            //delara��o de variaveis http (params, cliente, post) para enviar dados
+            HttpParams httpRequestsParametros = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
+            String teste = "não";
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio));
+                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
+
+                JSONObject jObjeto = new JSONObject(resultado);
+                teste = jObjeto.getString("teste");
+                Log.e("FOOOIII????", teste);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("erro serv", e + "");
+            }
+
+            return teste;
+        }
+
+        @Override //metodo que � executado quando o post for exetutado/enviado
+        protected void onPostExecute(Object resultado) {
+            progressDialog.dismiss();//encerra o circulo de progresso
+            retorno.concluido(resultado);
+            super.onPostExecute(resultado);
+        }
+    }
+
+    public class BuscaCaronasAsyncTask extends AsyncTask<Void, Void, Object> {
+        Usuario usuario;
+        GetRetorno retornoUsuario;
+
+        //contrutor requer um usuario uma interface com metodo previamente escrito.
+        public BuscaCaronasAsyncTask(Usuario usuario, GetRetorno retorno) {
+            this.usuario = usuario;
+            this.retornoUsuario = retorno;
+
+        }
+
+        @Override //metodo que � execudado em segundo plano para economia de recursos
+        protected Object doInBackground(Void... params) {
+            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
+            //adicionado dados no arraylist para ser enviado
+            dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", "Masculino"));
+
+
+            //delara��o de variaveis http (params, cliente, post) para enviar dados
+            HttpParams httpRequestsParametros = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Listas.php");
+            String teste = "não";
+            List<Carona> caronas=null;
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio));
+                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
+
+                JSONObject jObjeto = new JSONObject(resultado);
+                caronas = new LinkedList<Carona>();
+                for (int i=0;  i<= jObjeto.getInt("tamanho");i++ ){
+                    String origem = jObjeto.getString("origem_"+i);
+                    String destino = jObjeto.getString("destino_"+i);
+                    String ponto = jObjeto.getString("ponto_"+i);
+                    String horario = jObjeto.getString("horario_"+i);
+                    String tipoVeiculo = jObjeto.getString("tipoVeiculo_"+i);
+                    String restricao = jObjeto.getString("restricao_"+i);
+                    int vagas = jObjeto.getInt("vagas_" + i);
+                    int status = jObjeto.getInt("status_"+i);;
+                    int ativo = jObjeto.getInt("ativo_"+i);;
+                    int id = jObjeto.getInt("id_"+i);;
+                    String dataCriacao =jObjeto.getString("datacriacao_" + i);
+                    Carona car = new Carona(origem,destino,horario,tipoVeiculo,restricao,vagas,ponto);
+                    car.setId(id);
+                    car.setStatus(status);
+                    car.setAtivo(ativo);
+                    car.setDataCriacao(dataCriacao);
+                    caronas.add(car);
+                }
+
+             } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("erro serv", e + "");
+            }
+
+            return caronas;
+        }
+
+        @Override //metodo que � executado quando o post for exetutado/enviado
+        protected void onPostExecute(Object resultado) {
+            progressDialog.dismiss();//encerra o circulo de progresso
+            retornoUsuario.concluido(resultado);
+            super.onPostExecute(resultado);
+        }
+    }
     }
