@@ -15,6 +15,7 @@ public class Usuario {
     private boolean cnh;
     private Bitmap foto;
     private int ativo;
+    private int id;
     private String dataRegistro;
     private String senha;
 
@@ -123,4 +124,11 @@ public class Usuario {
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

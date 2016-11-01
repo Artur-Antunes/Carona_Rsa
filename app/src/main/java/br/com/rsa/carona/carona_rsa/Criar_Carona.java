@@ -1,5 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 
 public class Criar_Carona extends AppCompatActivity {
     private Spinner origem;
@@ -61,10 +63,18 @@ public class Criar_Carona extends AppCompatActivity {
                 String horarioValor= horario.getCurrentHour()+":"+horario.getCurrentMinute();
                 Carona carona= new Carona(origemValor,destinoValor,horarioValor,tipoVeiculoValor,resticaoValor,vagasValor,pontoValor);
                 RequisicoesServidor rs =new RequisicoesServidor(Criar_Carona.this);
-                rs.gravaCarona(carona, new GetRetorno() {
+                ManipulaDados md = new ManipulaDados(Criar_Carona.this);
+                rs.gravaCarona(carona,md.getUsuario(), new GetRetorno() {
                     @Override
                     public void concluido(Object object) {
                         Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
+                        Intent it = new Intent(Criar_Carona.this,MainActivity.class);
+                        startActivity(it);
+                    }
+
+                    @Override
+                    public void concluido(Object object, Object object2) {
+
                     }
                 });
 

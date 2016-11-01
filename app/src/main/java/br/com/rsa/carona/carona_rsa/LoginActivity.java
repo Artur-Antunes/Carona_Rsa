@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 /**
@@ -38,25 +39,30 @@ public class LoginActivity extends AppCompatActivity{
     private Button BtnLogar;
     private View mProgressView;
     private View mLoginFormView;
+    ManipulaDados mDados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set login form.
-
-        mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
-        mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
-        mSenhaView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
+        mDados=new ManipulaDados(LoginActivity.this);
+        //mDados.limparDados();
+        if(mDados.getUsuario()!=null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
+            mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
+            mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
+            mSenhaView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
 
         mLoginFormView = findViewById(R.id.login_form);
@@ -123,6 +129,11 @@ public class LoginActivity extends AppCompatActivity{
                 }
 
             }
+
+            @Override
+            public void concluido(Object object, Object object2) {
+
+            }
         });
 
     }
@@ -134,6 +145,10 @@ public class LoginActivity extends AppCompatActivity{
 
     private void logarUsuario(Object object) {	//Usuário existente.
         Usuario usuario=(Usuario) object;
+
+        mDados.gravarDados(usuario);	//Guardando os dados do usuário logado.
+        mDados.setLogado(true);
+
         Toast.makeText(LoginActivity.this,"Bem-Vindo",Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }
@@ -144,18 +159,18 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void selecionarOpcao(View view) {
-         switch (view.getId()) {
-             case R.id.link_cadastro:
-                 startActivity(new Intent(this, registroActivity.class));
-                 break;
-             case R.id.link_senha_esquecida:
-                 startActivity(new Intent(this, recuperarSenhaActivity.class));
-                 break;
+        switch (view.getId()) {
+            case R.id.link_cadastro:
+                startActivity(new Intent(this, registroActivity.class));
+                break;
+            case R.id.link_senha_esquecida:
+                startActivity(new Intent(this, recuperarSenhaActivity.class));
+                break;
 
-             case R.id.link_termos_uso:
-                 //criar activity para mostrar os termos de uso.
-                 //startActivity(new Intent(this, recuperarSenhaActivity.class));
-         }
+            case R.id.link_termos_uso:
+                //criar activity para mostrar os termos de uso.
+                //startActivity(new Intent(this, recuperarSenhaActivity.class));
+        }
     }
 
 

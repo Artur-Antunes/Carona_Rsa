@@ -1,5 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +79,12 @@ public class registroActivity extends AppCompatActivity {
                                     public void concluido(Object object) {
 
                                         Toast.makeText(registroActivity.this,"o resultado foi:"+object,Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(registroActivity.this,LoginActivity.class));
+                                    }
+
+                                    @Override
+                                    public void concluido(Object object, Object object2) {
+
                                     }
                                 });
                     } else{

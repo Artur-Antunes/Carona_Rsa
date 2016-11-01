@@ -1,4 +1,5 @@
 package br.com.rsa.carona.carona_rsa;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -55,7 +56,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.add) {
+            startActivity(new Intent(this, Criar_Carona.class));
+            return true;
+        }
+
+        if (id == R.id.action_perfil) {
+            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             return true;
         }
 
