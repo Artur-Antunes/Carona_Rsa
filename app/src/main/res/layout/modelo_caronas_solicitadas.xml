@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout"
+    android:layout_centerHorizontal="true"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/color3"
+    android:layout_margin="5dp"
+    android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome:"
+        android:id="@+id/textView2"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="nome"
+        android:id="@+id/nomeUserSolicitaCarona"
+        android:layout_marginLeft="10dp"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="sexo"
+        android:id="@+id/sexoUserSolicitaCarona"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_alignStart="@+id/nomeUserSolicitaCarona" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sexo:"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/nomeUserSolicitaCarona"
+        android:layout_toStartOf="@+id/nomeUserSolicitaCarona"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aceitar"
+        android:id="@+id/b_aceitar_usuario_carona"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recusar"
+            android:id="@+id/b_recusar_usuario_carona"
+            android:layout_below="@+id/b_aceitar_usuario_carona"
+            android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
+</RelativeLayout>

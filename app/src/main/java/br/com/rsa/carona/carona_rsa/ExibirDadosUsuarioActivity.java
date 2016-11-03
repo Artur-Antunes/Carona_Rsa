@@ -69,5 +69,10 @@ public class ExibirDadosUsuarioActivity extends Activity {
         startActivity(new Intent(this, EditarDadosActivity.class));
     }
 
+    public void sairDados(View view) {
+        mDados.limparDados();
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
 
 }

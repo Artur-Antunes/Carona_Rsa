@@ -1,10 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.rsa.carona.carona_rsa.Coronas_oferecidas">
+    android:id="@+id/scrollView3"
+    android:layout_gravity="center_horizontal" >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="br.com.rsa.carona.carona_rsa.Home">
 
-</FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/caixa_oferecidas"
+            android:background="@color/color1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

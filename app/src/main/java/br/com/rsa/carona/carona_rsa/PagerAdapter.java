@@ -26,7 +26,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 Caronas_Recebidas tab2 = new Caronas_Recebidas();
                 return tab2;
             case 2:
-                Caronas_Recebidas tab3 = new Caronas_Recebidas();
+                Coronas_oferecidas tab3 = new Coronas_oferecidas();
                 return tab3;
             default:
                 return null;
