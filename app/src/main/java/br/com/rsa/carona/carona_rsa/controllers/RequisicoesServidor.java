@@ -47,7 +47,6 @@ public class RequisicoesServidor {
     }
 
     public void buscaDadosDoUsuario(Usuario usuario,GetRetorno retorno){	//Método que busca a classe que vai receber os dados do usuario.
-        Log.e("entrou","boraaa");
         progressDialog.show();// Mostra a barra de dialogo.
         new BuscaDadosUsuarioAsyncTask(usuario,retorno).execute();	//Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
@@ -61,13 +60,11 @@ public class RequisicoesServidor {
     }
 
     public void exibirSolicitacoesCaronas(Usuario usuario,GetRetorno retorno){
-        Log.e("entrou","porra");
         progressDialog.show();// Mostra a barra de dialogo.
         new exibirUsuariosSolicitantesAsyncTask(usuario,retorno).execute();
     }
 
     public void aceitarRecusarCaronas(Usuario usuario,String resposta,GetRetorno retorno){
-        Log.e("entrou","porra");
         progressDialog.show();// Mostra a barra de dialogo.
         new aceitaOuRecusaCaronaAsyncTask(usuario,resposta,retorno).execute();
     }
@@ -420,7 +417,6 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("vagas", carona.getVagas() + ""));
 
             dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
-            Log.e("ooooooooooooooooooo", usuario.getId() + "");
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
@@ -441,7 +437,6 @@ public class RequisicoesServidor {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
 
             return teste;
@@ -551,6 +546,7 @@ public class RequisicoesServidor {
             super.onPostExecute(objeto);
         }
     }
+
     public class solicitaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
         Carona carona;
         Usuario usuario;

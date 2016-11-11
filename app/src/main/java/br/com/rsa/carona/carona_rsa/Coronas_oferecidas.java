@@ -1,6 +1,10 @@
 package br.com.rsa.carona.carona_rsa;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,21 +27,25 @@ public class Coronas_oferecidas extends Fragment {
 
     LinearLayout lloferecidas;
     View view;
-    @Override
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view= inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
         lloferecidas=(LinearLayout)view.findViewById(R.id.caixa_oferecidas);
-        Log.e(" aaaof ", "aqui");
         atualizarSolicitantes();
         return view;
 
     }
 
+     public void update() {
+
+
+
+    }
+
 
     public void atualizarSolicitantes(){
-        Log.e(" 0000", "botão clicado");
         ManipulaDados M= new ManipulaDados(getActivity());
         Usuario  usuario = new Usuario(M.getUsuario().getId());
         RequisicoesServidor rs= new RequisicoesServidor(getActivity());
@@ -71,7 +79,7 @@ public class Coronas_oferecidas extends Fragment {
                                     @Override
                                     public void concluido(Object object) {
                                         Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                        onResume();
+                                        lloferecidas.removeView(modelo);
                                     }
 
                                     @Override
@@ -93,7 +101,7 @@ public class Coronas_oferecidas extends Fragment {
                                     @Override
                                     public void concluido(Object object) {
                                         Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
-                                        onResume();
+                                        lloferecidas.removeView(modelo);
                                     }
 
                                     @Override

@@ -59,8 +59,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Sexo :"
         android:id="@+id/exibirSexoLabel"
-        android:layout_below="@+id/textView15"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/exibirEmailValor"
+        android:layout_alignEnd="@+id/exibirNomeLabel"
+        android:layout_marginTop="28dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -78,7 +79,8 @@
         android:text="CNH :"
         android:id="@+id/exibirCNHlabel"
         android:layout_below="@+id/exibirSexoLabel"
-        android:layout_alignParentStart="true" />
+        android:layout_alignEnd="@+id/exibirSexoLabel"
+        android:layout_marginTop="29dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -132,17 +134,18 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/exibirEmailValor"
-        android:layout_alignBottom="@+id/textView15"
-        android:layout_alignStart="@+id/exibirTelefoneValor" />
+        android:layout_below="@+id/textView15"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Editar"
         android:id="@+id/buttonEditarExibir"
-        android:layout_centerVertical="true"
         android:onClick="editarDados"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/exibirCNHlabel"
+        android:layout_alignEnd="@+id/exibirSobrenomeLabel" />
 
     <Button
         android:layout_width="wrap_content"
@@ -150,9 +153,8 @@
         android:text="Sair"
         android:id="@+id/button"
         android:onClick="sairDados"
-        android:layout_marginTop="58dp"
-        android:layout_below="@+id/buttonEditarExibir"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignTop="@+id/buttonEditarExibir"
+        android:layout_toEndOf="@+id/exibirMatriculaValor" />
 
 
 </RelativeLayout>

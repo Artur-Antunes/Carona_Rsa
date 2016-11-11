@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_perfil) {
             startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_sair) {
+            ManipulaDados mDados;
+            mDados=new ManipulaDados(MainActivity.this);
+            mDados.limparDados();
+            startActivity(new Intent(this, LoginActivity.class));
             return true;
         }
 
