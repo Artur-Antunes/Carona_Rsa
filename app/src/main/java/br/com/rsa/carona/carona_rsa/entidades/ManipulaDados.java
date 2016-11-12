@@ -16,7 +16,6 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	}
 	
 	public void gravarDados(Usuario usuario){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
-		
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("id", usuario.getId());//Editardo os valores que serao guardados por meio da interface Editor do Shered prefeneces!
 		editorBancoDeDados.putString("nome",usuario.getNome()); 	// Guardando o nome de usuario com uma clave chamada "nome".
@@ -26,19 +25,20 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.putString("telefone",usuario.getTelefone()); // Guardando o usuario do usuario com uma clave chamada "usuario".
 		editorBancoDeDados.putString("sexo", usuario.getSexo());
 		editorBancoDeDados.putBoolean("cnh", usuario.isCnh());
+		editorBancoDeDados.putInt("id_carona", usuario.getIdCaronaSolicitada());
 		editorBancoDeDados.putString("senha", usuario.getSenha());	// Guardando a senha de usuario com uma clave chamada "senha".
 		editorBancoDeDados.commit(); //Executando a ediçao.
+	}
 
-		Log.e("nome->", usuario.getNome());
-		Log.e("sobrenome->", usuario.getSobrenome());
-		Log.e("matricula->",usuario.getMatricula());
-		Log.e("email->",usuario.getEmail());
-		Log.e("telefone->",usuario.getTelefone());
-		Log.e("sexo->",usuario.getSexo());
-		Log.e("cnh->",usuario.isCnh()+"");
-		Log.e("senha->",usuario.getSenha());
+	public void setCaronaSolicitada(int id){
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		editorBancoDeDados.putInt("id_carona", id);
+		editorBancoDeDados.commit();
+	}
 
-		Log.e("ok", "dados salvos");
+	public int getCaronaSolicitada(){
+		int id_carona=usuarioLocal.getInt("id_carona",-1);
+		return id_carona;
 	}
 	
 	public void limparDados(){ //Metodo para limpar od dados.
@@ -66,14 +66,14 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		String email=usuarioLocal.getString("email","");// usuario recebe o valor atribuido a chave usuario.
 		String telefone=usuarioLocal.getString("telefone","");// usuario recebe o valor atribuido a chave usuario.
 		String sexo=usuarioLocal.getString("sexo","");// usuario recebe o valor atribuido a chave usuario.
-		Boolean cnh=usuarioLocal.getBoolean("cnh",true);
+		Boolean cnh=usuarioLocal.getBoolean("cnh", true);
 		String senha=usuarioLocal.getString("senha","");// usuario recebe o valor atribuido a chave usuario.
+		int id_carona=usuarioLocal.getInt("id_carona",-1);
 
 		Usuario usuarioLogado = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);    //Novo obj de usuário.
 		usuarioLogado.setId(id);
 		usuarioLogado.setSenha(senha);
-
-
+		usuarioLogado.setIdCaronaSolicitada(id_carona);
 		return usuarioLogado;//Retorna o objeto usuarioLogado !
 	}
 

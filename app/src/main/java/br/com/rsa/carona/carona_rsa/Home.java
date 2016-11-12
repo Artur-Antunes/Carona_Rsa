@@ -63,22 +63,31 @@ public class Home extends Fragment {
                         tv_origem.setText(caronas.get(i).getOrigem());
                         tv_horario.setText(caronas.get(i).getHorario());
                         tv_vagas.setText(caronas.get(i).getVagas() + "");
+                        final int id_carona=caronas.get(i).getId();
+                        Log.e("id_carona:", id_carona + "");
+
 
                         modelo.setId(i);
                         ll.addView(modelo, 0);
                         final  int j= i;
                         btnSolicitar.setOnClickListener(new View.OnClickListener() {
+
                             @Override
                             public void onClick(View v) {
-                                ManipulaDados md = new ManipulaDados(getActivity());
 
+                                final ManipulaDados md = new ManipulaDados(getActivity());
+                                //teste aqui ->
+                                if(md.getCaronaSolicitada()==-1){
                                 Usuario eu = md.getUsuario();
                                 Carona carona = caronas.get(j);
                                 RequisicoesServidor rs = new RequisicoesServidor(getActivity());
                                 rs.solicitaCarona(carona, eu, new GetRetorno() {
                                     @Override
                                     public void concluido(Object object) {
-                                        Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                        if(object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                            md.setCaronaSolicitada(id_carona);
+                                        }
                                     }
 
                                     @Override
@@ -86,8 +95,12 @@ public class Home extends Fragment {
 
                                     }
                                 });
+                            }else{
+                                    Toast.makeText(getActivity()," Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
+
                         modelo.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -98,6 +111,7 @@ public class Home extends Fragment {
 
                             }
                         });
+
 
                     }
                 }

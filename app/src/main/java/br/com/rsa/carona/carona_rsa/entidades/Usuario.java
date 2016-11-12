@@ -18,6 +18,7 @@ public class Usuario {
     private int id;
     private String dataRegistro;
     private String senha;
+    private int idCaronaSolicitada;
 
     public Usuario(String nome,String sobrenome,String matricula,String email,String telefone,String sexo,Boolean cnh){
         this.nome=nome;
@@ -40,7 +41,13 @@ public class Usuario {
         this.id=id;
     }
 
+    public void setIdCaronaSolicitada(int id){
+        this.idCaronaSolicitada=id;
+    }
 
+    public int getIdCaronaSolicitada(){
+        return this.idCaronaSolicitada;
+    }
 
     public String getNome() {
         return nome;

@@ -362,14 +362,15 @@ public class RequisicoesServidor {
                     String sexo = jObj.getString("sexo");
                     Integer cnh = jObj.getInt("cnh");
                     Integer id = jObj.getInt("id");
+                    Integer id_carona=jObj.getInt("id_carona");
                     boolean cnh1=false;
                     if(cnh==1){
                         cnh1=true;
                     }
                     Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh1);    //Novo obj de usuário.
                     usuario.setSenha(this.usuario.getSenha());
+                    usuario.setIdCaronaSolicitada(id_carona);
                     usuario.setId(id);
-
                     usuarioRetornado=usuario;
                 }
 
