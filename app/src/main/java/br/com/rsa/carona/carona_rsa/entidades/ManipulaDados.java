@@ -26,7 +26,8 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.putString("sexo", usuario.getSexo());
 		editorBancoDeDados.putBoolean("cnh", usuario.isCnh());
 		editorBancoDeDados.putInt("id_carona", usuario.getIdCaronaSolicitada());
-		editorBancoDeDados.putString("senha", usuario.getSenha());	// Guardando a senha de usuario com uma clave chamada "senha".
+		editorBancoDeDados.putString("senha", usuario.getSenha());
+		editorBancoDeDados.putString("foto", usuario.getFoto());
 		editorBancoDeDados.commit(); //Executando a ediçao.
 	}
 
@@ -60,19 +61,21 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		}
 		//caso contrario->
 		int id=usuarioLocal.getInt("id",-1);
-		String nome=usuarioLocal.getString("nome",""); // Nome recebe o valor atribuido a chave nome.
+		String nome=usuarioLocal.getString("nome", ""); // Nome recebe o valor atribuido a chave nome.
 		String sobrenome=usuarioLocal.getString("sobrenome","");// usuario recebe o valor atribuido a chave usuario.
 		String matricula=usuarioLocal.getString("matricula","");// usuario recebe o valor atribuido a chave usuario.
 		String email=usuarioLocal.getString("email","");// usuario recebe o valor atribuido a chave usuario.
 		String telefone=usuarioLocal.getString("telefone","");// usuario recebe o valor atribuido a chave usuario.
 		String sexo=usuarioLocal.getString("sexo","");// usuario recebe o valor atribuido a chave usuario.
 		Boolean cnh=usuarioLocal.getBoolean("cnh", true);
+		String foto=usuarioLocal.getString("foto", "");
 		String senha=usuarioLocal.getString("senha","");// usuario recebe o valor atribuido a chave usuario.
 		int id_carona=usuarioLocal.getInt("id_carona",-1);
 
 		Usuario usuarioLogado = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);    //Novo obj de usuário.
 		usuarioLogado.setId(id);
 		usuarioLogado.setSenha(senha);
+		usuarioLogado.setFoto(foto);
 		usuarioLogado.setIdCaronaSolicitada(id_carona);
 		return usuarioLogado;//Retorna o objeto usuarioLogado !
 	}

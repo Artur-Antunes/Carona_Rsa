@@ -49,35 +49,14 @@
         </LinearLayout>
 
 
-
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nome_registro"
-            android:hint="Nome"
-            android:layout_below="@+id/LinearLayout02"
-            android:layout_alignParentEnd="true" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="Sobrenome"
-            android:ems="10"
-            android:id="@+id/sobrenome_registro"
-            android:paddingTop="20dp"
-            android:layout_below="@+id/nome_registro"
-            android:layout_alignParentRight="true" />
-
         <Spinner
             android:id="@+id/sexo_registro"
             android:layout_width="match_parent"
-            android:layout_below="@+id/sobrenome_registro"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             android:prompt="@string/sexo_usuario"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/LinearLayout02">
         </Spinner>
 
         <EditText

@@ -1,5 +1,7 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
+import java.util.List;
+
 /**
  * Created by josehelder on 23/10/2016.
  */
@@ -15,6 +17,8 @@ public class Carona {
     private int ativo;
     private int id;
     private String dataCriacao;
+    private List<Usuario> participantes;
+    private List participantesStatus;
 
     public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, int vagas, String ponto){
         this.origem=origem;
@@ -112,5 +116,21 @@ public class Carona {
 
     public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
+    }
+
+    public List<Usuario> getParticipantes() {
+        return participantes;
+    }
+
+    public void setParticipantes(List<Usuario> participantes) {
+        this.participantes = participantes;
+    }
+
+    public List getParticipantesStatus() {
+        return participantesStatus;
+    }
+
+    public void setParticipantesStatus(List participantesStatus) {
+        this.participantesStatus = participantesStatus;
     }
 }

@@ -234,7 +234,9 @@
         android:layout_height="wrap_content"
         android:text="SOLICITAR CARONA"
         android:id="@+id/b_solicitar"
-        android:layout_below="@+id/tv_cnh" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/caixa_participantes" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -246,6 +248,44 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/titulo"
+            android:background="@color/color1"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_cnh">
 
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="PARTICIPANTE"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="20dp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="STATUS"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="13dp"
+                android:layout_marginRight="10dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/titulo"
+            android:layout_alignParentStart="true"
+            android:id="@+id/caixa_participantes"
+            android:layout_marginTop="1dp"></LinearLayout>
+
+
+    </RelativeLayout>
 </ScrollView>

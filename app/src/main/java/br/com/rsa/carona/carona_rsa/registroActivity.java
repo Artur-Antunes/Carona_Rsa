@@ -20,9 +20,7 @@ public class registroActivity extends AppCompatActivity {
 
     private Spinner sexoRegistro;
     private Switch cnhRegistro;
-    private EditText nomeRegistro;
     private EditText emailRegistro;
-    private EditText sobrenomeRegistro;
     private EditText matriculaRegistro;
     private EditText senhaRegistro;
     private EditText senha2Registro;
@@ -39,8 +37,7 @@ public class registroActivity extends AppCompatActivity {
         sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
         sexoRegistro.setAdapter(adapter);
 
-        nomeRegistro =(EditText)findViewById(R.id.nome_registro);
-        sobrenomeRegistro =(EditText)findViewById(R.id.sobrenome_registro);
+
         matriculaRegistro =(EditText)findViewById(R.id.matricula_registro);
         telefoneRegistro =(EditText)findViewById(R.id.telefone_registro);
         emailRegistro =(EditText)findViewById(R.id.email_registro);
@@ -53,40 +50,27 @@ public class registroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //VERIFICANDO DE OS CAMPOS ESTÃO PREENCHIDOS
-                 if(!nomeRegistro.getText().toString().trim().equals("") &&
-                         !sobrenomeRegistro.getText().toString().trim().equals("") &&
-                         !matriculaRegistro.getText().toString().trim().equals("") &&
+                 if(     !matriculaRegistro.getText().toString().trim().equals("") &&
                          !telefoneRegistro.getText().toString().trim().equals("") &&
                          !emailRegistro.getText().toString().trim().equals("") &&
                          !senhaRegistro.getText().toString().trim().equals("") &&
                          !senha2Registro.getText().toString().trim().equals("")
                          ){
                     if(senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
-                        String nome = nomeRegistro.getText().toString();
-                        String sobrenome = sobrenomeRegistro.getText().toString();
                         String matricula = matriculaRegistro.getText().toString();
                         String telefone = telefoneRegistro.getText().toString();
                         String email = emailRegistro.getText().toString();
                         String senha = senhaRegistro.getText().toString();
                         boolean cnh = cnhRegistro.isChecked();
                         String sexo = sexoRegistro.getSelectedItem().toString();
-                        Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
+                        Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
                         usuario.setSenha(senha);
                         usuario.setAtivo(1);
-                        RequisicoesServidor rs= new RequisicoesServidor(registroActivity.this);
-                                rs.gravaDadosDoUsuario(usuario, new GetRetorno() {
-                                    @Override
-                                    public void concluido(Object object) {
 
-                                        Toast.makeText(registroActivity.this,"o resultado foi:"+object,Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(registroActivity.this,LoginActivity.class));
-                                    }
+                        Intent i = new Intent(registroActivity.this,Registro2.class);
+                        Registro2.usuario=usuario;
+                        startActivity(i);
 
-                                    @Override
-                                    public void concluido(Object object, Object object2) {
-
-                                    }
-                                });
                     } else{
                         Toast.makeText(registroActivity.this,"as senhas não conferem",Toast.LENGTH_SHORT).show();
                         }

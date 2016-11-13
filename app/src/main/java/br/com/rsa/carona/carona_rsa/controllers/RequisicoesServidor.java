@@ -27,10 +27,10 @@ import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class RequisicoesServidor {
-
+    String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -99,6 +99,10 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("sexo", usuario.getSexo()));
             dadosParaEnvio.add(new BasicNameValuePair("ativo", usuario.getAtivo() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("senha", usuario.getSenha()));
+            dadosParaEnvio.add(new BasicNameValuePair("foto", usuario.getFoto()));
+            Log.e(TAG, usuario.getFoto() + "");
+            Log.e(TAG, usuario.getFoto()+"");
+            dadosParaEnvio.add(new BasicNameValuePair("extencao", usuario.getExtFoto()));
             if (usuario.isCnh()) {
                 dadosParaEnvio.add(new BasicNameValuePair("cnh", "TRUE"));
             } else {
@@ -255,7 +259,9 @@ public class RequisicoesServidor {
                     Log.e("obj nulo", " nada ");
                 } else {            //Senão,se o tamanho de jObj for diferente de zero.
                     JSONObject jObjeto=jObj;
-                        for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
+
+                        for (int i = 0; i < jObjeto.getInt("tamanho"); i++) {
+
                             String telefone = jObjeto.getString("telefone_" + i);
                             String nome = jObjeto.getString("nome_" + i);
                             String sobrenome = jObjeto.getString("sobrenome_" + i);
@@ -266,14 +272,21 @@ public class RequisicoesServidor {
                                 cnh=false;
                             }
                             Log.e("oioioiokkkk", nome);
+
                             String matricula = jObjeto.getString("matricula_" + i);
                             String sexo = jObjeto.getString("sexo_" + i);
+                            Log.e("ver se entrou", "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+                            String foto = jObjeto.getString("foto_" + i);
                             int idUser = Integer.parseInt(jObjeto.getString("id_" + i));
+
                             Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnh);
                             usuario.setId(idUser);
+                            usuario.setFoto(foto);
                             usuarios.add(usuario);
-                            Log.e("usuario add","ok");
+
+
                         }
+
 
                 }
 
@@ -286,6 +299,7 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(List<Usuario> usuarios) {
+            Log.e("tamanho 0",usuarios.size()+"");
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(usuarios);
             super.onPostExecute(usuarios);
@@ -360,6 +374,7 @@ public class RequisicoesServidor {
                     String email = jObj.getString("email");
                     String telefone = jObj.getString("telefone");
                     String sexo = jObj.getString("sexo");
+                    String foto = jObj.getString("foto");
                     Integer cnh = jObj.getInt("cnh");
                     Integer id = jObj.getInt("id");
                     Integer id_carona=jObj.getInt("id_carona");
@@ -371,6 +386,7 @@ public class RequisicoesServidor {
                     usuario.setSenha(this.usuario.getSenha());
                     usuario.setIdCaronaSolicitada(id_carona);
                     usuario.setId(id);
+                    usuario.setFoto(foto);
                     usuarioRetornado=usuario;
                 }
 
@@ -520,6 +536,19 @@ public class RequisicoesServidor {
                     car.setStatus(status);
                     car.setAtivo(ativo);
                     car.setDataCriacao(dataCriacao);
+
+                    List<Usuario> participantes= new LinkedList<Usuario>();
+                    List participantesStatus= new LinkedList();
+                    for (int j=0; j< jObjeto.getInt("participantes_"+i+"_tamanho");j++){
+                        int idPart =jObjeto.getInt("participantes_"+i+"_"+j+"_id");
+                        String nomePart =jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                        String statusSoliciacao =jObjeto.getString("participantes_"+i+"_"+j+"_status_solicitacao");
+                        Usuario participante = new Usuario(idPart,nomePart);
+                        participantes.add(participante);
+                        participantesStatus.add(statusSoliciacao);
+                    }
+                    car.setParticipantes(participantes);
+                    car.setParticipantesStatus(participantesStatus);
                     caronas.add(car);
 
                     String telefone = jObjeto.getString("telefone_" + i);
@@ -531,6 +560,7 @@ public class RequisicoesServidor {
                     if(cnh1==0){
                         cnh=false;
                     }
+
                     Log.e("oioioioioioioio", nome);
                     String matricula = jObjeto.getString("matricula_" + i);
                     String sexo = jObjeto.getString("sexo_" + i);

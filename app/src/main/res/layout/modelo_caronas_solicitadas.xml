@@ -12,65 +12,64 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:background="@color/color3"
-        android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nome:"
-        android:id="@+id/textView2"
-        android:layout_marginLeft="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp" />
+        android:id="@+id/relativeLayout2">
 
-    <TextView
+
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="nome"
         android:id="@+id/nomeUserSolicitaCarona"
         android:layout_marginLeft="5dp"
-        android:layout_marginStart="28dp"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="sexo"
-        android:id="@+id/sexoUserSolicitaCarona"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_alignStart="@+id/nomeUserSolicitaCarona" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sexo:"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/nomeUserSolicitaCarona"
-        android:layout_toStartOf="@+id/nomeUserSolicitaCarona"
-        android:layout_marginTop="10dp" />
-
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Aceitar"
-        android:id="@+id/b_aceitar_usuario_carona"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentLeft="true"
-         />
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/c_foto"
+            android:textSize="16dp"
+            android:layout_margin="10dp" />
 
         <Button
-            android:layout_width="150dp"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+            android:id="@+id/b_aceitar_usuario_carona"
+            android:layout_centerVertical="true"
+
+            android:background="@drawable/icon_ok"
+            android:layout_toStartOf="@+id/b_recusar_usuario_carona" />
+
+        <Button
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="Recusar"
             android:id="@+id/b_recusar_usuario_carona"
-            android:layout_below="@+id/textView3"
+            android:layout_centerVertical="true"
+            android:background="@drawable/icon_not"
             android:layout_alignParentEnd="true" />
 
-</RelativeLayout>
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/c_foto"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view2"
+            android:layout_below="@+id/c_foto"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="89981106513"
+            android:id="@+id/c_telefone"
+            android:textSize="14dp"
+            android:layout_below="@+id/nomeUserSolicitaCarona"
+            android:layout_alignStart="@+id/nomeUserSolicitaCarona" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

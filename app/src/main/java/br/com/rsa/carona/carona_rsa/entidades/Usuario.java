@@ -13,7 +13,8 @@ public class Usuario {
     private String telefone;
     private String sexo;
     private boolean cnh;
-    private Bitmap foto;
+    private String foto;
+    private String extFoto;
     private int ativo;
     private int id;
     private String dataRegistro;
@@ -35,7 +36,10 @@ public class Usuario {
         this.matricula=matricula;
         this.senha=senha;
     }
-
+    public Usuario(int id, String nome){
+        this.id=id;
+        this.nome=nome;
+    }
     public Usuario(Integer id){
 
         this.id=id;
@@ -105,13 +109,6 @@ public class Usuario {
         this.cnh = chn;
     }
 
-    public Bitmap getFoto() {
-        return foto;
-    }
-
-    public void setFoto(Bitmap foto) {
-        this.foto = foto;
-    }
 
     public int getAtivo() {
         return ativo;
@@ -147,5 +144,21 @@ public class Usuario {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public String getExtFoto() {
+        return extFoto;
+    }
+
+    public void setExtFoto(String extFoto) {
+        this.extFoto = extFoto;
     }
 }

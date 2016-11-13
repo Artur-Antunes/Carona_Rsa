@@ -2,9 +2,13 @@ package br.com.rsa.carona.carona_rsa;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -18,11 +22,11 @@ public class ExibirDadosUsuarioActivity extends Activity {
     Usuario usuarioEditar;
     private TextView nomeExibir;
     private TextView emailExibir;
-    private TextView sobrenomeExibir;
     private TextView matriculaExibir;
     private TextView telefoneExibir;
     private TextView sexoExibir;
     private TextView cnhExibir;
+    private ImageView imFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class ExibirDadosUsuarioActivity extends Activity {
         usuarioEditar=mDados.getUsuario();
 
         nomeExibir =(TextView)findViewById(R.id.exibirNomeValor);
-        sobrenomeExibir =(TextView)findViewById(R.id.exibirSobrenomeValor);
+        imFoto =(ImageView)findViewById(R.id.foto);
         matriculaExibir =(TextView)findViewById(R.id.exibirMatriculaValor);
         telefoneExibir =(TextView)findViewById(R.id.exibirTelefoneValor);
         emailExibir =(TextView)findViewById(R.id.exibirEmailValor);
@@ -46,21 +50,24 @@ public class ExibirDadosUsuarioActivity extends Activity {
     protected void onStart() {
         super.onStart();// A activity está prestes a se tornar visível
 
-        nomeExibir.setText(usuarioEditar.getNome());
-        sobrenomeExibir.setText(usuarioEditar.getSobrenome());
+        nomeExibir.setText(usuarioEditar.getNome() + " " + usuarioEditar.getSobrenome());
         emailExibir.setText(usuarioEditar.getEmail());
         matriculaExibir.setText(usuarioEditar.getMatricula());
         telefoneExibir.setText(usuarioEditar.getTelefone());
-
+        byte[] decodedString = Base64.decode(usuarioEditar.getFoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        imFoto.setImageBitmap(bitmap);
+        imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
         String converterCnh;
 
         if(usuarioEditar.isCnh()){
-            converterCnh="sim";
+            converterCnh="SIM";
         }else{
-            converterCnh="Não";
+            converterCnh="NÃO";
         }
 
         cnhExibir.setText(converterCnh);
+
         sexoExibir.setText(usuarioEditar.getSexo());
 
     }

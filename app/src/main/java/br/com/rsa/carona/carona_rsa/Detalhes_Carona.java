@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
@@ -25,12 +27,14 @@ public class Detalhes_Carona extends AppCompatActivity {
     private TextView tv_cnh;
     private TextView tv_email;
     private Button b_salvar;
+    private LinearLayout ll;
     public static Carona carona= null;
     public static Usuario usuario= null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes__carona);
+        ll=(LinearLayout)findViewById(R.id.caixa_participantes);
         tv_origem=(TextView) findViewById(R.id.tv_origem);
         tv_destino=(TextView)findViewById(R.id.tv_destino);
         tv_vagas=(TextView) findViewById(R.id.tv_vagas);
@@ -67,8 +71,23 @@ public class Detalhes_Carona extends AppCompatActivity {
         }else{
             tv_cnh.setText("NÃO POSSUI CNH");
         }
+        ll.removeAllViews();
+        Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
+        for (int i=0; i<carona.getParticipantes().size(); i++){
+            final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
+            TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
+            TextView status = (TextView) modelo.findViewById(R.id.tv_status);
+            nome.setText(carona.getParticipantes().get(i).getNome());
+            status.setText(carona.getParticipantesStatus().get(i).toString());
+            if(carona.getParticipantesStatus().get(i).toString().equals("ACEITO")){
+            status.setTextColor(getResources().getColor(R.color.verde));
+            }else{
+                status.setTextColor(getResources().getColor(R.color.color1));
+            }
+            ll.addView(modelo,0);
+        }
 
-    }
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
