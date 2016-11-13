@@ -41,7 +41,7 @@ public class Registro2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro2);
         imagem = (ImageView)findViewById(R.id.c_imagem);
-        nomeRegistro =(EditText)findViewById(R.id.c_nome);
+        nomeRegistro =(EditText)findViewById(R.id.tv_nome);
         sobrenomeRegistro =(EditText)findViewById(R.id.c_sobrenome);
         bSalvar=(Button) findViewById(R.id.b_salvar);
         bCam=(Button) findViewById(R.id.b_camera);

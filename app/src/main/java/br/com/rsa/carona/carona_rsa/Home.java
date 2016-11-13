@@ -1,13 +1,20 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,7 +44,7 @@ public class Home extends Fragment {
 
     public void atualizaCaronas(){
         ManipulaDados M= new ManipulaDados(getActivity());
-        Log.e("ppppppppppp",M.getUsuario().getId()+"");
+
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         ll.removeAllViews();
             rs.buscaCaronas(null, new GetRetorno() {
@@ -58,7 +65,20 @@ public class Home extends Fragment {
                         TextView tv_destino=(TextView) modelo.findViewById(R.id.tv_destino);
                         TextView tv_vagas=(TextView) modelo.findViewById(R.id.tv_vagas);
                         TextView tv_horario=(TextView) modelo.findViewById(R.id.tv_horario);
+                        TextView tv_nome=(TextView) modelo.findViewById(R.id.tv_nome);
+                        ImageView c_foto=(ImageView) modelo.findViewById(R.id.c_foto);
+                        TextView tv_telefone=(TextView) modelo.findViewById(R.id.tv_telefone);
                         Button btnSolicitar=(Button) modelo.findViewById(R.id.b_solicitar);
+                        btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
+                        tv_nome.setText(usuarios.get(i).getNome());
+                        tv_telefone.setText(usuarios.get(i).getTelefone());
+                        Log.e("ggggggggggggggg", usuarios.get(i).getFoto() + "");
+                        byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        Resources res = getResources();
+                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+                        dr.setCircular(true);
+                        c_foto.setImageDrawable(dr);
                         tv_destino.setText(caronas.get(i).getDestino());
                         tv_origem.setText(caronas.get(i).getOrigem());
                         tv_horario.setText(caronas.get(i).getHorario());

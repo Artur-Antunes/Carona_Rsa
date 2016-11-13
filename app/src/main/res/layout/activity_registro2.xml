@@ -31,7 +31,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/c_nome"
+        android:id="@+id/tv_nome"
         android:layout_below="@+id/b_camera"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/c_sobrenome"
-        android:layout_below="@+id/c_nome"
+        android:layout_below="@+id/tv_nome"
         android:layout_centerHorizontal="true"
         android:hint="SOBRENOME" />
 

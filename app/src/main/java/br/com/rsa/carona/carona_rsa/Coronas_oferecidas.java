@@ -83,7 +83,6 @@ public class Coronas_oferecidas extends Fragment {
 
                         final Usuario userAtual= new Usuario(idSolicitante);
                         final int j=i;
-
                         modelo.setId(i);
                         lloferecidas.addView(modelo, 0);
 
@@ -133,7 +132,6 @@ public class Coronas_oferecidas extends Fragment {
                             public void onClick(View v) {
                                 Intent it = new Intent(getActivity(), DetalheUsuario.class);
                                 DetalheUsuario.usuarioEditar=usuarios.get(j);
-                                startActivity(it);
                             }
                         });
                     }

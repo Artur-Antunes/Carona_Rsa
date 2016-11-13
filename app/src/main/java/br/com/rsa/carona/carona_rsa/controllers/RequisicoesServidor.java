@@ -555,6 +555,7 @@ public class RequisicoesServidor {
                     String nome = jObjeto.getString("nome_" + i);
                     String sobrenome = jObjeto.getString("sobrenome_" + i);
                     String email = jObjeto.getString("email_" + i);
+                    String foto = jObjeto.getString("foto_" + i);
                     int cnh1 = jObjeto.getInt("cnh_" + i);
                     boolean cnh=true;
                     if(cnh1==0){
@@ -565,6 +566,7 @@ public class RequisicoesServidor {
                     String matricula = jObjeto.getString("matricula_" + i);
                     String sexo = jObjeto.getString("sexo_" + i);
                     Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnh);
+                    usuario.setFoto(foto);
                     usuarios.add(usuario);
 
                 }
