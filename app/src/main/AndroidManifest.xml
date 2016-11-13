@@ -52,6 +52,10 @@
             android:name=".Registro2"
             android:label="@string/title_activity_registro2" >
         </activity>
+        <activity
+            android:name=".DetalheUsuario"
+            android:label="@string/title_activity_detalhe_usuario" >
+        </activity>
     </application>
 
 </manifest>

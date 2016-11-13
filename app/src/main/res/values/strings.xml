@@ -60,5 +60,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_registro2">Finalizar Registro</string>
+    <string name="title_activity_detalhe_usuario">Detalhe do Usúario</string>
 
 </resources>
