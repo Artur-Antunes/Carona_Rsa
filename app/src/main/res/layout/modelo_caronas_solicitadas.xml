@@ -29,21 +29,20 @@
             android:textSize="16dp"
             android:layout_margin="10dp" />
 
-        <Button
+        <ImageButton
         android:layout_width="50dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
             android:id="@+id/b_aceitar_usuario_carona"
             android:layout_centerVertical="true"
-
-            android:background="@drawable/icon_ok"
+            android:src="@drawable/icon_ok"
             android:layout_toStartOf="@+id/b_recusar_usuario_carona" />
 
-        <Button
+        <ImageButton
             android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:id="@+id/b_recusar_usuario_carona"
             android:layout_centerVertical="true"
-            android:background="@drawable/icon_not"
+            android:src="@drawable/icon_not"
             android:layout_alignParentEnd="true" />
 
         <ImageView

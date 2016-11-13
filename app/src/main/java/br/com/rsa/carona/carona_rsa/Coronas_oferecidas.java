@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -66,8 +67,10 @@ public class Coronas_oferecidas extends Fragment {
                         TextView nomeSolicitante=(TextView) modelo.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
                         TextView telefoneSolicitante=(TextView) modelo.findViewById(R.id.c_telefone);
                         ImageView fotoSolicitante=(ImageView) modelo.findViewById(R.id.c_foto);
-                        Button btnAceitar=(Button) modelo.findViewById(R.id.b_aceitar_usuario_carona);
-                        Button btnRecusar=(Button) modelo.findViewById(R.id.b_recusar_usuario_carona);
+                        ImageButton btnAceitar=(ImageButton) modelo.findViewById(R.id.b_aceitar_usuario_carona);
+                        ImageButton btnRecusar=(ImageButton) modelo.findViewById(R.id.b_recusar_usuario_carona);
+                        btnAceitar.setBackgroundResource(R.drawable.animacao);
+                        btnRecusar.setBackgroundResource(R.drawable.animacao);
                         nomeSolicitante.setText(usuarios.get(i).getNome());
                         telefoneSolicitante.setText(usuarios.get(i).getTelefone());
                         Log.e("foto", "concluido "+usuarios.get(i).getFoto());

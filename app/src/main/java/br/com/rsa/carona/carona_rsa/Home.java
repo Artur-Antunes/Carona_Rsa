@@ -107,7 +107,7 @@ public class Home extends Fragment {
                                 Intent it = new Intent(getActivity(), Detalhes_Carona.class);
                                 Detalhes_Carona.usuario= usuarios.get(j);
                                 Detalhes_Carona.carona = caronas.get(j);
-                                startActivityForResult(it,1);
+                                startActivity(it);
 
                             }
                         });
