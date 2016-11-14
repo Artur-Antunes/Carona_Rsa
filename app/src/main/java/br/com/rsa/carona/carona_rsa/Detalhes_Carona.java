@@ -28,37 +28,38 @@ public class Detalhes_Carona extends AppCompatActivity {
     private TextView tv_email;
     private Button b_salvar;
     private LinearLayout ll;
-    public static Carona carona= null;
-    public static Usuario usuario= null;
+    public static Carona carona = null;
+    public static Usuario usuario = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes__carona);
-        ll=(LinearLayout)findViewById(R.id.caixa_participantes);
-        tv_origem=(TextView) findViewById(R.id.tv_origem);
-        tv_destino=(TextView)findViewById(R.id.tv_destino);
-        tv_vagas=(TextView) findViewById(R.id.tv_vagas);
-        tv_horario=(TextView) findViewById(R.id.tv_horario);
-        tv_ponto=(TextView) findViewById(R.id.tv_ponto);
-        tv_tipoVeiculo=(TextView)findViewById(R.id.tv_tipoVeiculo);
-        tv_nome=(TextView) findViewById(R.id.tv_nome);
-        tv_status=(TextView) findViewById(R.id.tv_status);
-        tv_matricula=(TextView) findViewById(R.id.tv_matricula);
-        tv_telefone=(TextView)findViewById(R.id.tv_telefone);
-        tv_cnh=(TextView) findViewById(R.id.tv_cnh);
-        tv_nome=(TextView) findViewById(R.id.tv_nome);
-        tv_email=(TextView) findViewById(R.id.tv_email);
-        b_salvar=(Button) findViewById(R.id.b_salvar);
+        ll = (LinearLayout) findViewById(R.id.caixa_participantes);
+        tv_origem = (TextView) findViewById(R.id.tv_origem);
+        tv_destino = (TextView) findViewById(R.id.tv_destino);
+        tv_vagas = (TextView) findViewById(R.id.tv_vagas);
+        tv_horario = (TextView) findViewById(R.id.tv_horario);
+        tv_ponto = (TextView) findViewById(R.id.tv_ponto);
+        tv_tipoVeiculo = (TextView) findViewById(R.id.tv_tipoVeiculo);
+        tv_nome = (TextView) findViewById(R.id.tv_nome);
+        tv_status = (TextView) findViewById(R.id.tv_status);
+        tv_matricula = (TextView) findViewById(R.id.tv_matricula);
+        tv_telefone = (TextView) findViewById(R.id.tv_telefone);
+        tv_cnh = (TextView) findViewById(R.id.tv_cnh);
+        tv_nome = (TextView) findViewById(R.id.tv_nome);
+        tv_email = (TextView) findViewById(R.id.tv_email);
+        b_salvar = (Button) findViewById(R.id.b_salvar);
 
         tv_origem.setText(carona.getOrigem());
         tv_destino.setText(carona.getDestino());
-        tv_vagas.setText(carona.getVagas()+"");
+        tv_vagas.setText(carona.getVagas() + "");
         tv_horario.setText(carona.getHorario());
         tv_ponto.setText(carona.getPonto());
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
-        if(carona.getStatus()==1){
+        if (carona.getStatus() == 1) {
             tv_status.setText("DISPONÍVEL");
-        }else{
+        } else {
             tv_status.setText("INDISPONÍVEL");
         }
         Log.e("testteddddd", usuario.getNome());
@@ -66,28 +67,28 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_telefone.setText(usuario.getTelefone());
         tv_nome.setText(usuario.getNome());
         tv_email.setText(usuario.getEmail());
-        if(usuario.isCnh()){
+        if (usuario.isCnh()) {
             tv_cnh.setText("POSSUI CNH");
-        }else{
+        } else {
             tv_cnh.setText("NÃO POSSUI CNH");
         }
         ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
-        for (int i=0; i<carona.getParticipantes().size(); i++){
+        for (int i = 0; i < carona.getParticipantes().size(); i++) {
             final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
             TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
             TextView status = (TextView) modelo.findViewById(R.id.tv_status);
             nome.setText(carona.getParticipantes().get(i).getNome());
             status.setText(carona.getParticipantesStatus().get(i).toString());
-            if(carona.getParticipantesStatus().get(i).toString().equals("ACEITO")){
-            status.setTextColor(getResources().getColor(R.color.verde));
-            }else{
+            if (carona.getParticipantesStatus().get(i).toString().equals("ACEITO")) {
+                status.setTextColor(getResources().getColor(R.color.verde));
+            } else {
                 status.setTextColor(getResources().getColor(R.color.color1));
             }
-            ll.addView(modelo,0);
+            ll.addView(modelo, 0);
         }
 
-}
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

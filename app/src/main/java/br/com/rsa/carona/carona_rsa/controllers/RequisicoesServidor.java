@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -46,32 +46,44 @@ public class RequisicoesServidor {
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
     }
 
-    public void buscaDadosDoUsuario(Usuario usuario,GetRetorno retorno){	//Método que busca a classe que vai receber os dados do usuario.
+    public void buscaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaDadosUsuarioAsyncTask(usuario,retorno).execute();	//Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaDadosUsuarioAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
-    public void gravaCarona(Carona carona,Usuario usuario, GetRetorno retorno) {
+
+    public void gravaCarona(Carona carona, Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
-        new armazenaCaronaAsyncTask(carona,usuario, retorno).execute();
+        new armazenaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
-    public void solicitaCarona(Carona carona,Usuario usuario, GetRetorno retorno) {
+
+    public void solicitaCarona(Carona carona, Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
-        new solicitaCaronaAsyncTask(carona,usuario, retorno).execute();
+        new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
-    public void exibirSolicitacoesCaronas(Usuario usuario,GetRetorno retorno){
+    public void exibirSolicitacoesCaronas(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
-        new exibirUsuariosSolicitantesAsyncTask(usuario,retorno).execute();
+        new exibirUsuariosSolicitantesAsyncTask(usuario, retorno).execute();
     }
 
-    public void aceitarRecusarCaronas(Usuario usuario,String resposta,GetRetorno retorno){
+    public void aceitarRecusarCaronas(Usuario usuario, String resposta, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
-        new aceitaOuRecusaCaronaAsyncTask(usuario,resposta,retorno).execute();
+        new aceitaOuRecusaCaronaAsyncTask(usuario, resposta, retorno).execute();
     }
 
-    public void buscaCaronas(Usuario usuario,GetRetorno retorno){	//Método que busca a classe que vai receber os dados do usuario.
+    public void aguardaRespostaCarona(Usuario usuario, Carona carona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaCaronasAsyncTask(usuario,retorno).execute();	//Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaCaronaAsyncTask(usuario, carona, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+    }
+
+    public void desistirCarona(Usuario usuario, Carona carona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        progressDialog.show();// Mostra a barra de dialogo.
+        new cancelarCaronaAsyncTask(carona, usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+    }
+
+    public void buscaCaronas(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        progressDialog.show();// Mostra a barra de dialogo.
+        new BuscaCaronasAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     //classe que armazena dados de usuario no banco de modo  que economiza recursos do celular
@@ -101,7 +113,7 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("senha", usuario.getSenha()));
             dadosParaEnvio.add(new BasicNameValuePair("foto", usuario.getFoto()));
             Log.e(TAG, usuario.getFoto() + "");
-            Log.e(TAG, usuario.getFoto()+"");
+            Log.e(TAG, usuario.getFoto() + "");
             dadosParaEnvio.add(new BasicNameValuePair("extencao", usuario.getExtFoto()));
             if (usuario.isCnh()) {
                 dadosParaEnvio.add(new BasicNameValuePair("cnh", "TRUE"));
@@ -109,7 +121,6 @@ public class RequisicoesServidor {
                 dadosParaEnvio.add(new BasicNameValuePair("cnh", "FALSE"));
             }
 
-            Log.e("se vai gravar", usuario.getNome());
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
@@ -126,11 +137,9 @@ public class RequisicoesServidor {
 
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getString("teste");
-                Log.e("FOOOIII????", teste);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
 
             return teste;
@@ -144,6 +153,88 @@ public class RequisicoesServidor {
         }
     }
 
+    public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, Carona> {
+        //Campos da classe.
+        Usuario usuario;
+        Carona carona;
+        GetRetorno retornoUsuario;
+
+        public BuscaCaronaAsyncTask(Usuario usuario, Carona carona, GetRetorno retorno) {
+            this.usuario = usuario;
+            this.carona = carona; //O campo usuário recebe o parâmetro de usuário.
+            this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
+        }
+
+        @Override
+        protected Carona doInBackground(Void... params) { //Implementação obrigatória.
+
+            ArrayList<NameValuePair> dados = new ArrayList();
+            dados.add(new BasicNameValuePair("id_usuario", this.usuario.getId() + ""));
+            dados.add(new BasicNameValuePair("id_carona", this.carona.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
+
+/**
+ * HppParams:interface que representa um conjunto de valores imutáveis ​​
+ * que define um comportamento de tempo de execução de um componente.
+ */
+
+            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
+
+            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
+            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
+
+
+            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "aguardaConfirmacaoCarona.php");    //Fazer uma requisição tipo Post no WebService.
+            //Página de registro
+
+            Carona caronaRetornada = null;    //Variável que irá receber os dados do usuário.
+
+            try {
+
+
+                post.setEntity(new UrlEncodedFormEntity(dados));    //Configurando a entidade na requisição post.
+                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
+
+                // Recebendo a resposta do servidor após a execução do HTTP POST.
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);
+                //
+                JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
+
+
+                if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
+                    caronaRetornada = null;
+                } else {            //Senão,se o tamanho de jObj for diferente de zero.
+                    String origem = jObj.getString("origem");        // Pegando o nome do usuário.
+                    String destino = jObj.getString("destino");
+                    String horario = jObj.getString("horario");
+                    String veiculo = jObj.getString("tipoVeiculo");
+                    String restricao = jObj.getString("restricao");
+                    String ponto = jObj.getString("ponto");
+                    String statusUsuario = jObj.getString("status_usuario");
+
+                    Carona carona = new Carona(origem, destino, horario, veiculo, restricao, ponto);    //Novo obj de usuário.
+                    carona.setId(this.carona.getId());
+                    carona.setStatusUsuario(statusUsuario);
+                    caronaRetornada = carona;
+
+                }
+
+            } catch (Exception e) {
+                e.getMessage();// se não der certo:mensagem de erro
+            }
+
+            return caronaRetornada;    //Retorno para o método 'onPostExecute'.
+        }//Fim método.
+
+        @Override
+        protected void onPostExecute(Carona caronaRetornada) {
+            progressDialog.dismiss(); //Finalizar
+            retornoUsuario.concluido(caronaRetornada);
+            super.onPostExecute(caronaRetornada);
+        }//Fim método.
+    }//Fim classe.
+
 
     public class aceitaOuRecusaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
@@ -151,9 +242,9 @@ public class RequisicoesServidor {
         String resposta;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public aceitaOuRecusaCaronaAsyncTask(Usuario usuario,String resposta ,GetRetorno retorno) {
+        public aceitaOuRecusaCaronaAsyncTask(Usuario usuario, String resposta, GetRetorno retorno) {
             this.usuario = usuario;
-            this.resposta=  resposta;
+            this.resposta = resposta;
             this.retornoUsuario = retorno;
         }
 
@@ -162,7 +253,7 @@ public class RequisicoesServidor {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
             //adicionado dados no arraylist para ser enviado
 
-            dadosParaEnvio.add(new BasicNameValuePair("id", usuario.getId()+""));
+            dadosParaEnvio.add(new BasicNameValuePair("id", usuario.getId() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("resposta", this.resposta));
 
 
@@ -182,11 +273,9 @@ public class RequisicoesServidor {
 
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getString("teste");
-                Log.e("FOOOIII????", teste);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
 
             return teste;
@@ -209,15 +298,13 @@ public class RequisicoesServidor {
         public exibirUsuariosSolicitantesAsyncTask(Usuario usuario, GetRetorno retorno) {
             this.usuario = usuario; //O campo usuário recebe o parâmetro de usuário.
             this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
-            Log.e(" id: ",this.usuario.getId()+"<-id aqui caralho");
-
         }
 
         @Override
         protected List<Usuario> doInBackground(Void... params) { //Implementação obrigatória.
 
             ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id", this.usuario.getId()+""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
+            dados.add(new BasicNameValuePair("id", this.usuario.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
 
 /**
  * HppParams:interface que representa um conjunto de valores imutáveis ​​
@@ -234,12 +321,9 @@ public class RequisicoesServidor {
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscarSolicitantesCaronas.php");    //Fazer uma requisição tipo Post no WebService.
             //Página de registro
 
-            Log.e("aqui 2","ok");
             List<Usuario> usuarios = new LinkedList<Usuario>();    //Variável que irá receber os dados do usuário.
 
             try {
-
-                Log.e("aqui 3","ok");
                 post.setEntity(new UrlEncodedFormEntity(dados));    //Configurando a entidade na requisição post.
                 HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
 
@@ -249,45 +333,36 @@ public class RequisicoesServidor {
                 String resultado = EntityUtils.toString(entidade);
                 //
 
-                Log.e("aqui 4","ok");
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-
-                Log.e("aqui 5","ok");
-
                 if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
                     usuarios = null;
-                    Log.e("obj nulo", " nada ");
                 } else {            //Senão,se o tamanho de jObj for diferente de zero.
-                    JSONObject jObjeto=jObj;
+                    JSONObject jObjeto = jObj;
 
-                        for (int i = 0; i < jObjeto.getInt("tamanho"); i++) {
+                    for (int i = 0; i < jObjeto.getInt("tamanho"); i++) {
 
-                            String telefone = jObjeto.getString("telefone_" + i);
-                            String nome = jObjeto.getString("nome_" + i);
-                            String sobrenome = jObjeto.getString("sobrenome_" + i);
-                            String email = jObjeto.getString("email_" + i);
-                            int cnh1 = jObjeto.getInt("cnh_" + i);
-                            boolean cnh=true;
-                            if(cnh1==0){
-                                cnh=false;
-                            }
-                            Log.e("oioioiokkkk", nome);
-
-                            String matricula = jObjeto.getString("matricula_" + i);
-                            String sexo = jObjeto.getString("sexo_" + i);
-                            Log.e("ver se entrou", "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-                            String foto = jObjeto.getString("foto_" + i);
-                            int idUser = Integer.parseInt(jObjeto.getString("id_" + i));
-
-                            Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnh);
-                            usuario.setId(idUser);
-                            usuario.setFoto(foto);
-                            usuarios.add(usuario);
-
-
+                        String telefone = jObjeto.getString("telefone_" + i);
+                        String nome = jObjeto.getString("nome_" + i);
+                        String sobrenome = jObjeto.getString("sobrenome_" + i);
+                        String email = jObjeto.getString("email_" + i);
+                        int cnh1 = jObjeto.getInt("cnh_" + i);
+                        boolean cnh = true;
+                        if (cnh1 == 0) {
+                            cnh = false;
                         }
 
+                        String matricula = jObjeto.getString("matricula_" + i);
+                        String sexo = jObjeto.getString("sexo_" + i);
+                        String foto = jObjeto.getString("foto_" + i);
+                        int idUser = Integer.parseInt(jObjeto.getString("id_" + i));
 
+                        Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
+                        usuario.setId(idUser);
+                        usuario.setFoto(foto);
+                        usuarios.add(usuario);
+
+
+                    }
                 }
 
             } catch (Exception e) {
@@ -299,7 +374,6 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(List<Usuario> usuarios) {
-            Log.e("tamanho 0",usuarios.size()+"");
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(usuarios);
             super.onPostExecute(usuarios);
@@ -314,8 +388,6 @@ public class RequisicoesServidor {
         public BuscaDadosUsuarioAsyncTask(Usuario usuario, GetRetorno retorno) {
             this.usuario = usuario; //O campo usuário recebe o parâmetro de usuário.
             this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
-            Log.e("matricula",this.usuario.getMatricula());
-            Log.e("senha",this.usuario.getSenha());
         }
 
         @Override
@@ -339,16 +411,10 @@ public class RequisicoesServidor {
             HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscaDadosUsuario.php");    //Fazer uma requisição tipo Post no WebService.
             //Página de registro
-
-            Log.e("aqui 2","ok");
-
             Usuario usuarioRetornado = null;    //Variável que irá receber os dados do usuário.
 
 
             try {
-
-                Log.e("aqui 3","ok");
-
                 post.setEntity(new UrlEncodedFormEntity(dados));    //Configurando a entidade na requisição post.
                 HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
 
@@ -357,17 +423,10 @@ public class RequisicoesServidor {
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);
                 //
-
-                Log.e("aqui 4","ok");
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-
-                Log.e("aqui 5","ok");
-
                 if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
                     usuarioRetornado = null;
-                    Log.e("obj nulo", " nada ");
                 } else {            //Senão,se o tamanho de jObj for diferente de zero.
-                    Log.e("obj ", " passo 1 ok ");
                     String nome = jObj.getString("nome");        // Pegando o nome do usuário.
                     String sobrenome = jObj.getString("sobrenome");
                     String matricula = jObj.getString("matricula");
@@ -377,17 +436,17 @@ public class RequisicoesServidor {
                     String foto = jObj.getString("foto");
                     Integer cnh = jObj.getInt("cnh");
                     Integer id = jObj.getInt("id");
-                    Integer id_carona=jObj.getInt("id_carona");
-                    boolean cnh1=false;
-                    if(cnh==1){
-                        cnh1=true;
+                    Integer id_carona = jObj.getInt("id_carona");
+                    boolean cnh1 = false;
+                    if (cnh == 1) {
+                        cnh1 = true;
                     }
                     Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh1);    //Novo obj de usuário.
                     usuario.setSenha(this.usuario.getSenha());
                     usuario.setIdCaronaSolicitada(id_carona);
                     usuario.setId(id);
                     usuario.setFoto(foto);
-                    usuarioRetornado=usuario;
+                    usuarioRetornado = usuario;
                 }
 
             } catch (Exception e) {
@@ -407,13 +466,68 @@ public class RequisicoesServidor {
     }//Fim classe.
 
 
+    public class cancelarCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
+
+        Carona carona;
+        Usuario usuario;
+        GetRetorno retorno;
+
+        //contrutor requer um usuario uma interface com metodo previamente escrito.
+        public cancelarCaronaAsyncTask(Carona carona, Usuario usuario, GetRetorno retorno) {
+
+            this.carona = carona;
+            this.usuario = usuario;
+            this.retorno = retorno;
+
+        }
+
+        @Override //metodo que � execudado em segundo plano para economia de recursos
+        protected Object doInBackground(Void... params) {
+            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
+            //adicionado dados no arraylist para ser enviado
+
+            dadosParaEnvio.add(new BasicNameValuePair("id_carona", carona.getId() + ""));
+            dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
+
+            //delara��o de variaveis http (params, cliente, post) para enviar dados
+            HttpParams httpRequestsParametros = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "cancelarCarona.php");
+            String teste = "não";
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio));
+                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
+
+                JSONObject jObjeto = new JSONObject(resultado);
+                teste = jObjeto.getString("desistencia");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return teste;
+        }
+
+        @Override //metodo que � executado quando o post for exetutado/enviado
+        protected void onPostExecute(Object resultado) {
+            progressDialog.dismiss();//encerra o circulo de progresso
+            retorno.concluido(resultado);
+            super.onPostExecute(resultado);
+        }
+    }
+
+
     public class armazenaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
         Carona carona;
         Usuario usuario;
         GetRetorno retorno;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public armazenaCaronaAsyncTask(Carona carona,Usuario usuario, GetRetorno retorno) {
+        public armazenaCaronaAsyncTask(Carona carona, Usuario usuario, GetRetorno retorno) {
             this.carona = carona;
             this.retorno = retorno;
             this.usuario = usuario;
@@ -505,15 +619,14 @@ public class RequisicoesServidor {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
 
             return jObjeto;
         }
 
         @Override //metodo que � executado quando o post for exetutado/enviado
-        protected void onPostExecute(Object objeto)  {
-            JSONObject jObjeto=(JSONObject)objeto;
+        protected void onPostExecute(Object objeto) {
+            JSONObject jObjeto = (JSONObject) objeto;
             List<Carona> caronas = new LinkedList<Carona>();
             List<Usuario> usuarios = new LinkedList<Usuario>();
             try {
@@ -537,13 +650,13 @@ public class RequisicoesServidor {
                     car.setAtivo(ativo);
                     car.setDataCriacao(dataCriacao);
 
-                    List<Usuario> participantes= new LinkedList<Usuario>();
-                    List participantesStatus= new LinkedList();
-                    for (int j=0; j< jObjeto.getInt("participantes_"+i+"_tamanho");j++){
-                        int idPart =jObjeto.getInt("participantes_"+i+"_"+j+"_id");
-                        String nomePart =jObjeto.getString("participantes_" + i + "_" + j + "_nome");
-                        String statusSoliciacao =jObjeto.getString("participantes_"+i+"_"+j+"_status_solicitacao");
-                        Usuario participante = new Usuario(idPart,nomePart);
+                    List<Usuario> participantes = new LinkedList<Usuario>();
+                    List participantesStatus = new LinkedList();
+                    for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
+                        int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
+                        String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                        String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
+                        Usuario participante = new Usuario(idPart, nomePart);
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }
@@ -557,25 +670,23 @@ public class RequisicoesServidor {
                     String email = jObjeto.getString("email_" + i);
                     String foto = jObjeto.getString("foto_" + i);
                     int cnh1 = jObjeto.getInt("cnh_" + i);
-                    boolean cnh=true;
-                    if(cnh1==0){
-                        cnh=false;
+                    boolean cnh = true;
+                    if (cnh1 == 0) {
+                        cnh = false;
                     }
 
-                    Log.e("oioioioioioioio", nome);
                     String matricula = jObjeto.getString("matricula_" + i);
                     String sexo = jObjeto.getString("sexo_" + i);
-                    Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnh);
+                    Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
                     usuario.setFoto(foto);
                     usuarios.add(usuario);
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
             progressDialog.dismiss();//encerra o circulo de progresso
-            retornoUsuario.concluido(caronas,usuarios);
+            retornoUsuario.concluido(caronas, usuarios);
             super.onPostExecute(objeto);
         }
     }
@@ -586,7 +697,7 @@ public class RequisicoesServidor {
         GetRetorno retorno;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public solicitaCaronaAsyncTask(Carona carona,Usuario usuario, GetRetorno retorno) {
+        public solicitaCaronaAsyncTask(Carona carona, Usuario usuario, GetRetorno retorno) {
             this.carona = carona;
             this.retorno = retorno;
             this.usuario = usuario;
@@ -598,9 +709,8 @@ public class RequisicoesServidor {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
             //adicionado dados no arraylist para ser enviado
 
-            dadosParaEnvio.add(new BasicNameValuePair("idCaronaSolicita", carona.getId()+""));
-            dadosParaEnvio.add(new BasicNameValuePair("idUsuarioSolicita", usuario.getId()+""));
-            Log.e("não entedi", carona.getId()+""+usuario.getId());
+            dadosParaEnvio.add(new BasicNameValuePair("idCaronaSolicita", carona.getId() + ""));
+            dadosParaEnvio.add(new BasicNameValuePair("idUsuarioSolicita", usuario.getId() + ""));
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
@@ -617,11 +727,9 @@ public class RequisicoesServidor {
 
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getString("teste");
-                Log.e("FOOOIII????", teste);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("erro serv", e + "");
             }
 
             return teste;
@@ -634,4 +742,4 @@ public class RequisicoesServidor {
             super.onPostExecute(resultado);
         }
     }
-    }
+}

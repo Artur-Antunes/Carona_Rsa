@@ -33,17 +33,17 @@ public class ExibirDadosUsuarioActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exibir_dados_usuario);
 
-        mDados=new ManipulaDados(ExibirDadosUsuarioActivity.this);
+        mDados = new ManipulaDados(ExibirDadosUsuarioActivity.this);
 
-        usuarioEditar=mDados.getUsuario();
+        usuarioEditar = mDados.getUsuario();
 
-        nomeExibir =(TextView)findViewById(R.id.exibirNomeValor);
-        imFoto =(ImageView)findViewById(R.id.foto);
-        matriculaExibir =(TextView)findViewById(R.id.exibirMatriculaValor);
-        telefoneExibir =(TextView)findViewById(R.id.exibirTelefoneValor);
-        emailExibir =(TextView)findViewById(R.id.exibirEmailValor);
-        sexoExibir =(TextView)findViewById(R.id.exibirSexoValor);
-        cnhExibir =(TextView)findViewById(R.id.exibirCnhValor);
+        nomeExibir = (TextView) findViewById(R.id.exibirNomeValor);
+        imFoto = (ImageView) findViewById(R.id.foto);
+        matriculaExibir = (TextView) findViewById(R.id.exibirMatriculaValor);
+        telefoneExibir = (TextView) findViewById(R.id.exibirTelefoneValor);
+        emailExibir = (TextView) findViewById(R.id.exibirEmailValor);
+        sexoExibir = (TextView) findViewById(R.id.exibirSexoValor);
+        cnhExibir = (TextView) findViewById(R.id.exibirCnhValor);
     }
 
     @Override
@@ -60,16 +60,16 @@ public class ExibirDadosUsuarioActivity extends Activity {
         imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
         String converterCnh;
 
-        if(usuarioEditar.isCnh()){
-            converterCnh="SIM";
-        }else{
-            converterCnh="NÃO";
+        if (usuarioEditar.isCnh()) {
+            converterCnh = "SIM";
+        } else {
+            converterCnh = "NÃO";
         }
 
         cnhExibir.setText(converterCnh);
-        if(usuarioEditar.getSexo().equals("M")) {
+        if (usuarioEditar.getSexo().equals("M")) {
             sexoExibir.setText("MASCULINO");
-        }else{
+        } else {
             sexoExibir.setText("FEMININO");
         }
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayoutR"
+    android:layout_centerHorizontal="true"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/color3"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayoutR1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="MINHA CARONA"
+            android:id="@+id/tv_legenda"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/imageViewR"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/icon_destino"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Local de Destino"
+            android:id="@+id/tv_destinoR"
+            android:layout_above="@+id/imageViewRelogio"
+            android:layout_toEndOf="@+id/imageViewR"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/imageViewRelogio"
+            android:src="@drawable/icon_relogio"
+            android:layout_below="@+id/imageViewR"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="00:00pm"
+            android:id="@+id/tv_horario_r"
+            android:layout_alignTop="@+id/imageViewRelogio"
+            android:layout_alignStart="@+id/tv_destinoR"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="STATUS"
+            android:id="@+id/textView5R"
+            android:layout_alignBottom="@+id/tv_destinoR"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aguardando"
+            android:id="@+id/tv_status_aguarda"
+            android:layout_below="@id/textView5R"
+            android:layout_alignParentEnd="true"
+            android:textSize="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CANCELAR SOLICITAÇÃO"
+            android:id="@+id/b_desistencia"
+            android:background="@drawable/cor_botao"
+            android:layout_below="@+id/imageViewRelogio"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+
+
+
+</RelativeLayout>
+</RelativeLayout>

@@ -19,6 +19,7 @@ public class Carona {
     private String dataCriacao;
     private List<Usuario> participantes;
     private List participantesStatus;
+    private String statusUsuario;
 
     public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, int vagas, String ponto){
         this.origem=origem;
@@ -28,6 +29,20 @@ public class Carona {
         this.ponto=ponto;
         this.restricao=restricao;
         this.vagas=vagas;
+
+    }
+
+    public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, String ponto){
+        this.origem=origem;
+        this.destino=destino;
+        this.horario=horario;
+        this.tipoVeiculo=tipoVeiculo;
+        this.ponto=ponto;
+        this.restricao=restricao;
+    }
+
+    public Carona(int id){
+        this.id=id;
     }
 
     public String getOrigem() {
@@ -132,5 +147,13 @@ public class Carona {
 
     public void setParticipantesStatus(List participantesStatus) {
         this.participantesStatus = participantesStatus;
+    }
+
+    public void setStatusUsuario(String status){
+        this.statusUsuario=status;
+    }
+
+    public String getStatusUsuario(){
+        return this.statusUsuario;
     }
 }

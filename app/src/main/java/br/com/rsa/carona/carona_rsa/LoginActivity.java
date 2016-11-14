@@ -32,7 +32,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 /**
  * A tela de login que oferece o login via matricula / Senha.
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
 
     private EditText mSenhaView;
     private EditText mMatriculaView;
@@ -46,30 +46,28 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set login form.
-        mDados=new ManipulaDados(LoginActivity.this);
+        mDados = new ManipulaDados(LoginActivity.this);
         //mDados.limparDados();
-        if(mDados.getUsuario()!=null) {
+        if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
-            mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
-            mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
-            mSenhaView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                        attemptLogin();
-                        return true;
-                    }
-                    return false;
+        mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
+        mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
+        mSenhaView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
+                    return true;
                 }
-            });
+                return false;
+            }
+        });
 
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
-
-
 
 
     /**
@@ -107,25 +105,25 @@ public class LoginActivity extends AppCompatActivity{
     public void logar(View view) {
 
 
-        String usuarioInformado=this.mMatriculaView.getText().toString(); //String recebe o valor do campo de classe "usuario".
-        String senhaInformada=this.mSenhaView.getText().toString(); //String recebe o valor do campo de classe "senha".
+        String usuarioInformado = this.mMatriculaView.getText().toString(); //String recebe o valor do campo de classe "usuario".
+        String senhaInformada = this.mSenhaView.getText().toString(); //String recebe o valor do campo de classe "senha".
 
-        Usuario usuarioLogado=new Usuario(usuarioInformado,senhaInformada); //Instanciando um objeto do tipo usuario com o nome e a senha !
+        Usuario usuarioLogado = new Usuario(usuarioInformado, senhaInformada); //Instanciando um objeto do tipo usuario com o nome e a senha !
         autenticar(usuarioLogado);
 
     }
 
-    public void autenticar(Usuario usuario){
+    public void autenticar(Usuario usuario) {
 
-        RequisicoesServidor rs= new RequisicoesServidor(LoginActivity.this);
+        RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
         rs.buscaDadosDoUsuario(usuario, new GetRetorno() {
 
             @Override
             public void concluido(Object object) {
-                if(object==null) {    //Se não existir o usuário informado.
+                if (object == null) {    //Se não existir o usuário informado.
                     mostrarMensagemErro();
-                }else{
-                    logarUsuario(object);	//Realizar o login.
+                } else {
+                    logarUsuario(object);    //Realizar o login.
                 }
 
             }
@@ -138,18 +136,18 @@ public class LoginActivity extends AppCompatActivity{
 
     }
 
-    private void mostrarMensagemErro() {	//Quando não existir nenhum usuário com o nome e senha repassados.
+    private void mostrarMensagemErro() {    //Quando não existir nenhum usuário com o nome e senha repassados.
 
-        Toast.makeText(LoginActivity.this,"Usuario não encontrado",Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Usuario não encontrado", Toast.LENGTH_SHORT).show();
     }
 
-    private void logarUsuario(Object object) {	//Usuário existente.
-        Usuario usuario=(Usuario) object;
+    private void logarUsuario(Object object) {    //Usuário existente.
+        Usuario usuario = (Usuario) object;
 
-        mDados.gravarDados(usuario);	//Guardando os dados do usuário logado.
+        mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
         mDados.setLogado(true);
 
-        Toast.makeText(LoginActivity.this,"Bem-Vindo",Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }
 
