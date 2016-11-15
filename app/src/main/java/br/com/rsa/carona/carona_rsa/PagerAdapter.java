@@ -5,9 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
-import br.com.rsa.carona.carona_rsa.Caronas_Recebidas;
-import br.com.rsa.carona.carona_rsa.Home;
-
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
 

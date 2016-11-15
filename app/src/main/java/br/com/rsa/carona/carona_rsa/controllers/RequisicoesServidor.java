@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -84,6 +84,10 @@ public class RequisicoesServidor {
     public void buscaCaronas(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
         new BuscaCaronasAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+    }
+    public void buscaUltimasCaronas(Usuario usuario,int id, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+//        progressDialog.show();// Mostra a barra de dialogo.
+        new BuscaUltimaCaronasAsyncTask(usuario,id, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     //classe que armazena dados de usuario no banco de modo  que economiza recursos do celular
@@ -234,6 +238,7 @@ public class RequisicoesServidor {
             super.onPostExecute(caronaRetornada);
         }//Fim método.
     }//Fim classe.
+
 
 
     public class aceitaOuRecusaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
@@ -690,7 +695,120 @@ public class RequisicoesServidor {
             super.onPostExecute(objeto);
         }
     }
+    public class BuscaUltimaCaronasAsyncTask extends AsyncTask<Void, Void, Object> {
+        Usuario usuario;
+        GetRetorno retornoUsuario;
+        int idUltimaCarona;
 
+        //contrutor requer um usuario uma interface com metodo previamente escrito.
+        public BuscaUltimaCaronasAsyncTask(Usuario usuario,int idUltimaCarona, GetRetorno retorno) {
+            this.usuario = usuario;
+            this.idUltimaCarona=idUltimaCarona;
+            this.retornoUsuario = retorno;
+
+        }
+
+        @Override //metodo que � execudado em segundo plano para economia de recursos
+        protected Object doInBackground(Void... params) {
+            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
+            //adicionado dados no arraylist para ser enviado
+            dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", usuario.getSexo()));
+            dadosParaEnvio.add(new BasicNameValuePair("id", this.idUltimaCarona+""));
+
+
+            //delara��o de variaveis http (params, cliente, post) para enviar dados
+            HttpParams httpRequestsParametros = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "UltimasCaronas.php");
+            String teste = "não";
+            JSONObject jObjeto = null;
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio));
+                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
+
+                jObjeto = new JSONObject(resultado);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return jObjeto;
+        }
+
+        @Override //metodo que � executado quando o post for exetutado/enviado
+        protected void onPostExecute(Object objeto) {
+            JSONObject jObjeto = (JSONObject) objeto;
+            List<Carona> caronas = new LinkedList<Carona>();
+            List<Usuario> usuarios = new LinkedList<Usuario>();
+            try {
+
+                for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
+                    String origem = jObjeto.getString("origem_" + i);
+                    String destino = jObjeto.getString("destino_" + i);
+                    String ponto = jObjeto.getString("ponto_" + i);
+                    String horario = jObjeto.getString("horario_" + i);
+                    String tipoVeiculo = jObjeto.getString("tipoVeiculo_" + i);
+                    String restricao = jObjeto.getString("restricao_" + i);
+                    int vagas = jObjeto.getInt("vagas_" + i);
+                    int status = jObjeto.getInt("status_" + i);
+                    int ativo = jObjeto.getInt("ativo_" + i);
+                    int id = jObjeto.getInt("id_" + i);
+
+                    String dataCriacao = jObjeto.getString("datacriacao_" + i);
+                    Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, vagas, ponto);
+                    car.setId(id);
+                    car.setStatus(status);
+                    car.setAtivo(ativo);
+                    car.setDataCriacao(dataCriacao);
+
+                    List<Usuario> participantes = new LinkedList<Usuario>();
+                    List participantesStatus = new LinkedList();
+                    for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
+                        int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
+                        String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                        String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
+                        Usuario participante = new Usuario(idPart, nomePart);
+                        participantes.add(participante);
+                        participantesStatus.add(statusSoliciacao);
+                    }
+                    car.setParticipantes(participantes);
+                    car.setParticipantesStatus(participantesStatus);
+                    caronas.add(car);
+
+                    String telefone = jObjeto.getString("telefone_" + i);
+                    String nome = jObjeto.getString("nome_" + i);
+                    String sobrenome = jObjeto.getString("sobrenome_" + i);
+                    String email = jObjeto.getString("email_" + i);
+                    String foto = jObjeto.getString("foto_" + i);
+                    int cnh1 = jObjeto.getInt("cnh_" + i);
+                    int idU = jObjeto.getInt("idU_" + i);
+                    boolean cnh = true;
+                    if (cnh1 == 0) {
+                        cnh = false;
+                    }
+
+                    String matricula = jObjeto.getString("matricula_" + i);
+                    String sexo = jObjeto.getString("sexo_" + i);
+                    Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
+                    usuario.setFoto(foto);
+                    usuario.setId(idU);
+                    usuarios.add(usuario);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+           // progressDialog.dismiss();//encerra o circulo de progresso
+            retornoUsuario.concluido(caronas, usuarios);
+            super.onPostExecute(objeto);
+        }
+    }
     public class solicitaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
         Carona carona;
         Usuario usuario;

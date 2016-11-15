@@ -30,7 +30,11 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.putString("foto", usuario.getFoto());
 		editorBancoDeDados.commit(); //Executando a ediçao.
 	}
-
+	public void gravarUltimaCarona(int id){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		editorBancoDeDados.putInt("ultimo_id_carona", id);
+		editorBancoDeDados.commit(); //Executando a ediçao.
+	}
 	public void setCaronaSolicitada(int id){
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("id_carona", id);
@@ -38,7 +42,11 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	}
 
 	public int getCaronaSolicitada(){
-		int id_carona=usuarioLocal.getInt("id_carona",-1);
+		int id_carona=usuarioLocal.getInt("id_carona", -1);
+		return id_carona;
+	}
+	public int getUltimoIdCarona(){
+		int id_carona=usuarioLocal.getInt("ultimo_id_carona",0);
 		return id_carona;
 	}
 	

@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:text="CANCELAR SOLICITAÇÃO"
             android:id="@+id/b_desistencia"
-            android:background="@drawable/cor_botao"
+            android:background="@drawable/cor_botao_remover"
             android:layout_below="@+id/imageViewRelogio"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp" />

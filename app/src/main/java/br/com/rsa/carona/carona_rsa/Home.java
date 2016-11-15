@@ -26,6 +26,7 @@ import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
+import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Home extends Fragment {
@@ -38,6 +39,8 @@ public class Home extends Fragment {
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         atualizaCaronas();
         atualizarEspera();
+        Intent it = new Intent(getActivity(),Servico.class);
+        getContext().startService(it);
         return view;
     }
 
@@ -52,40 +55,41 @@ public class Home extends Fragment {
                 @Override
                 public void concluido(Object object) {
                     final Carona carona = (Carona) object;
+                    if(carona != null) {
+                        final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
+                        TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
+                        TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
+                        TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_r);
+                        Button btnCancelar = (Button) modelo.findViewById(R.id.b_desistencia);
+                        ta_destino.setText(carona.getDestino());
+                        ta_status.setText(carona.getStatusUsuario());
+                        ta_horario.setText(carona.getHorario());
+                        modelo.setId(0);
+                        modelo.setGravity(0);
+                        ll.addView(modelo, 0);
 
-                    final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
-                    TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
-                    TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
-                    TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_r);
-                    Button btnCancelar = (Button) modelo.findViewById(R.id.b_desistencia);
-                    ta_destino.setText(carona.getDestino());
-                    ta_status.setText(carona.getStatusUsuario());
-                    ta_horario.setText(carona.getHorario());
-                    modelo.setId(0);
-                    modelo.setGravity(0);
-                    ll.addView(modelo, 0);
+                        btnCancelar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Carona caronaLocal = new Carona(M.getCaronaSolicitada());
+                                RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
+                                rserv.desistirCarona(usuario, caronaLocal, new GetRetorno() {
+                                    @Override
+                                    public void concluido(Object object) {
+                                        Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
+                                        M.setCaronaSolicitada(-1);
+                                        atualizaCaronas();
+                                        ll.removeView(modelo);
+                                    }
 
-                    btnCancelar.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Carona caronaLocal = new Carona(M.getCaronaSolicitada());
-                            RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
-                            rserv.desistirCarona(usuario, caronaLocal, new GetRetorno() {
-                                @Override
-                                public void concluido(Object object) {
-                                    Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
-                                    M.setCaronaSolicitada(-1);
-                                    atualizaCaronas();
-                                    ll.removeView(modelo);
-                                }
+                                    @Override
+                                    public void concluido(Object object, Object object2) {
 
-                                @Override
-                                public void concluido(Object object, Object object2) {
-
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
 
                 @Override
