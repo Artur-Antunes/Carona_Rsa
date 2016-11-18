@@ -1,3 +1,8 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView2"
+    android:layout_gravity="center_horizontal" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -10,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:id="@+id/c_imagem"
+        android:src="@drawable/user"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -54,3 +60,4 @@
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
+</ScrollView>

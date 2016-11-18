@@ -43,7 +43,7 @@ public class Funcoes {
         String[] aux = imgPath.split("\\.");
         return aux[aux.length - 1];
     }
-    public void notificacao(Bitmap imagem, String titulo, String texto, Context contexto){
+    public void notificacao(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
         final Intent emptyIntent = new Intent(contexto,MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(contexto,0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =
@@ -57,7 +57,7 @@ public class Funcoes {
         mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
         NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, mBuilder.build());
+        notificationManager.notify(numero, mBuilder.build());
     }
 
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){

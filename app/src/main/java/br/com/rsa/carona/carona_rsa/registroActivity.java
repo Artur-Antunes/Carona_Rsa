@@ -33,7 +33,7 @@ public class registroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario,android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario,android.R.layout.simple_spinner_dropdown_item);
         sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
         sexoRegistro.setAdapter(adapter);
 
@@ -62,6 +62,7 @@ public class registroActivity extends AppCompatActivity {
                         String email = emailRegistro.getText().toString();
                         String senha = senhaRegistro.getText().toString();
                         boolean cnh = cnhRegistro.isChecked();
+                        Log.e("testador", "cnh "+cnh);
                         String sexo = sexoRegistro.getSelectedItem().toString();
                         Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
                         usuario.setSenha(senha);

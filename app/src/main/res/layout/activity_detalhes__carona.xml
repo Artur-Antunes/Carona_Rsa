@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Local de origem"
-            android:id="@+id/tv_origem"
+            android:id="@+id/tv_origem2"
             android:layout_marginLeft="10dp"
             android:layout_alignTop="@+id/textView8"
             android:layout_toEndOf="@+id/textView8"
@@ -36,17 +36,17 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Local de Destino"
-            android:id="@+id/tv_destino"
+            android:id="@+id/tv_destino2"
             android:layout_alignTop="@+id/textView16"
-            android:layout_alignStart="@+id/tv_origem" />
+            android:layout_alignStart="@+id/tv_origem2" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PARA:"
             android:id="@+id/textView16"
-            android:layout_below="@+id/tv_origem"
-            android:layout_toStartOf="@+id/tv_origem"
+            android:layout_below="@+id/tv_origem2"
+            android:layout_toStartOf="@+id/tv_origem2"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -55,7 +55,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="HORÁRIO:"
             android:id="@+id/textView17"
-            android:layout_below="@+id/tv_destino"
+            android:layout_below="@+id/tv_destino2"
             android:layout_alignStart="@+id/view2"
             android:layout_marginTop="10dp" />
 
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="00:00pm"
-            android:id="@+id/tv_horario"
+            android:id="@+id/tv_horario2"
             android:layout_alignTop="@+id/textView17"
             android:layout_toEndOf="@+id/textView17"
             android:layout_marginLeft="10dp" />
@@ -75,8 +75,8 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="VAGAS:"
             android:id="@+id/textView19"
-            android:layout_alignTop="@+id/tv_horario"
-            android:layout_toEndOf="@+id/tv_horario"
+            android:layout_alignTop="@+id/tv_horario2"
+            android:layout_toEndOf="@+id/tv_horario2"
             android:layout_marginLeft="20dp" />
 
         <TextView
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="0/0"
-            android:id="@+id/tv_vagas"
+            android:id="@+id/tv_vagas2"
             android:layout_alignTop="@+id/textView19"
             android:layout_toEndOf="@+id/textView19"
             android:layout_marginLeft="10dp" />
@@ -97,7 +97,7 @@
             android:id="@+id/textView22"
             android:layout_alignStart="@+id/textView17"
             android:layout_marginTop="15dp"
-            android:layout_below="@+id/tv_horario" />
+            android:layout_below="@+id/tv_horario2" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -167,7 +167,7 @@
             android:text="INFORMACÕES DO CARONEIRO"
             android:id="@+id/textView27"
             android:layout_below="@+id/view2"
-            android:layout_alignStart="@+id/tv_destino"
+            android:layout_alignStart="@+id/tv_destino2"
             android:layout_marginTop="10dp" />
 
         <TextView

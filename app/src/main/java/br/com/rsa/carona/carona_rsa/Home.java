@@ -37,10 +37,14 @@ public class Home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
-        atualizaCaronas();
-        atualizarEspera();
-        Intent it = new Intent(getActivity(),Servico.class);
-        getContext().startService(it);
+        ManipulaDados m = new ManipulaDados(getActivity());
+        if(m.getUsuario() != null) {
+            atualizaCaronas();
+            atualizarEspera();
+
+            Intent it = new Intent(getActivity(), Servico.class);
+            getContext().startService(it);
+        }
         return view;
     }
 
@@ -133,10 +137,10 @@ public class Home extends Fragment {
                     //pega layout modelo de coronas
 
                     final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
-                    TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem);//pega os elemetos do modelo para setar dados
-                    TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino);
-                    TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas);
-                    TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario);
+                    TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
+                    TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+                    TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+                    TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
                     TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
                     ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
                     TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
@@ -158,7 +162,7 @@ public class Home extends Fragment {
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
                     tv_horario.setText(caronas.get(i).getHorario());
-                    tv_vagas.setText(caronas.get(i).getVagas() + "");
+                    tv_vagas.setText((caronas.get(i).getVagas()-caronas.get(i).getVagasOcupadas())+"/"+caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
 
                     modelo.setId(i + 1);

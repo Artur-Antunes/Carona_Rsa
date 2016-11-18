@@ -13,6 +13,7 @@ public class Carona {
     private String tipoVeiculo;
     private String restricao;
     private int vagas;
+    private int vagasOcupadas;
     private int status;
     private int ativo;
     private int id;
@@ -155,5 +156,13 @@ public class Carona {
 
     public String getStatusUsuario(){
         return this.statusUsuario;
+    }
+
+    public int getVagasOcupadas() {
+        return vagasOcupadas;
+    }
+
+    public void setVagasOcupadas(int vagasOcupadas) {
+        this.vagasOcupadas = vagasOcupadas;
     }
 }

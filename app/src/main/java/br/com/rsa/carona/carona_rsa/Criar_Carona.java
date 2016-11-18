@@ -43,7 +43,7 @@ public class Criar_Carona extends AppCompatActivity {
         tipoVeiculo = (Spinner) findViewById(R.id.sp_tipos_veiculo);
         salvar = (Button) findViewById(R.id.b_salvar);
         ponto = (EditText) findViewById(R.id.c_ponto);
-        vagas = (EditText) findViewById(R.id.tv_vagas);
+        vagas = (EditText) findViewById(R.id.tv_vagas2);
         restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
         origem.setAdapter(adapter);
         destino.setAdapter(adapter);
