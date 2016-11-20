@@ -165,7 +165,6 @@
             android:id="@+id/textView26"
             android:layout_gravity="center_vertical"
             android:layout_alignTop="@+id/textView18"
-            android:layout_alignStart="@+id/exibirCnhValor"
             android:layout_alignParentEnd="true" />
 
         <TextView
@@ -174,10 +173,21 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="SIM"
             android:id="@+id/exibirCnhValor"
+            android:layout_below="@+id/textView26"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="20dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignEnd="@+id/exibirSexoValor"
-            android:layout_alignParentEnd="true" />
+             />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EDITAR DADOS"
+            android:id="@+id/b_editarDados"
+            android:background="@drawable/cor_botao"
+            android:layout_below="@+id/textView26"
+            android:onClick="editarDados"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp" />
 
     </RelativeLayout>
     </RelativeLayout>

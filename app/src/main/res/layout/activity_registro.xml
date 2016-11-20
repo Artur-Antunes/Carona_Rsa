@@ -48,7 +48,6 @@
 
         </LinearLayout>
 
-
         <Spinner
             android:id="@+id/sexo_registro"
             android:layout_width="match_parent"

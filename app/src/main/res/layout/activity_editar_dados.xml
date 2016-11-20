@@ -1,154 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/scrollView3" >
+    android:id="@+id/scrollView5"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true" >
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin">
+        android:layout_height="match_parent"
+        tools:context="br.com.rsa.carona.carona_rsa.ExibirDadosUsuarioActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Edição de dados"
-            android:id="@+id/textViewEditar"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Matricula"
-            android:id="@+id/text_editar"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentTop="true"/>
-
-        <LinearLayout
-            android:id="@+id/LinearLayout03"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:layout_below="@+id/textView"
-            android:layout_marginTop="40dp"
-            android:layout_alignParentStart="true">
+        <ImageButton style="@style/AppTheme"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="New Button"
+            android:id="@+id/button_editarImagem"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:background="@drawable/editar"
+            android:layout_alignParentRight="true"
             />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:id="@+id/editar_foto"
+            android:src="@drawable/user"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false" />
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:layout_below="@+id/editar_foto"
+            android:layout_alignParentStart="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="MATRICULA"
+                android:id="@+id/textView14"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentStart="true" />
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Matricula"
-                android:inputType="date"
-                android:id="@+id/matricula_editar"
-                android:layout_below="@+id/nome_editar"
-                android:layout_alignParentEnd="true"
-                android:layout_weight="2"
-                />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="13202014"
+                android:id="@+id/editarMatriculaValor"
+                android:layout_below="@+id/textView14"
+                android:layout_alignParentStart="true" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view1"
+                android:layout_below="@id/editarMatriculaValor"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="SEXO"
+                android:id="@+id/textView142"
+                android:layout_below="@id/editarMatriculaValor"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentStart="true" />
+
+            <Spinner
+                android:id="@+id/etSexoUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:prompt="@string/sexo_usuario"
+                android:layout_below="@+id/textView142">
+            </Spinner>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view22"
+                android:layout_below="@id/etSexoUsuario"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="NOME"
+                android:id="@+id/textView15"
+                android:layout_gravity="center_vertical"
+                android:layout_below="@+id/etSexoUsuario"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="NOME COMPLETO DA PESSOA"
+                android:id="@+id/editarNomeValor"
+                android:layout_below="@+id/textView15"
+                android:layout_alignParentStart="true"
+                android:textSize="18dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view2"
+                android:layout_below="@id/editarNomeValor"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="E-MAIL"
+                android:id="@+id/textView20"
+                android:layout_gravity="center_vertical"
+                android:layout_below="@+id/editarNomeValor"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="EMIAL@EMAIL.COM"
+                android:id="@+id/editarEmailValor"
+                android:layout_below="@+id/textView20"
+                android:layout_alignParentStart="true"
+                android:textSize="18dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view3"
+                android:layout_below="@id/editarEmailValor"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="TELEFONE"
+                android:id="@+id/textView18"
+                android:layout_gravity="center_vertical"
+                android:layout_below="@+id/editarEmailValor"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="9999999999"
+                android:id="@+id/editarTelefoneValor"
+                android:layout_below="@+id/textView18"
+                android:layout_alignParentStart="true" />
 
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="CNH"
                 android:textOff="NÃO"
                 android:textOn="SIM"
-                android:id="@+id/cnh_editar"
-                android:checked="true" />
-        </LinearLayout>
+                android:checked="true"
+                android:id="@+id/editarCnhValor"
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@+id/editarTelefoneValor"
+                android:layout_marginTop="10dp"
+                />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nome_editar_textView"
-            android:text="Nome"
-            android:layout_below="@+id/LinearLayout03"
-            android:layout_alignParentEnd="true"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nome_editar"
-            android:hint="Nome"
-            android:paddingTop="5dp"
-            android:layout_below="@+id/nome_editar_textView"
-            android:layout_alignParentRight="true"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sobrenome_editar_textView"
-            android:text="Sobrenome"
-            android:layout_below="@+id/nome_editar"
-            android:layout_alignParentEnd="true"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="Sobrenome"
-            android:ems="10"
-            android:id="@+id/sobrenome_editar"
-            android:paddingTop="20dp"
-            android:layout_below="@+id/nome_editar"
-            android:layout_alignParentRight="true" />
-
-        <Spinner
-            android:id="@+id/sexo_editar"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/sobrenome_editar"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:prompt="@string/sexo_usuario"
-            android:layout_marginBottom="10dp">
-        </Spinner>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/telefone_editar_textView"
-            android:text="Telefone"
-            android:layout_below="@+id/sexo_editar"
-            android:layout_alignParentEnd="true"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/telefone_editar"
-            android:hint="telefone"
-            android:paddingTop="20dp"
-            android:layout_below="@+id/sexo_editar"
-            android:layout_alignParentEnd="true"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/email_editar_textView"
-            android:text="E-mail"
-            android:layout_below="@+id/telefone_editar"
-            android:layout_alignParentEnd="true"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="E-mail"
-            android:id="@+id/email_editar"
-            android:paddingTop="20dp"
-            android:layout_below="@+id/telefone_editar"
-            android:layout_alignParentRight="true" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Salvar Alterações"
-            android:id="@+id/b_editar"
-            android:layout_below="@+id/email_editar"
-            android:layout_alignParentStart="true" />
-
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SALVAR ALTERAÇÕES"
+                android:id="@+id/b_salvar_alteracoes"
+                android:background="@drawable/cor_botao"
+                android:layout_below="@+id/editarTelefoneValor"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
+
+
+

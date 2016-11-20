@@ -1,6 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +45,7 @@ public class ExibirDadosUsuarioActivity extends Activity {
         emailExibir = (TextView) findViewById(R.id.exibirEmailValor);
         sexoExibir = (TextView) findViewById(R.id.exibirSexoValor);
         cnhExibir = (TextView) findViewById(R.id.exibirCnhValor);
+
     }
 
     @Override
@@ -78,6 +80,8 @@ public class ExibirDadosUsuarioActivity extends Activity {
     public void editarDados(View view) {
         startActivity(new Intent(this, EditarDadosActivity.class));
     }
+
+
 
     public void sairDados(View view) {
         mDados.limparDados();

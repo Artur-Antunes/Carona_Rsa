@@ -49,6 +49,7 @@ public class Registro2 extends AppCompatActivity {
         bSalvar = (Button) findViewById(R.id.b_salvar);
         bCam = (Button) findViewById(R.id.b_camera);
         bGal = (Button) findViewById(R.id.b_galeria);
+
         bCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
