@@ -2,20 +2,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollView2"
+    android:background="@android:color/transparent"
     android:layout_gravity="center_horizontal" >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="br.com.rsa.carona.carona_rsa.Home">
+    android:layout_height="match_parent" tools:context="br.com.rsa.carona.carona_rsa.Home"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
 
 
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/caixa_home"
         android:background="@color/fundo"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fundo"
+        android:layout_gravity="center_horizontal">
 
-
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MAIS"
+            android:src="@drawable/icon_origem"
+            android:background="@drawable/cor_botao"
+            android:id="@+id/b_recarrega"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
+
 </LinearLayout>
+
+
+
 </ScrollView>

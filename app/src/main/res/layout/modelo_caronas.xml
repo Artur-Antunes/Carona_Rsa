@@ -105,6 +105,7 @@
         android:layout_below="@+id/tv_horario2"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
+        android:animateLayoutChanges="true"
         android:id="@+id/caixa_partic"></LinearLayout>
 
 </RelativeLayout>

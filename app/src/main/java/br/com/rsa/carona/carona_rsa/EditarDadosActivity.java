@@ -69,6 +69,19 @@ public class EditarDadosActivity extends AppCompatActivity {
         editarFoto = (ImageButton) findViewById(R.id.button_editarImagem);
         editarFoto.bringToFront();
 
+        String nome = usuarioEditar.getNome();
+        String matricula = usuarioEditar.getMatricula();
+        String email = usuarioEditar.getEmail();
+        String telefone = usuarioEditar.getTelefone();
+        nomeEditar.setText(nome);
+        matriculaEditar.setText(matricula);
+        emailEditar.setText(email);
+        telefoneEditar.setText(telefone);
+        byte[] decodedString = Base64.decode(usuarioEditar.getFoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        imFoto.setImageBitmap(bitmap);
+        imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Foto de Perfil");
         String[] options = {"GALERIA", "CÂMERA", "REMOVER" };
@@ -168,6 +181,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                     Bundle extras = data.getExtras();
                     Bitmap bitmap = extras.getParcelable("data");
                     foto = new Funcoes().BitMapToString(bitmap);
+                    imFoto.setImageResource(0);
                     imFoto.setImageBitmap(bitmap);
                     imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
                     break;
@@ -213,17 +227,6 @@ public class EditarDadosActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();// A activity está prestes a se tornar visíve
-        String nome = usuarioEditar.getNome();
-        String matricula = usuarioEditar.getMatricula();
-        String email = usuarioEditar.getEmail();
-        String telefone = usuarioEditar.getTelefone();
-        nomeEditar.setText(nome);
-        matriculaEditar.setText(matricula);
-        emailEditar.setText(email);
-        telefoneEditar.setText(telefone);
-        byte[] decodedString = Base64.decode(usuarioEditar.getFoto(), Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        imFoto.setImageBitmap(bitmap);
-        imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+
     }
 }

@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_nome"
         android:layout_below="@+id/b_camera"
+        android:singleLine="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:hint="NOME" />
@@ -47,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/c_sobrenome"
+        android:singleLine="true"
         android:layout_below="@+id/tv_nome"
         android:layout_centerHorizontal="true"
         android:hint="SOBRENOME" />

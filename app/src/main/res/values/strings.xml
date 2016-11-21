@@ -17,7 +17,7 @@
     <string name="error_invalid_password">Esta senha é muito curta</string>
     <string name="error_incorrect_password">A senha está incorreta</string>
     <string name="error_field_required">Este campo é obrigatório</string>
-    <string name="homems">HOMEMS</string>
+    <string name="homens">HOMENS</string>
     <string name="mulheres">MULHERES</string>
     <string name="todos">TODOS</string>
     <string name="add">NOVA CARONA</string>

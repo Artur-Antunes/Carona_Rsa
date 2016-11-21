@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -95,9 +95,9 @@ public class RequisicoesServidor {
         new cancelarCaronaAsyncTask(carona, usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void buscaCaronas(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+    public void buscaCaronas(Usuario usuario,int ultimoValor,int totalViews, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaCaronasAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaCaronasAsyncTask(usuario,ultimoValor,totalViews, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
     public void buscaUltimasCaronas(Usuario usuario,int id, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
 //        progressDialog.show();// Mostra a barra de dialogo.
@@ -789,11 +789,15 @@ public class RequisicoesServidor {
 
     public class BuscaCaronasAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
+        int ultimoValor;
+        int totalViews;
         GetRetorno retornoUsuario;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public BuscaCaronasAsyncTask(Usuario usuario, GetRetorno retorno) {
+        public BuscaCaronasAsyncTask(Usuario usuario,int ultimoValor,int totalViews, GetRetorno retorno) {
             this.usuario = usuario;
+            this.ultimoValor=ultimoValor;
+            this.totalViews=totalViews;
             this.retornoUsuario = retorno;
 
         }
@@ -803,6 +807,8 @@ public class RequisicoesServidor {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
             //adicionado dados no arraylist para ser enviado
             dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", "Masculino"));
+            dadosParaEnvio.add(new BasicNameValuePair("ultimoValor", ultimoValor+""));
+            dadosParaEnvio.add(new BasicNameValuePair("totalViews",totalViews+""));
 
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados

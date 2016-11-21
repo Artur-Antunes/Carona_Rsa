@@ -65,7 +65,7 @@ public class Coronas_oferecidas extends Fragment {
                     TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
                     TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
                     TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                    TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+                    final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
 
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
@@ -73,7 +73,7 @@ public class Coronas_oferecidas extends Fragment {
                     tv_vagas.setText((caronas.get(i).getVagas()-caronas.get(i).getVagasOcupadas())+"/"+caronas.get(i).getVagas());
 
                     final LinearLayout ll=(LinearLayout)modelo.findViewById(R.id.caixa_partic);
-
+                    final int m = i;
                     final List<Usuario> participantes=caronas.get(i).getParticipantes();
                     final List statusSolicitacao=caronas.get(i).getParticipantesStatus();
                     for (int j = 0; j < participantes.size(); j++) {
@@ -100,6 +100,7 @@ public class Coronas_oferecidas extends Fragment {
 
                             final Usuario userAtual = new Usuario(idSolicitante);
                             final int k = j;
+
                             modelo2.setId(j);
 
                             ll.addView(modelo2, 0);
@@ -151,8 +152,10 @@ public class Coronas_oferecidas extends Fragment {
                                         @Override
                                         public void concluido(Object object) {
                                             Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                            if(object.equals("Usuario Recusado!"))
-                                            ll.removeView(modelo2);
+                                            if(object.equals("Usuario Recusado!")) {
+                                                tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
+                                                ll.removeView(modelo2);
+                                            }
                                         }
 
                                         @Override

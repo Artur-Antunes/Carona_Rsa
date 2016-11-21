@@ -53,9 +53,9 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/tv_vagas2"
+        android:textSize="50dp"
         android:layout_below="@+id/textView11"
-        android:layout_toEndOf="@+id/tp_horario"
-        android:textSize="50dp" />
+        android:layout_toEndOf="@+id/tp_horario" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -72,6 +72,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/sp_tipos_veiculo"
         android:layout_below="@+id/textView9"
+        android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/tp_horario" />
 
     <RadioGroup
@@ -84,11 +85,12 @@
         <RadioButton android:id="@+id/radio_todos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/todos"/>
         <RadioButton android:id="@+id/radio_homens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/homems"/>
+            android:text="@string/homens"/>
         <RadioButton android:id="@+id/radio_mulheres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="VAGAS"
+        android:text="VAGAS (max 5)"
         android:id="@+id/textView11"
         android:layout_below="@+id/sp_destino"
         android:layout_toEndOf="@+id/tp_horario"
@@ -164,10 +166,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="RESTRIÇÕES"
+        android:text="PERMIÇÕES PARA:"
         android:id="@+id/textView13"
         android:layout_below="@+id/c_ponto"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="+"
+        android:id="@+id/b_mais"
+        android:layout_alignTop="@+id/tv_vagas2"
+        android:layout_alignEnd="@+id/sp_destino" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="-"
+        android:id="@+id/b_menos"
+        android:layout_below="@+id/b_mais"
+        android:layout_alignStart="@+id/b_mais"
+        android:layout_marginTop="-5dp" />
 
 </RelativeLayout>
     </ScrollView>

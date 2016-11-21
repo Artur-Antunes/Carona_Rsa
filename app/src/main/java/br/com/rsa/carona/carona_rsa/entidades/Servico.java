@@ -15,6 +15,8 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.rsa.carona.carona_rsa.Home;
+import br.com.rsa.carona.carona_rsa.MainActivity;
 import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
@@ -23,7 +25,7 @@ import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
  * Created by josehelder on 14/11/2016.
  */
 public class Servico extends IntentService {
-
+    public static final String ACTION_MyIntentService = "br.com.rsa.carona.carona_rsa.entidades.RESPONSE";
 
     final Funcoes f = new Funcoes();
     private int cont;
@@ -62,6 +64,7 @@ public class Servico extends IntentService {
                 cont++;
                 Log.e("testando", "cont" + cont);
 
+
             }
             ativo = true;
             cont = 0;
@@ -69,6 +72,8 @@ public class Servico extends IntentService {
             stopSelf();
         }
     }
+
+
     public void verificaSolicitacao(final String status){
         final ManipulaDados md = new ManipulaDados(this);
         Usuario us= md.getUsuario();
@@ -83,6 +88,10 @@ public class Servico extends IntentService {
                 }else{
                     tipoP="desistido da";
                 }
+                Intent dialogIntent = new Intent();
+                dialogIntent.setAction("abc");
+                dialogIntent.putExtra("teste", usuarios.size()+"");
+                sendBroadcast(dialogIntent);
 
                     if(usuarios.size()>1){
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
