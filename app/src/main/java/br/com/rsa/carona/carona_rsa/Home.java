@@ -1,20 +1,19 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +31,7 @@ import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
@@ -43,20 +43,11 @@ public class Home extends Fragment{
     ImageButton recarrega;
     int totalViews=3;
     int ultimoNum=0;
-   // MyReceiver myReceiver;
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String teste = intent.getStringExtra("teste");
-            Log.e("foi recebico", "USUARIOS SOLICITANTES" + teste);;
-        }
-    };
-
-    IntentFilter filter = new IntentFilter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega=(ImageButton)view.findViewById(R.id.b_recarrega);
         ManipulaDados m = new ManipulaDados(getActivity());
@@ -72,43 +63,25 @@ public class Home extends Fragment{
             filter.addAction(Servico.ACTION_MyIntentService);
             getContext().registerReceiver(myReceiver, filter);*/
         }
+
         recarrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 atualizaCaronas2();
             }
         });
-
-
+        TabLayout tabLayout =(TabLayout)getActivity().findViewById(R.id.tab_layout);
+        TabLayout.Tab tab1= tabLayout.newTab();
+        TabLayout.Tab tab2= tabLayout.newTab();
+        TabLayout.Tab tab3= tabLayout.newTab();
+        tab1.setCustomView(R.layout.tab);
+        tab2.setCustomView(R.layout.tab);
+        tab3.setCustomView(R.layout.tab);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         return view;
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        filter.addAction("abc");
-        getContext().registerReceiver(receiver, filter);
-        Log.e("registro", "registrado");;
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        try {
-            getContext().unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("Receiver not registered")) {
-                // Ignore this exception. This is exactly what is desired
-                Log.w("oiooi","Tried to unregister the reciver when it's not registered");
-            } else {
-                // unexpected, re-throw
-                throw e;
-            }
-        }
-    }
 
     public void atualizarEspera() {
 
@@ -420,12 +393,4 @@ public class Home extends Fragment{
 
 
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getContext().unregisterReceiver(receiver);
-    }
-
-
 }

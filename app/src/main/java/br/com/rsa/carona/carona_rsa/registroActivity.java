@@ -45,6 +45,7 @@ public class registroActivity extends AppCompatActivity {
         senha2Registro =(EditText)findViewById(R.id.senha2_registro);
         btnCadastrar=(Button) findViewById(R.id.b_cadastrar);
         cnhRegistro=(Switch) findViewById(R.id.cnh_registro);
+        cnhRegistro.setChecked(true);
         //PEGAR VALORES APÓS CLICAR NO BOTÃO CADASTRAR E SALVAR NO BANCO.
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override

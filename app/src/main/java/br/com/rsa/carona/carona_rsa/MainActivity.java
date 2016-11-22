@@ -2,33 +2,74 @@ package br.com.rsa.carona.carona_rsa;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 
 public class MainActivity extends AppCompatActivity {
+    int numNovasCaronas=0;
+    int numNovasSolicitacoes=0;
+    private static MainActivity ins;
+    MyReceiver receiver;
+    View v1,v2,v3;
+    BadgeView badge1,badge2,badge3;
+    TabLayout tabLayout;
+    IntentFilter filter = new IntentFilter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        Intent it = new Intent(this, Servico.class);
+        startService(it);
+        receiver=new MyReceiver(new Handler());
+        ins = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("HOME"));
-        tabLayout.addTab(tabLayout.newTab().setText("RECEBIDAS"));
-        tabLayout.addTab(tabLayout.newTab().setText("OFERECIDAS"));
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout.Tab tab1= tabLayout.newTab();
+        TabLayout.Tab tab2= tabLayout.newTab();
+        TabLayout.Tab tab3= tabLayout.newTab();
+        tab1.setCustomView(R.layout.tab);
+        tab2.setCustomView(R.layout.tab);
+        tab3.setCustomView(R.layout.tab);
+        TextView txt1 = (TextView)tab1.getCustomView().findViewById(R.id.text1);
+        TextView txt2 = (TextView)tab2.getCustomView().findViewById(R.id.text1);
+        TextView txt3 = (TextView)tab3.getCustomView().findViewById(R.id.text1);
+        txt1.setText("HOME");
+        txt2.setText("RECEBIDAS");
+        txt3.setText("OFERECIDAS");
+
+        tabLayout.addTab(tab1);
+        tabLayout.addTab(tab2);
+        tabLayout.addTab(tab3);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        v1= tabLayout.getTabAt(0).getCustomView();
+        v2= tabLayout.getTabAt(1).getCustomView();
+        v3= tabLayout.getTabAt(2).getCustomView();
+        badge1 = new BadgeView(this, v1);
+        badge2 = new BadgeView(this, v2);
+        badge3 = new BadgeView(this, v3);
+
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
@@ -54,6 +95,37 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public static MainActivity  getInstace(){
+        return ins;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        filter.addAction("abc");
+        registerReceiver(receiver, filter);
+        Log.e("registro", "registrado");;
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("Receiver not registered")) {
+                // Ignore this exception. This is exactly what is desired
+                Log.w("oiooi","Tried to unregister the reciver when it's not registered");
+            } else {
+                // unexpected, re-throw
+                throw e;
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,5 +156,71 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+   public void mostraBadge(String valor, BadgeView badge, int tipo){
+       switch (tipo){
+           case 1:
+               numNovasCaronas+=Integer.parseInt(valor);
+               badge.setText(numNovasCaronas+"");
+               badge.setBadgeBackgroundColor(R.color.color1);
+               badge.show();
+               break;
+           case 2:
+               numNovasSolicitacoes+=Integer.parseInt(valor);
+               badge.setText(numNovasSolicitacoes+"");
+               badge.setBadgeBackgroundColor(R.color.color1);
+               badge.show();
+               break;
+       }
 
+
+   }
+    public void LimparBadge(BadgeView badge){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        numNovasCaronas=0;
+        badge.show();
+
+    }
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler; // Handler used to execute code on the UI thread
+
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+
+
+
+            String mensagem= intent.getStringExtra("mensagem");
+            final String valor= intent.getStringExtra("valor");
+            switch (mensagem){
+                case "solicitacao":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mostraBadge(valor,badge3,2);
+                        }
+                    });
+
+                    break;
+
+                case "novaCarona":
+                    Log.e("foi recebico", valor+" novas caronas");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mostraBadge(valor,badge1,1);
+                        }
+                    });
+                    break;
+
+            }
+
+
+        }
+    }
 }

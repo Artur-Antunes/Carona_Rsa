@@ -47,7 +47,7 @@ public class Servico extends IntentService {
 
         final ManipulaDados md = new ManipulaDados(this);
         if(md.getUsuario()!=null) {
-            while (ativo && cont<3) {
+            while (ativo && cont<100) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -73,7 +73,14 @@ public class Servico extends IntentService {
         }
     }
 
+   public void criaBroadcast(int valor, String tipo){
 
+       Intent dialogIntent = new Intent();
+       dialogIntent.setAction("abc");
+       dialogIntent.putExtra("mensagem", tipo);
+       dialogIntent.putExtra("valor", valor+"");
+       sendBroadcast(dialogIntent);
+   }
     public void verificaSolicitacao(final String status){
         final ManipulaDados md = new ManipulaDados(this);
         Usuario us= md.getUsuario();
@@ -88,11 +95,9 @@ public class Servico extends IntentService {
                 }else{
                     tipoP="desistido da";
                 }
-                Intent dialogIntent = new Intent();
-                dialogIntent.setAction("abc");
-                dialogIntent.putExtra("teste", usuarios.size()+"");
-                sendBroadcast(dialogIntent);
-
+                if(usuarios.size()>0){
+                    criaBroadcast(usuarios.size(),"solicitacao");
+                }
                     if(usuarios.size()>1){
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                         String titulo= usuarios.size()+" pessoas estão "+tipoP+" carona";
@@ -128,6 +133,8 @@ public class Servico extends IntentService {
                             Funcoes f = new Funcoes();
                             f.notificacao(bitmap, titulo, texto, getApplicationContext(),1);
                         }
+
+
 
 
             }
@@ -184,7 +191,9 @@ public class Servico extends IntentService {
                 public void concluido(Object object, Object object2) {
                     List<Usuario> usuarios = (List<Usuario>) object2;
                     List<Carona> caronas = (List<Carona>) object;
-
+                    if(usuarios.size()>0){
+                        criaBroadcast(usuarios.size(),"novaCarona");
+                    }
                     if (usuarios.size() > 1) {
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                         String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
@@ -223,6 +232,8 @@ public class Servico extends IntentService {
                             f.notificacao(bitmap, titulo, texto, getApplicationContext(),3);
                             md.gravarUltimaCarona(caronas.get(0).getId());
                         }
+
+
 
                 }
             });

@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.43.246/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {

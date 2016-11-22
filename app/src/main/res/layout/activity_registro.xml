@@ -45,7 +45,7 @@
                 android:textOff="NÃO"
                 android:textOn="SIM"
                 android:id="@+id/cnh_registro"
-                android:checked="true" />
+                 />
 
         </LinearLayout>
 
