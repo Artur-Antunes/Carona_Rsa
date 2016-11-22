@@ -154,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     private boolean isPasswordValid(String password) {

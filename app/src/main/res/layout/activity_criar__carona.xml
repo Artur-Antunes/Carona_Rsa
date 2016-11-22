@@ -171,18 +171,20 @@
         android:layout_below="@+id/c_ponto"
         android:layout_alignParentStart="true" />
 
-    <Button
+    <ImageButton
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:text="+"
+        android:background="@drawable/animacao"
+        android:src="@drawable/icon_mais"
         android:id="@+id/b_mais"
         android:layout_alignTop="@+id/tv_vagas2"
         android:layout_alignEnd="@+id/sp_destino" />
 
-    <Button
+    <ImageButton
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:text="-"
+        android:src="@drawable/icon_menos"
+        android:background="@drawable/animacao"
         android:id="@+id/b_menos"
         android:layout_below="@+id/b_mais"
         android:layout_alignStart="@+id/b_mais"

@@ -1,12 +1,16 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -44,20 +48,30 @@ public class Funcoes {
         return aux[aux.length - 1];
     }
     public void notificacao(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
-        final Intent emptyIntent = new Intent(contexto,MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(contexto,0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(contexto)
-                        .setSmallIcon(R.mipmap.icon)
-                        .setContentTitle(titulo)
-                        .setContentText(texto)
-                        .setLargeIcon(imagem)
-                        .setContentIntent(pendingIntent);
+        if(!checkApp(contexto)) {
+            final Intent emptyIntent = new Intent(contexto, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(contexto)
+                            .setSmallIcon(R.mipmap.icon)
+                            .setContentTitle(titulo)
+                            .setContentText(texto)
+                            .setLargeIcon(imagem)
+                            .setContentIntent(pendingIntent);
 
-        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+            mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
-        NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(numero, mBuilder.build());
+            NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(numero, mBuilder.build());
+        }else{
+            try {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(contexto, notification);
+                r.play();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){
@@ -82,5 +96,19 @@ public class Funcoes {
         }
         return false;
     }
+    public boolean checkApp(Context context){
+        ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
 
+        // get the info from the currently running task
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+
+        ComponentName componentInfo = taskInfo.get(0).topActivity;
+        if (componentInfo.getPackageName().equalsIgnoreCase("br.com.rsa.carona.carona_rsa")) {
+            Log.e("ooooooooo", "aberto ");
+            return true;
+        } else {
+            Log.e("ooooooooo", "fechado ");
+            return false;
+        }
+    }
 }

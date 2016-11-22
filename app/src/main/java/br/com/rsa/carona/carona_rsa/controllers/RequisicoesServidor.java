@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://192.168.43.246/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.3.185/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -984,11 +984,25 @@ public class RequisicoesServidor {
                         String foto = jObjeto.getString("participantes_" + i + "_" + j + "_foto");
                         String telefone = jObjeto.getString("participantes_" + i + "_" + j + "_telefone");
                         String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
-                        Log.e(TAG, "como momo "+statusSoliciacao);
+                        String sexo = jObjeto.getString("participantes_" + i + "_" + j + "_sexo");
+                        String cnh = jObjeto.getString("participantes_" + i + "_" + j + "_cnh");
+                        String sobrenome = jObjeto.getString("participantes_" + i + "_" + j + "_sobrenome");
+                        String matricula = jObjeto.getString("participantes_" + i + "_" + j + "_matricula");
+                        String email = jObjeto.getString("participantes_" + i + "_" + j + "_email");
+                        Log.e(TAG, "como momo " + statusSoliciacao);
                         Usuario participante = new Usuario(idPart, nomePart);
                         participante.setFoto(foto);
+                        participante.setSobrenome(sobrenome);
+                        participante.setMatricula(matricula);
+                        participante.setEmail(email);
                         participante.setTelefone(telefone);
-                        Log.e(TAG, "nomr participante "+participante.getNome());
+                        if(cnh.equals("1")) {
+                            participante.setChn(true);
+                        }else{
+                            participante.setChn(false);
+                        }
+                        participante.setSexo(sexo);
+                        Log.e(TAG, "nomr participante " + participante.getNome());
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }

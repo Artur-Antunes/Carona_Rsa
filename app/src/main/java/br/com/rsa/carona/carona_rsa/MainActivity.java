@@ -23,12 +23,12 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 
 public class MainActivity extends AppCompatActivity {
-    int numNovasCaronas=0;
-    int numNovasSolicitacoes=0;
+   public int numNovasCaronas=0;
+   public int numNovasSolicitacoes=0;
     private static MainActivity ins;
     MyReceiver receiver;
-    View v1,v2,v3;
-    BadgeView badge1,badge2,badge3;
+    View v1,v3;
+   public BadgeView badge1,badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
 
@@ -64,10 +64,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         v1= tabLayout.getTabAt(0).getCustomView();
-        v2= tabLayout.getTabAt(1).getCustomView();
         v3= tabLayout.getTabAt(2).getCustomView();
         badge1 = new BadgeView(this, v1);
-        badge2 = new BadgeView(this, v2);
         badge3 = new BadgeView(this, v3);
 
 
@@ -151,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             mDados=new ManipulaDados(MainActivity.this);
             mDados.limparDados();
             startActivity(new Intent(this, LoginActivity.class));
+            finish();
             return true;
         }
 
@@ -174,14 +173,13 @@ public class MainActivity extends AppCompatActivity {
 
 
    }
-    public void LimparBadge(BadgeView badge){
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void LimparBadge(BadgeView badge,int valor){
+        badge.hide();
+        if(valor==1) {
+            numNovasCaronas=0;
+        }else{
+            numNovasSolicitacoes=0;
         }
-        numNovasCaronas=0;
-        badge.show();
 
     }
     public class MyReceiver extends BroadcastReceiver {

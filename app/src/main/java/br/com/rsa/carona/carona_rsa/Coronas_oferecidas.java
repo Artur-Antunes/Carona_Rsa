@@ -70,13 +70,14 @@ public class Coronas_oferecidas extends Fragment {
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
                     tv_horario.setText(caronas.get(i).getHorario());
-                    tv_vagas.setText((caronas.get(i).getVagas()-caronas.get(i).getVagasOcupadas())+"/"+caronas.get(i).getVagas());
+                    tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas());
 
-                    final LinearLayout ll=(LinearLayout)modelo.findViewById(R.id.caixa_partic);
+                    final LinearLayout ll = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
                     final int m = i;
-                    final List<Usuario> participantes=caronas.get(i).getParticipantes();
-                    final List statusSolicitacao=caronas.get(i).getParticipantesStatus();
+                    final List<Usuario> participantes = caronas.get(i).getParticipantes();
+                    final List statusSolicitacao = caronas.get(i).getParticipantesStatus();
                     for (int j = 0; j < participantes.size(); j++) {
+                        final int k = j;
                         if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
                             final RelativeLayout modelo2 = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_solicitadas, null);
                             TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
@@ -84,8 +85,8 @@ public class Coronas_oferecidas extends Fragment {
                             ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
                             ImageButton btnAceitar = (ImageButton) modelo2.findViewById(R.id.b_aceitar_usuario_carona);
                             ImageButton btnRecusar = (ImageButton) modelo2.findViewById(R.id.b_recusar_usuario_carona);
-                             btnAceitar.setBackgroundResource(R.drawable.animacao);
-                             btnRecusar.setBackgroundResource(R.drawable.animacao);
+                            btnAceitar.setBackgroundResource(R.drawable.animacao);
+                            btnRecusar.setBackgroundResource(R.drawable.animacao);
                             nomeSolicitante.setText(participantes.get(j).getNome());
                             telefoneSolicitante.setText(participantes.get(j).getTelefone());
                             Log.e("foto", "concluido " + participantes.get(j).getFoto());
@@ -99,7 +100,7 @@ public class Coronas_oferecidas extends Fragment {
                             int idSolicitante = participantes.get(j).getId();
 
                             final Usuario userAtual = new Usuario(idSolicitante);
-                            final int k = j;
+
 
                             modelo2.setId(j);
 
@@ -114,7 +115,7 @@ public class Coronas_oferecidas extends Fragment {
                                         @Override
                                         public void concluido(Object object) {
                                             Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                            if(object.equals("Usuario Aceito!")) {
+                                            if (object.equals("Usuario Aceito!")) {
                                                 ll.removeView(modelo2);
                                                 RelativeLayout m = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                                                 TextView nomeSolicitante = (TextView) m.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
@@ -152,7 +153,7 @@ public class Coronas_oferecidas extends Fragment {
                                         @Override
                                         public void concluido(Object object) {
                                             Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                            if(object.equals("Usuario Recusado!")) {
+                                            if (object.equals("Usuario Recusado!")) {
                                                 tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
                                                 ll.removeView(modelo2);
                                             }
@@ -165,15 +166,16 @@ public class Coronas_oferecidas extends Fragment {
                                     });
                                 }
                             });
+
                             fotoSolicitante.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent it = new Intent(getActivity(), DetalheUsuario.class);
                                     DetalheUsuario.usuarioEditar = participantes.get(k);
+                                    startActivity(it);
                                 }
                             });
-
-                        }else{
+                        } else {
                             RelativeLayout modelo2 = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                             TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
                             TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
@@ -186,6 +188,15 @@ public class Coronas_oferecidas extends Fragment {
                             RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
                             dr.setCircular(true);
                             fotoSolicitante.setImageDrawable(dr);
+
+                            fotoSolicitante.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent it = new Intent(getActivity(), DetalheUsuario.class);
+                                    DetalheUsuario.usuarioEditar = participantes.get(k);
+                                    startActivity(it);
+                                }
+                            });
                             modelo2.setId(j);
                             ll.addView(modelo2, 0);
                         }
@@ -203,5 +214,16 @@ public class Coronas_oferecidas extends Fragment {
 
 
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(((MainActivity)getActivity()).numNovasSolicitacoes>0){
+            ((MainActivity)getActivity()).LimparBadge(((MainActivity) getActivity()).badge3, 2);
+        }
+    }
+
+
+
 }
 

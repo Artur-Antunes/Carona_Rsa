@@ -393,4 +393,13 @@ public class Home extends Fragment{
 
 
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(((MainActivity)getActivity()).numNovasCaronas>0){
+            ((MainActivity)getActivity()).LimparBadge(((MainActivity)getActivity()).badge1,1);
+        }
+    }
 }
