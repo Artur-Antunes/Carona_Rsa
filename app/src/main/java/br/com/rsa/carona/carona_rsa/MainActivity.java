@@ -1,4 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
+import android.app.Fragment;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
+import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
@@ -25,9 +29,9 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 public class MainActivity extends AppCompatActivity {
    public int numNovasCaronas=0;
    public int numNovasSolicitacoes=0;
-    private static MainActivity ins;
     MyReceiver receiver;
     View v1,v3;
+     PagerAdapter adapter;
    public BadgeView badge1,badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
@@ -35,12 +39,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         Intent it = new Intent(this, Servico.class);
         startService(it);
         receiver=new MyReceiver(new Handler());
-        ins = this;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
+        viewPager.setOffscreenPageLimit(2);
+         adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -94,18 +98,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static MainActivity  getInstace(){
-        return ins;
-    }
-
 
     @Override
     public void onResume() {
         super.onResume();
         filter.addAction("abc");
         registerReceiver(receiver, filter);
-        Log.e("registro", "registrado");;
+        Log.e("registro", "registrado");
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(1);
+        mNotificationManager.cancel(2);
+        mNotificationManager.cancel(3);
     }
 
     @Override
@@ -200,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mostraBadge(valor,badge3,2);
-                        }
+                            mostraBadge(valor, badge3, 2);
+                                                    }
                     });
 
                     break;
@@ -212,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mostraBadge(valor,badge1,1);
+                            Home.load.setVisibility(View.VISIBLE);
                         }
                     });
                     break;

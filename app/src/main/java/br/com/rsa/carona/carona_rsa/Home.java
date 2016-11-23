@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -26,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
@@ -40,30 +42,44 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 public class Home extends Fragment{
     LinearLayout ll;
     View view;
+    FragmentActivity activity;
+    Resources resource;
     ImageButton recarrega;
+    SwipeRefreshLayout swipeLayout;
+    public static ImageButton load;
     int totalViews=3;
     int ultimoNum=0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
+         activity=getActivity();
+         resource=getResources();
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega=(ImageButton)view.findViewById(R.id.b_recarrega);
+        load=(ImageButton)view.findViewById(R.id.b_atualiza);
         ManipulaDados m = new ManipulaDados(getActivity());
         if(m.getUsuario() != null) {
             atualizaCaronas();
             atualizarEspera();
-            Intent it = new Intent(getActivity(), Servico.class);
-            getContext().startService(it);
-        /*    myReceiver= new MyReceiver();
 
 
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(Servico.ACTION_MyIntentService);
-            getContext().registerReceiver(myReceiver, filter);*/
         }
-
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        swipeLayout.setColorSchemeColors(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                atualizaCaronas();
+                swipeLayout.setRefreshing(false);
+            }
+        });
+        load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                atualizaCaronas();
+            }
+        });
         recarrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,8 +113,8 @@ public class Home extends Fragment{
                     @Override
                     public void concluido(Object object) {
                         final Carona carona = (Carona) object;
-                        if (carona != null) {
-                            final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
+                        if (carona != null  ) {
+                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
                             TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
                             TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
                             TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_r);
@@ -152,10 +168,10 @@ public class Home extends Fragment{
 
 
     public void atualizaCaronas2() {
+        load.setVisibility(View.INVISIBLE);
         final ManipulaDados M = new ManipulaDados(getActivity());
 
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-
         rs.buscaCaronas(M.getUsuario(),ultimoNum,totalViews, new GetRetorno() {
             @Override
             public void concluido(Object object) {
@@ -186,13 +202,14 @@ public class Home extends Fragment{
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     }else {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        btnSolicitar.setText("CANCELAR ESSA CARONA");
+                        btnSolicitar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_not),null,null,null);
+                        btnSolicitar.setText("CANCELAR");
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
                     byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    Resources res = getResources();
+                    Resources res = resource;
                     RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
                     dr.setCircular(true);
                     c_foto.setImageDrawable(dr);
@@ -273,11 +290,12 @@ public class Home extends Fragment{
 
     }
     public void atualizaCaronas() {
+        load.setVisibility(View.INVISIBLE);
         final ManipulaDados M = new ManipulaDados(getActivity());
 
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         ll.removeAllViews();
-        rs.buscaCaronas(M.getUsuario(), ultimoNum, totalViews, new GetRetorno() {
+        rs.buscaCaronas(M.getUsuario(), 0, totalViews, new GetRetorno() {
             @Override
             public void concluido(Object object) {
 
@@ -307,13 +325,16 @@ public class Home extends Fragment{
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     } else {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        btnSolicitar.setText("CANCELAR ESSA CARONA");
+                        Drawable img = getContext().getResources().getDrawable( R.drawable.icon_not );
+                        img.setBounds(0, 0, 60, 60);
+                        btnSolicitar.setCompoundDrawables(img, null, null, null);
+                        btnSolicitar.setText("CANCELAR");
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
                     byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    Resources res = getResources();
+                    Resources res = resource;
                     RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
                     dr.setCircular(true);
                     c_foto.setImageDrawable(dr);
@@ -398,6 +419,7 @@ public class Home extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
+        Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
         if(((MainActivity)getActivity()).numNovasCaronas>0){
             ((MainActivity)getActivity()).LimparBadge(((MainActivity)getActivity()).badge1,1);
         }

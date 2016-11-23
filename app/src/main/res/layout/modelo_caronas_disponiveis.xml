@@ -25,7 +25,7 @@
         android:id="@+id/tv_origem2"
         android:layout_above="@+id/imageView"
         android:layout_alignStart="@+id/tv_destino2"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_above="@+id/imageView3"
         android:layout_toEndOf="@+id/imageView"
         android:layout_marginLeft="10dp"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
         android:id="@+id/tv_horario2"
         android:layout_alignTop="@+id/imageView3"
         android:layout_alignStart="@+id/tv_destino2"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,13 +73,11 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/color1"
         android:id="@+id/view2"
-        android:layout_below="@id/tv_telefone"
-        android:layout_alignParentStart="true"
+        android:layout_below="@id/c_foto"
         android:layout_marginLeft="60dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="8dp" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -89,8 +87,7 @@
         android:id="@+id/tv_nome"
         android:layout_marginLeft="10dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/view2"
-        android:layout_marginTop="5dp" />
+        android:layout_toEndOf="@+id/c_foto" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -109,7 +106,7 @@
         android:layout_below="@+id/imageView2"
         android:layout_alignParentStart="true"
         android:src="@drawable/icon_destino"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp" />
 
     <ImageView
@@ -119,7 +116,7 @@
         android:layout_below="@+id/view2"
         android:layout_alignParentStart="true"
         android:src="@drawable/icon_origem"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp" />
 
     <ImageView
@@ -129,29 +126,54 @@
         android:src="@drawable/icon_relogio"
         android:layout_below="@+id/imageView"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp" />
 
-    <Button
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SOLICITAR CARONA"
-        android:id="@+id/b_solicitar"
-        android:background="@drawable/cor_botao"
-        android:layout_below="@+id/imageView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
-
-</RelativeLayout>
+        android:layout_height="0.3dp"
+        android:background="@color/color1"
+        android:id="@+id/view3"
+        android:layout_below="@id/tv_horario2"
+        android:layout_marginTop="8dp" />
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/c_foto"
         android:src="@drawable/user"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="7dp"
         android:layout_marginLeft="10dp" />
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/view3">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="COMENTÁRIOS"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:paddingLeft="20dp"
+            android:drawablePadding="-30dp"
+            android:background="@drawable/cor_botao"
+            android:drawableLeft="@drawable/icon_comments"
+             />
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ME LEVA!"
+        android:layout_weight="1"
+        android:id="@+id/b_solicitar"
+        android:textStyle="bold"
+        android:paddingLeft="40dp"
+        android:drawablePadding="-30dp"
+        android:background="@drawable/cor_botao"
+        android:drawableLeft="@drawable/icon_ok" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
 
 </RelativeLayout>

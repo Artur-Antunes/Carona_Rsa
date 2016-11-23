@@ -47,7 +47,7 @@ public class Funcoes {
         String[] aux = imgPath.split("\\.");
         return aux[aux.length - 1];
     }
-    public void notificacao(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
+    public void notificacaoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
         if(!checkApp(contexto)) {
             final Intent emptyIntent = new Intent(contexto, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -72,6 +72,24 @@ public class Funcoes {
                 e.printStackTrace();
             }
         }
+    }
+    public void notificacaoAbertoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
+
+            final Intent emptyIntent = new Intent(contexto, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(contexto)
+                            .setSmallIcon(R.mipmap.icon)
+                            .setContentTitle(titulo)
+                            .setContentText(texto)
+                            .setLargeIcon(imagem)
+                            .setContentIntent(pendingIntent);
+
+            mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+            NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(numero, mBuilder.build());
+
     }
 
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){

@@ -7,6 +7,7 @@ import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,11 +47,25 @@ public class Criar_Carona extends AppCompatActivity {
         horario = (TimePicker) findViewById(R.id.tp_horario);
         horario.setIs24HourView(true);
         tipoVeiculo = (Spinner) findViewById(R.id.sp_tipos_veiculo);
+        tipoVeiculo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA")){
+                    vagas.setText("1");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         salvar = (Button) findViewById(R.id.b_salvar);
         bMais = (ImageButton) findViewById(R.id.b_mais);
         bMenos = (ImageButton) findViewById(R.id.b_menos);
         ponto = (EditText) findViewById(R.id.c_ponto);
         vagas = (EditText) findViewById(R.id.tv_vagas2);
+
         vagas.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "5")});
         vagas.setText("1");
         restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
@@ -64,30 +79,34 @@ public class Criar_Carona extends AppCompatActivity {
                 if (!vagas.getText().toString().equals("")) {
                     if (!ponto.getText().toString().equals("")) {
                         if (!origem.getSelectedItem().toString().equals(destino.getSelectedItem().toString())) {
-                            String origemValor = origem.getSelectedItem().toString();
-                            String destinoValor = destino.getSelectedItem().toString();
-                            String tipoVeiculoValor = tipoVeiculo.getSelectedItem().toString();
-                            int vagasValor = Integer.parseInt(vagas.getText().toString());
-                            String pontoValor = ponto.getText().toString();
-                            RadioButton radioButton = (RadioButton) findViewById(restricoes.getCheckedRadioButtonId());
-                            String resticaoValor = radioButton.getText().toString();
-                            String horarioValor = horario.getCurrentHour() + ":" + horario.getCurrentMinute();
-                            Carona carona = new Carona(origemValor, destinoValor, horarioValor, tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
-                            RequisicoesServidor rs = new RequisicoesServidor(Criar_Carona.this);
-                            ManipulaDados md = new ManipulaDados(Criar_Carona.this);
-                            rs.gravaCarona(carona, md.getUsuario(), new GetRetorno() {
-                                @Override
-                                public void concluido(Object object) {
-                                    Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
-                                    Intent it = new Intent(Criar_Carona.this, MainActivity.class);
-                                    startActivity(it);
-                                }
+                            if(!(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA") && !vagas.getText().toString().equals("1"))) {
+                                String origemValor = origem.getSelectedItem().toString();
+                                String destinoValor = destino.getSelectedItem().toString();
+                                String tipoVeiculoValor = tipoVeiculo.getSelectedItem().toString();
+                                int vagasValor = Integer.parseInt(vagas.getText().toString());
+                                String pontoValor = ponto.getText().toString();
+                                RadioButton radioButton = (RadioButton) findViewById(restricoes.getCheckedRadioButtonId());
+                                String resticaoValor = radioButton.getText().toString();
+                                String horarioValor = horario.getCurrentHour() + ":" + horario.getCurrentMinute();
+                                Carona carona = new Carona(origemValor, destinoValor, horarioValor, tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
+                                RequisicoesServidor rs = new RequisicoesServidor(Criar_Carona.this);
+                                ManipulaDados md = new ManipulaDados(Criar_Carona.this);
+                                rs.gravaCarona(carona, md.getUsuario(), new GetRetorno() {
+                                    @Override
+                                    public void concluido(Object object) {
+                                        Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
+                                        Intent it = new Intent(Criar_Carona.this, MainActivity.class);
+                                        startActivity(it);
+                                    }
 
-                                @Override
-                                public void concluido(Object object, Object object2) {
+                                    @Override
+                                    public void concluido(Object object, Object object2) {
 
-                                }
-                            });
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(Criar_Carona.this, " MOTOCICLETA SÓ ACEITA 1 VAGA! ", Toast.LENGTH_SHORT).show();
+                            }
 
                         } else {
                             Toast.makeText(Criar_Carona.this, " ORIGEM E DESTINO PRECISAM SER DISTINTOS ", Toast.LENGTH_SHORT).show();

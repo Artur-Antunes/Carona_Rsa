@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://192.168.3.185/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -130,8 +130,7 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("ativo", usuario.getAtivo() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("senha", usuario.getSenha()));
             dadosParaEnvio.add(new BasicNameValuePair("foto", usuario.getFoto()));
-            Log.e(TAG, usuario.getFoto() + "");
-            Log.e(TAG, usuario.getFoto() + "");
+
             dadosParaEnvio.add(new BasicNameValuePair("extencao", usuario.getExtFoto()));
             if (usuario.isCnh()) {
                 dadosParaEnvio.add(new BasicNameValuePair("cnh", "1"));
@@ -157,6 +156,8 @@ public class RequisicoesServidor {
                 teste = jObjeto.getString("teste");
 
             } catch (Exception e) {
+
+                Log.e(TAG, "erro registro "+e);
                 e.printStackTrace();
             }
 
@@ -1040,7 +1041,7 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", usuario.getSexo()));
             dadosParaEnvio.add(new BasicNameValuePair("id_user", usuario.getId()+""));
             dadosParaEnvio.add(new BasicNameValuePair("id", this.idUltimaCarona+""));
-            Log.e(TAG, "que louco "+usuario.getId()+" ultima "+idUltimaCarona);
+
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
