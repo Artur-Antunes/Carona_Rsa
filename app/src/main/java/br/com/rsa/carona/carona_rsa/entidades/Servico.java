@@ -49,7 +49,7 @@ public class Servico extends IntentService {
 
         final ManipulaDados md = new ManipulaDados(this);
         if(md.getUsuario()!=null) {
-            while (ativo && cont<100) {
+            while (ativo && cont<500) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

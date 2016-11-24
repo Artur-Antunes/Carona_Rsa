@@ -40,6 +40,7 @@ public class Criar_Carona extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_criar__carona);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.locais,android.R.layout.simple_spinner_dropdown_item);
         origem = (Spinner) findViewById(R.id.sp_origem);
@@ -154,13 +155,17 @@ public class Criar_Carona extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id== android.R.id.home){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             return true;
         }
 

@@ -70,6 +70,7 @@ public class Home extends Fragment{
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                atualizarEspera();
                 atualizaCaronas();
                 swipeLayout.setRefreshing(false);
             }
