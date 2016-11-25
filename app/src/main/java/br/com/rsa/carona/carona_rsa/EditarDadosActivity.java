@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
@@ -37,11 +40,13 @@ public class EditarDadosActivity extends AppCompatActivity {
 
     ManipulaDados mDados;
     Usuario usuarioEditar;
-    private Spinner sexoEditar;
     private EditText nomeEditar;
+    private EditText sobrenomeEditar;
     private EditText emailEditar;
     private EditText matriculaEditar;
     private EditText telefoneEditar;
+    private Spinner sexoEditar;
+    private Switch cnhEditar;
     private ImageView imFoto;
     private String foto = null;
     private ImageButton editarFoto;
@@ -50,6 +55,9 @@ public class EditarDadosActivity extends AppCompatActivity {
     private String extFoto = null;
     public static final int PIC_CROP = 3;
     AlertDialog actions;
+    private Button salvarAteracoes;
+
+    boolean imagemEditada=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,35 +70,111 @@ public class EditarDadosActivity extends AppCompatActivity {
         sexoEditar = (Spinner) findViewById(R.id.etSexoUsuario);
         sexoEditar.setAdapter(adapter);
         nomeEditar = (EditText) findViewById(R.id.editarNomeValor);
+        sobrenomeEditar = (EditText) findViewById(R.id.editarSobrenomeValor);
         matriculaEditar = (EditText) findViewById(R.id.editarMatriculaValor);
         telefoneEditar = (EditText) findViewById(R.id.editarTelefoneValor);
+        cnhEditar = (Switch) findViewById(R.id.editarCnhValor);
         emailEditar = (EditText) findViewById(R.id.editarEmailValor);
         imFoto = (ImageView) findViewById(R.id.editar_foto);
+        salvarAteracoes = (Button) findViewById(R.id.b_salvar_alteracoes);
         editarFoto = (ImageButton) findViewById(R.id.button_editarImagem);
         editarFoto.bringToFront();
 
         String nome = usuarioEditar.getNome();
+        String sobrenome= usuarioEditar.getSobrenome();
         String matricula = usuarioEditar.getMatricula();
         String email = usuarioEditar.getEmail();
         String telefone = usuarioEditar.getTelefone();
+        boolean cnhUsuario = usuarioEditar.isCnh();
+        Log.e(usuarioEditar.getSexo().toString(), "sexo_antigo");
+        int  sexoUsuarioPosicao=(usuarioEditar.getSexo().equals("M")?0:1);
+
+        cnhEditar.setChecked(cnhUsuario);
         nomeEditar.setText(nome);
+        sobrenomeEditar.setText(sobrenome);
         matriculaEditar.setText(matricula);
         emailEditar.setText(email);
         telefoneEditar.setText(telefone);
+        sexoEditar.setSelection(sexoUsuarioPosicao);
+
         byte[] decodedString = Base64.decode(usuarioEditar.getFoto(), Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imFoto.setImageBitmap(bitmap);
         imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Foto de Perfil");
-        String[] options = {"GALERIA", "CÂMERA", "REMOVER" };
+        builder.setTitle("Foto do Perfil");
+        String[] options = {"Galeria", "Câmera"};
         builder.setItems(options, actionListener);
         builder.setNegativeButton("Cancelar", null);
         actions = builder.create();
-
         editarFoto.setOnClickListener(buttonListener);
-        //Log.e("dados->",usuarioEditar.getNome()+"-"+usuarioEditar.getSobrenome()+"-"+usuarioEditar.getMatricula()+"-"+usuarioEditar.getSexo()+"-"+usuarioEditar.getSenha());
+
+        salvarAteracoes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String nome = nomeEditar.getText().toString();
+                final String sobrenome = sobrenomeEditar.getText().toString();
+                final String matricula = matriculaEditar.getText().toString();
+                String email = emailEditar.getText().toString();
+                final String telefone = telefoneEditar.getText().toString();
+                final boolean cnh = cnhEditar.isChecked();
+                String sexo = sexoEditar.getSelectedItem().toString();
+                sexo= new Funcoes().retornaSimbolo(sexo);
+
+                Usuario usuarioEditado=verificaCamposAlterados(matricula,nome,sobrenome,telefone,email,sexo,cnh);
+
+                if (usuarioEditado != null) {
+                    if (!nome.equals("") && !sobrenome.equals("") && !matricula.equals("") && !email.equals("")) {
+                        usuarioEditado.setEditado(true);
+                        RequisicoesServidor rs = new RequisicoesServidor(EditarDadosActivity.this);
+                        rs.gravaDadosDoUsuario(usuarioEditado, new GetRetorno() {
+                            @Override
+                            public void concluido(Object object) {
+                                //AQUI
+                                        String nomeAlterar=nomeEditar.getText().toString();
+                                        String sobrenomeAlterar=sobrenomeEditar.getText().toString();
+                                        String matriculaAlterar=matriculaEditar.getText().toString();
+                                        String emailAlterar=emailEditar.getText().toString();
+                                        String telefoneAlterar=telefoneEditar.getText().toString();
+                                        String sexoAlterar=new Funcoes().retornaSimbolo(sexoEditar.getSelectedItem().toString());
+                                        boolean cnhAlterar=cnhEditar.isChecked();
+
+                                        BitmapDrawable drawable = (BitmapDrawable) imFoto.getDrawable();
+                                        Bitmap bitmap = drawable.getBitmap();
+                                        String ft=new Funcoes().BitMapToString(bitmap);
+
+                                        int idAlterar=usuarioEditar.getId();
+                                        String senhaAlterar=usuarioEditar.getSenha();
+                                        int idCaronaAlterar=usuarioEditar.getIdCaronaSolicitada();
+
+                                        Usuario usuarioLocal=new Usuario(nomeAlterar,sobrenomeAlterar,matriculaAlterar,emailAlterar,telefoneAlterar,sexoAlterar,cnhAlterar);
+                                        usuarioLocal.setFoto(ft);
+                                        usuarioLocal.setId(idAlterar);
+                                        usuarioLocal.setSenha(senhaAlterar);
+                                        usuarioLocal.setIdCaronaSolicitada(idCaronaAlterar);
+
+                                        mDados.gravarDados(usuarioLocal);
+                                        startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                            }
+
+                            @Override
+                            public void concluido(Object object, Object object2) {
+
+                            }
+
+                        });
+                    } else {
+                        Toast.makeText(EditarDadosActivity.this, "CAMPOS EM BRANCO!", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(EditarDadosActivity.this, "NENHUM CAMPO ALTERADO!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                }
+            }
+        });
     }
 
     DialogInterface.OnClickListener actionListener = new DialogInterface.OnClickListener() {
@@ -102,8 +186,6 @@ public class EditarDadosActivity extends AppCompatActivity {
                     break;
                 case 1: // camera
                     Camera();
-                    break;
-                case 2: // remover
                     break;
                 default:
                     break;
@@ -126,6 +208,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void Camera() {
@@ -134,6 +217,78 @@ public class EditarDadosActivity extends AppCompatActivity {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(intent, IMAGEM_CAM);
+    }
+
+    //,String nome,String sobrenome,String telefone,String email,boolean cnh, String sexo
+    private Usuario verificaCamposAlterados(String matricula,String nome,String sobrenome,String telefone,String email,String sexo,boolean cnh){
+
+        Usuario usuarioEditado= new Usuario(usuarioEditar.getId());
+        int  alteracaoes=0;
+        Log.e("matricula_antigo1:",usuarioEditar.getMatricula().toString());
+        Log.e("matricula_novo1:",matricula);
+        if(!usuarioEditar.getMatricula().toString().equals(matricula)){
+            Log.e("diferente:","entrou");
+            usuarioEditado.setMatricula(matricula);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setMatricula(null);
+        }
+
+        if(!usuarioEditar.getNome().equals(nome)){
+            usuarioEditado.setNome(nome);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setNome(null);
+        }
+
+        if(!usuarioEditar.getSobrenome().equals(sobrenome)){
+            usuarioEditado.setSobrenome(sobrenome);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setSobrenome(null);
+        }
+
+        if(!usuarioEditar.getTelefone().equals(telefone)){
+            usuarioEditado.setTelefone(telefone);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setTelefone(null);
+        }
+
+        if(!usuarioEditar.getEmail().equals(email)){
+            usuarioEditado.setEmail(email);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setEmail(null);
+        }
+
+        Log.e("camparacao user_antigo:",usuarioEditar.getSexo().toString());
+        Log.e("camparacao user_novo:",sexo);
+        if(!usuarioEditar.getSexo().toString().equals(sexo)){
+            Log.e("entrou","ok");
+            usuarioEditado.setSexo(sexo);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setSexo(null);
+        }
+
+        if(imagemEditada){
+            usuarioEditado.setFoto(foto);
+            usuarioEditado.setExtFoto(extFoto);
+            alteracaoes++;
+        }else{
+            usuarioEditado.setFoto(null);
+            usuarioEditado.setExtFoto(null);
+        }
+        if(!cnh==usuarioEditar.isCnh()){
+            alteracaoes++;
+        }
+
+        usuarioEditado.setChn(cnh);
+        if(alteracaoes==0){
+            usuarioEditado=null;
+        }
+        return usuarioEditado;
     }
 
     @Override
@@ -147,8 +302,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                     try {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = getContentResolver().query(selectedImage,
-                                filePathColumn, null, null, null);
+                        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         String picturePath = cursor.getString(columnIndex);
@@ -184,6 +338,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                     imFoto.setImageResource(0);
                     imFoto.setImageBitmap(bitmap);
                     imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imagemEditada=true;
                     break;
                 }
             case IMAGEM_CAM:
@@ -191,7 +346,6 @@ public class EditarDadosActivity extends AppCompatActivity {
                 extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
                 performCrop(Uri.fromFile(arquivo));
                 break;
-
         }
     }
 
@@ -223,10 +377,20 @@ public class EditarDadosActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();// A activity está prestes a se tornar visíve
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // A activity não está mais visível mas permanece em memória
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // A activity está prestes a ser destruída (removida da memória)
     }
 }

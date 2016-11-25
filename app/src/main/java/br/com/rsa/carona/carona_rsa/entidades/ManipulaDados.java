@@ -16,6 +16,7 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	}
 	
 	public void gravarDados(Usuario usuario){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
+
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("id", usuario.getId());//Editardo os valores que serao guardados por meio da interface Editor do Shered prefeneces!
 		editorBancoDeDados.putString("nome",usuario.getNome()); 	// Guardando o nome de usuario com uma clave chamada "nome".
@@ -30,6 +31,7 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.putString("foto", usuario.getFoto());
 		editorBancoDeDados.commit(); //Executando a ediçao.
 	}
+
 	public void gravarUltimaCarona(int id){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("ultimo_id_carona", id);

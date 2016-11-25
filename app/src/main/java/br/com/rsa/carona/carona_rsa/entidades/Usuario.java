@@ -20,6 +20,8 @@ public class Usuario {
     private String dataRegistro;
     private String senha;
     private int idCaronaSolicitada;
+    private boolean editado;
+
 
     public Usuario(String nome,String sobrenome,String matricula,String email,String telefone,String sexo,Boolean cnh){
         this.nome=nome;
@@ -29,20 +31,27 @@ public class Usuario {
         this.telefone=telefone;
         this.sexo=sexo;
         this.cnh=cnh;
+        this.editado=false;
     }
 
     public Usuario(String matricula,String senha){
 
         this.matricula=matricula;
         this.senha=senha;
+        this.editado=false;
+
     }
     public Usuario(int id, String nome){
         this.id=id;
         this.nome=nome;
+        this.editado=false;
+
     }
     public Usuario(Integer id){
 
         this.id=id;
+        this.editado=false;
+
     }
 
     public void setIdCaronaSolicitada(int id){
@@ -132,6 +141,14 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public void setEditado(boolean editado){
+        this.editado=editado;
+    }
+
+    public boolean getEdicao(){
+        return this.editado;
     }
 
 

@@ -30,7 +30,7 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
-    public static final String ENDERECO_SERVIDOR = "http://192.168.3.204/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -130,8 +130,13 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("ativo", usuario.getAtivo() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("senha", usuario.getSenha()));
             dadosParaEnvio.add(new BasicNameValuePair("foto", usuario.getFoto()));
-
             dadosParaEnvio.add(new BasicNameValuePair("extencao", usuario.getExtFoto()));
+            String aquivoPhp="Registros.php";
+            if(usuario.getEdicao()){
+                dadosParaEnvio.add(new BasicNameValuePair("id_edicao", usuario.getId()+""));
+                aquivoPhp="Edicao.php";
+            }
+
             if (usuario.isCnh()) {
                 dadosParaEnvio.add(new BasicNameValuePair("cnh", "1"));
             } else {
@@ -144,7 +149,7 @@ public class RequisicoesServidor {
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + aquivoPhp);
             String teste = "não";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio,"UTF-8"));

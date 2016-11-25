@@ -34,8 +34,8 @@ public class ExibirDadosUsuarioActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exibir_dados_usuario);
 
-        mDados = new ManipulaDados(ExibirDadosUsuarioActivity.this);
 
+        mDados = new ManipulaDados(ExibirDadosUsuarioActivity.this);
         usuarioEditar = mDados.getUsuario();
 
         nomeExibir = (TextView) findViewById(R.id.exibirNomeValor);
@@ -45,13 +45,6 @@ public class ExibirDadosUsuarioActivity extends Activity {
         emailExibir = (TextView) findViewById(R.id.exibirEmailValor);
         sexoExibir = (TextView) findViewById(R.id.exibirSexoValor);
         cnhExibir = (TextView) findViewById(R.id.exibirCnhValor);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();// A activity está prestes a se tornar visível
-
         nomeExibir.setText(usuarioEditar.getNome() + " " + usuarioEditar.getSobrenome());
         emailExibir.setText(usuarioEditar.getEmail());
         matriculaExibir.setText(usuarioEditar.getMatricula());
@@ -77,16 +70,16 @@ public class ExibirDadosUsuarioActivity extends Activity {
 
     }
 
+
     public void editarDados(View view) {
-        startActivity(new Intent(this, EditarDadosActivity.class));
+        Intent it=new Intent(this, EditarDadosActivity.class);
+        startActivity(it);
+        finish();
     }
-
-
 
     public void sairDados(View view) {
         mDados.limparDados();
         startActivity(new Intent(this, LoginActivity.class));
     }
-
 
 }

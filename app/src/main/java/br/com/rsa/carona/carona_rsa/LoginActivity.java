@@ -37,17 +37,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mSenhaView;
     private EditText mMatriculaView;
     private Button BtnLogar;
-    private View mProgressView;
-    private View mLoginFormView;
     ManipulaDados mDados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set login form.
         mDados = new ManipulaDados(LoginActivity.this);
-        //mDados.limparDados();
+        mDados.limparDados();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -56,22 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
-        mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
-        mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
-        mSenhaView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+            mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
+            mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
     }
 
 
@@ -81,41 +64,14 @@ public class LoginActivity extends AppCompatActivity {
      * erros são apresentados e nenhuma tentativa de login real é feita
      */
 
-    private void attemptLogin() {
-        // Repor erros.
-        mMatriculaView.setError(null);
-        mSenhaView.setError(null);
 
-        //armazenar valores no momento da tentativa de login.
-        String password = mSenhaView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Verifique se há uma senha válida, se o usuário entrou um.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mSenhaView.setError(getString(R.string.error_invalid_password));
-            focusView = mSenhaView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // Havia um erro; não tente login e focar o primeiro
-            // campo de formulário com um erro.
-            focusView.requestFocus();
-        }
-    }
 
     //buscar dados para o usuário logar....
     public void logar(View view) {
-
-
         String usuarioInformado = this.mMatriculaView.getText().toString(); //String recebe o valor do campo de classe "usuario".
         String senhaInformada = this.mSenhaView.getText().toString(); //String recebe o valor do campo de classe "senha".
-
         Usuario usuarioLogado = new Usuario(usuarioInformado, senhaInformada); //Instanciando um objeto do tipo usuario com o nome e a senha !
         autenticar(usuarioLogado);
-
     }
 
     public void autenticar(Usuario usuario) {
@@ -154,12 +110,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
-        finish();
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     public void selecionarOpcao(View view) {
@@ -177,41 +127,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Mostra a UI progresso e esconde o formulário de login.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // Em Honeycomb MR2 temos as APIs ViewPropertyAnimator, que permitem
-        // para animações muito fácil. Se estiver disponível, usar esses aplicativos para fade-in
-        // o spinner progresso.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            //mostra tão simples  e ocultar os componentes de interface do usuário relevantes.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // A activity não está mais visível mas permanece em memória
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // A activity está prestes a ser destruída (removida da memória)
+    }
+
 }
 
 

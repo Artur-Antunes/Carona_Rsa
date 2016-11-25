@@ -114,6 +114,24 @@ public class Funcoes {
         }
         return false;
     }
+
+    public String retornaSimbolo(String sexo){
+        if(sexo.equals("Masculino")){
+            return "M";
+        }else{
+            return "F";
+        }
+    }
+
+    public String converteBooleanStringnCnh(boolean cnh){
+        if(cnh){
+            return "SIM";
+        }else{
+            return "NÃO";
+        }
+
+    }
+
     public boolean checkApp(Context context){
         ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
 
