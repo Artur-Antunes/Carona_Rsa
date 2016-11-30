@@ -1,12 +1,16 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,7 +21,7 @@ import android.widget.TextView;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class ExibirDadosUsuarioActivity extends Activity {
+public class ExibirDadosUsuarioActivity extends AppCompatActivity {
 
     ManipulaDados mDados;
     Usuario usuarioEditar;
@@ -32,8 +36,9 @@ public class ExibirDadosUsuarioActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exibir_dados_usuario);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setContentView(R.layout.activity_exibir_dados_usuario);
 
         mDados = new ManipulaDados(ExibirDadosUsuarioActivity.this);
         usuarioEditar = mDados.getUsuario();
@@ -81,5 +86,31 @@ public class ExibirDadosUsuarioActivity extends Activity {
         mDados.limparDados();
         startActivity(new Intent(this, LoginActivity.class));
     }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.exibir_dados_usuario, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.action_home) {
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
+        }
+        if (id == android.R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }

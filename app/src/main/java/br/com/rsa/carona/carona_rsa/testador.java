@@ -20,7 +20,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 public class testador extends AppCompatActivity {
     AlertDialog actions;
-    private int valor=-1;
+    private int valor = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class testador extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Foto de Perfil");
-        String[] options = {"GALERIA", "CÂMERA", "REMOVER TUDO" };
+        String[] options = {"GALERIA", "CÂMERA", "REMOVER TUDO"};
         builder.setItems(options, actionListener);
         builder.setNegativeButton("Cancel", null);
         actions = builder.create();
@@ -47,8 +47,8 @@ public class testador extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case 0: // Delete
-                    valor=-8;
-                    Toast.makeText(testador.this,valor+"sdfsd",Toast.LENGTH_LONG).show();
+                    valor = -8;
+                    Toast.makeText(testador.this, valor + "sdfsd", Toast.LENGTH_LONG).show();
                     break;
                 case 1: // Copy
                     break;
@@ -65,4 +65,21 @@ public class testador extends AppCompatActivity {
             actions.show();
         }
     };
+
+    public void ok() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(testador.this);
+        dialog.setTitle(R.string.title_confirmacao)
+                .setMessage("teste")
+                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        startActivity(new Intent(testador.this, ExibirDadosUsuarioActivity.class));
+                    }
+                })
+                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+
+                    }
+                }).show();
+    }
+
 }

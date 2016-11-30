@@ -1,7 +1,9 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -9,6 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
@@ -39,34 +44,40 @@ import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class Home extends Fragment{
+public class Home extends Fragment {
     LinearLayout ll;
     View view;
     FragmentActivity activity;
     Resources resource;
     ImageButton recarrega;
     SwipeRefreshLayout swipeLayout;
-    public static ImageButton load;
-    int totalViews=3;
-    int ultimoNum=0;
+    public static FloatingActionButton load;
+    int totalViews = 3;
+    int ultimoNum = 0;
+    MyReceiver receiver;
+    AlertDialog.Builder dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-         activity=getActivity();
-         resource=getResources();
+        activity = getActivity();
+        resource = getResources();
+
+        receiver = new MyReceiver(new Handler());
+
+        dialog = new AlertDialog.Builder(getActivity());
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
-        recarrega=(ImageButton)view.findViewById(R.id.b_recarrega);
-        load=(ImageButton)view.findViewById(R.id.b_atualiza);
+        recarrega = (ImageButton) view.findViewById(R.id.b_recarrega);
+        load = (FloatingActionButton) view.findViewById(R.id.b_atualiza);
         ManipulaDados m = new ManipulaDados(getActivity());
-        if(m.getUsuario() != null) {
+        if (m.getUsuario() != null) {
             atualizaCaronas();
             atualizarEspera();
 
 
         }
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-        swipeLayout.setColorSchemeColors(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
+        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -87,10 +98,10 @@ public class Home extends Fragment{
                 atualizaCaronas2();
             }
         });
-        TabLayout tabLayout =(TabLayout)getActivity().findViewById(R.id.tab_layout);
-        TabLayout.Tab tab1= tabLayout.newTab();
-        TabLayout.Tab tab2= tabLayout.newTab();
-        TabLayout.Tab tab3= tabLayout.newTab();
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
+        TabLayout.Tab tab1 = tabLayout.newTab();
+        TabLayout.Tab tab2 = tabLayout.newTab();
+        TabLayout.Tab tab3 = tabLayout.newTab();
         tab1.setCustomView(R.layout.tab);
         tab2.setCustomView(R.layout.tab);
         tab3.setCustomView(R.layout.tab);
@@ -103,7 +114,7 @@ public class Home extends Fragment{
     public void atualizarEspera() {
 
         final ManipulaDados M = new ManipulaDados(getActivity());
-        if(M.getUsuario() !=null) {
+        if (M.getUsuario() != null) {
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             Log.e("helder", "que doideira  " + M.getCaronaSolicitada());
             if (M.getCaronaSolicitada() != -1) {
@@ -114,7 +125,7 @@ public class Home extends Fragment{
                     @Override
                     public void concluido(Object object) {
                         final Carona carona = (Carona) object;
-                        if (carona != null  ) {
+                        if (carona != null) {
                             final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
                             TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
                             TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
@@ -137,7 +148,7 @@ public class Home extends Fragment{
                                         public void concluido(Object object) {
                                             Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
                                             M.setCaronaSolicitada(-1);
-                                            ultimoNum=0;
+                                            ultimoNum = 0;
                                             atualizaCaronas();
 
                                             ll.removeView(modelo);
@@ -150,7 +161,10 @@ public class Home extends Fragment{
                                     });
                                 }
                             });
+                        }else{
+                            M.setCaronaSolicitada(-1);
                         }
+
                     }
 
                     @Override
@@ -164,7 +178,6 @@ public class Home extends Fragment{
 
             }
         }
-
     }
 
 
@@ -173,7 +186,7 @@ public class Home extends Fragment{
         final ManipulaDados M = new ManipulaDados(getActivity());
 
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-        rs.buscaCaronas(M.getUsuario(),ultimoNum,totalViews, new GetRetorno() {
+        rs.buscaCaronas(M.getUsuario(), ultimoNum, totalViews, new GetRetorno() {
             @Override
             public void concluido(Object object) {
 
@@ -199,11 +212,11 @@ public class Home extends Fragment{
                     ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
                     TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
                     Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
-                    if(M.getUsuario().getId()!= usuarios.get(i).getId()) {
+                    if (M.getUsuario().getId() != usuarios.get(i).getId()) {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
-                    }else {
+                    } else {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        btnSolicitar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_not),null,null,null);
+                        btnSolicitar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_not), null, null, null);
                         btnSolicitar.setText("CANCELAR");
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
@@ -217,56 +230,83 @@ public class Home extends Fragment{
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
                     tv_horario.setText(caronas.get(i).getHorario());
-                    tv_vagas.setText((caronas.get(i).getVagas()-caronas.get(i).getVagasOcupadas())+"/"+caronas.get(i).getVagas() + "");
+                    tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
 
                     modelo.setId(i + 1);
                     ll.addView(modelo);
                     final int j = i;
+
                     btnSolicitar.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             final ManipulaDados md = new ManipulaDados(getActivity());
                             //teste aqui -
-                            if(M.getUsuario().getId()!= usuarios.get(j).getId()) {
+                            if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                 if (md.getCaronaSolicitada() == -1) {
-                                    Usuario eu = md.getUsuario();
-                                    Carona carona = caronas.get(j);
-                                    RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                    rs.solicitaCarona(carona, eu, new GetRetorno() {
-                                        @Override
-                                        public void concluido(Object object) {
-                                            Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
-                                                md.setCaronaSolicitada(id_carona);
-                                                atualizarEspera();
-                                                ll.removeView(modelo);
-                                            }
-                                        }
 
-                                        @Override
-                                        public void concluido(Object object, Object object2) {
+                                    dialog.setTitle(R.string.title_confirmacao)
+                                            .setMessage(R.string.alert_solicitar_carona)
+                                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
 
-                                        }
-                                    });
+                                                }
+                                            })
+                                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
+                                                    Usuario eu = md.getUsuario();
+                                                    Carona carona = caronas.get(j);
+                                                    RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                                    rs.solicitaCarona(carona, eu, new GetRetorno() {
+                                                        @Override
+                                                        public void concluido(Object object) {
+                                                            Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                                                md.setCaronaSolicitada(id_carona);
+                                                                atualizarEspera();
+                                                                ll.removeView(modelo);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void concluido(Object object, Object object2) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            }).show();
+
                                 } else {
                                     Toast.makeText(getActivity(), " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
                                 }
-                            }else{
-                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
-                                    @Override
-                                    public void concluido(Object object) {
-                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                        atualizaCaronas();
-                                    }
+                            } else {
 
-                                    @Override
-                                    public void concluido(Object object, Object object2) {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                                dialog.setTitle(R.string.title_confirmacao)
+                                        .setMessage("teste")
+                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
+                                                startActivity(new Intent(getActivity(), ExibirDadosUsuarioActivity.class));
+                                            }
+                                        })
+                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
+                                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                                rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
+                                                    @Override
+                                                    public void concluido(Object object) {
+                                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                                        atualizaCaronas();
+                                                    }
 
-                                    }
-                                });
+                                                    @Override
+                                                    public void concluido(Object object, Object object2) {
+
+                                                    }
+                                                });
+                                            }
+                                        }).show();
                             }
                         }
                     });
@@ -284,12 +324,11 @@ public class Home extends Fragment{
 
 
                 }
-                ultimoNum+=caronas.size();
+                ultimoNum += caronas.size();
             }
         });
-
-
     }
+
     public void atualizaCaronas() {
         load.setVisibility(View.INVISIBLE);
         final ManipulaDados M = new ManipulaDados(getActivity());
@@ -326,7 +365,7 @@ public class Home extends Fragment{
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     } else {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        Drawable img = getContext().getResources().getDrawable( R.drawable.icon_not );
+                        Drawable img = getContext().getResources().getDrawable(R.drawable.icon_not);
                         img.setBounds(0, 0, 60, 60);
                         btnSolicitar.setCompoundDrawables(img, null, null, null);
                         btnSolicitar.setText("CANCELAR");
@@ -344,7 +383,6 @@ public class Home extends Fragment{
                     tv_horario.setText(caronas.get(i).getHorario());
                     tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
-
                     modelo.setId(i + 1);
                     ll.addView(modelo);
                     final int j = i;
@@ -356,46 +394,69 @@ public class Home extends Fragment{
                             //teste aqui -
                             if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                 if (md.getCaronaSolicitada() == -1) {
-                                    Usuario eu = md.getUsuario();
-                                    Carona carona = caronas.get(j);
-                                    RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                    rs.solicitaCarona(carona, eu, new GetRetorno() {
-                                        @Override
-                                        public void concluido(Object object) {
-                                            Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
-                                                md.setCaronaSolicitada(id_carona);
-                                                atualizarEspera();
-                                                ll.removeView(modelo);
-                                            }
-                                        }
+                                    dialog.setTitle(R.string.title_confirmacao)
+                                            .setMessage(R.string.alert_solicitar_carona)
+                                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
 
-                                        @Override
-                                        public void concluido(Object object, Object object2) {
 
-                                        }
-                                    });
+                                                }
+                                            })
+                                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
+                                                    Usuario eu = md.getUsuario();
+                                                    Carona carona = caronas.get(j);
+                                                    RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                                    rs.solicitaCarona(carona, eu, new GetRetorno() {
+                                                        @Override
+                                                        public void concluido(Object object) {
+                                                            Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                                                md.setCaronaSolicitada(id_carona);
+                                                                atualizarEspera();
+                                                                ll.removeView(modelo);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void concluido(Object object, Object object2) {
+
+                                                        }
+                                                    });
+                                                }
+                                            }).show();
                                 } else {
                                     Toast.makeText(getActivity(), " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
-                                    @Override
-                                    public void concluido(Object object) {
-                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                        atualizaCaronas();
-                                    }
 
-                                    @Override
-                                    public void concluido(Object object, Object object2) {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                                dialog.setTitle(R.string.title_confirmacao)
+                                        .setMessage(R.string.alert_cancelar_carona)
+                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
 
-                                    }
-                                });
+                                            }
+                                        })
+                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
+                                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                                rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
+                                                    @Override
+                                                    public void concluido(Object object) {
+                                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                                        atualizaCaronas();
+                                                    }
+                                                    @Override
+                                                    public void concluido(Object object, Object object2) {
+                                                    }
+                                                });
+                                            }
+                                        }).show();
+
                             }
                         }
                     });
-
                     modelo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -406,8 +467,6 @@ public class Home extends Fragment{
 
                         }
                     });
-
-
                 }
                 ultimoNum += caronas.size();
             }
@@ -416,13 +475,39 @@ public class Home extends Fragment{
 
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
-        if(((MainActivity)getActivity()).numNovasCaronas>0){
-            ((MainActivity)getActivity()).LimparBadge(((MainActivity)getActivity()).badge1,1);
+        if (((MainActivity) getActivity()).numNovasCaronas > 0) {
+            ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
+        }
+    }
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler; // Handler used to execute code on the UI thread
+
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+
+
+            String mensagem = intent.getStringExtra("mensagem");
+            final String valor = intent.getStringExtra("valor");
+            switch (mensagem) {
+                case "novaCarona":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            load.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                    break;
+
+            }
         }
     }
 }

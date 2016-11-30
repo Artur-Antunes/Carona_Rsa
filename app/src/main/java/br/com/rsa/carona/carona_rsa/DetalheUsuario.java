@@ -27,13 +27,13 @@ public class DetalheUsuario extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhe_usuario);
-        nomeExibir =(TextView)findViewById(R.id.exibirNomeValor);
-        imFoto =(ImageView)findViewById(R.id.foto);
-        matriculaExibir =(TextView)findViewById(R.id.exibirMatriculaValor);
-        telefoneExibir =(TextView)findViewById(R.id.exibirTelefoneValor);
-        emailExibir =(TextView)findViewById(R.id.exibirEmailValor);
-        sexoExibir =(TextView)findViewById(R.id.exibirSexoValor);
-        cnhExibir =(TextView)findViewById(R.id.exibirCnhValor);
+        nomeExibir = (TextView) findViewById(R.id.exibirNomeValor);
+        imFoto = (ImageView) findViewById(R.id.foto);
+        matriculaExibir = (TextView) findViewById(R.id.exibirMatriculaValor);
+        telefoneExibir = (TextView) findViewById(R.id.exibirTelefoneValor);
+        emailExibir = (TextView) findViewById(R.id.exibirEmailValor);
+        sexoExibir = (TextView) findViewById(R.id.exibirSexoValor);
+        cnhExibir = (TextView) findViewById(R.id.exibirCnhValor);
 
         nomeExibir.setText(usuarioEditar.getNome() + " " + usuarioEditar.getSobrenome());
         emailExibir.setText(usuarioEditar.getEmail());
@@ -45,16 +45,16 @@ public class DetalheUsuario extends AppCompatActivity {
         imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
         String converterCnh;
 
-        if(usuarioEditar.isCnh()){
-            converterCnh="SIM";
-        }else{
-            converterCnh="NÃO";
+        if (usuarioEditar.isCnh()) {
+            converterCnh = "SIM";
+        } else {
+            converterCnh = "NÃO";
         }
 
         cnhExibir.setText(converterCnh);
-        if(usuarioEditar.getSexo().equals("M")) {
+        if (usuarioEditar.getSexo().equals("M")) {
             sexoExibir.setText("MASCULINO");
-        }else{
+        } else {
             sexoExibir.setText("FEMININO");
         }
     }

@@ -59,6 +59,8 @@ public class Servico extends IntentService {
                 verificaSolicitacao("AGUARDANDO");
                 verificaSolicitacao("DESISTENCIA");
                 int idCaronaSolicitada = md.getCaronaSolicitada();
+                Log.e("testando", "o id doido " + idCaronaSolicitada);
+
                 if (idCaronaSolicitada != -1 && idCaronaSolicitada != md.getUltimoIdCaronaAceita()) {
                     verificaSolicitacaoAceita();
                 }
@@ -98,6 +100,9 @@ public class Servico extends IntentService {
                     }
                 } else {
                     tipoP = "desistido da";
+                    if (usuarios.size() > 0) {
+                        criaBroadcast(usuarios.size(), "solicitacao");
+                    }
 
                 }
 
@@ -147,7 +152,7 @@ public class Servico extends IntentService {
     public void verificaSolicitacaoAceita(){
         final ManipulaDados md = new ManipulaDados(this);
       final int idCaronaSolicitada=  md.getCaronaSolicitada();
-
+        Log.e("aiasdasds", "entrou   dsadasdas");
       Usuario us= md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.verificaCaronaSolitada(idCaronaSolicitada, us, new GetRetorno() {

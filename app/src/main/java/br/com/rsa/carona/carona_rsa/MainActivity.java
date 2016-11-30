@@ -1,4 +1,5 @@
 package br.com.rsa.carona.carona_rsa;
+
 import android.app.Fragment;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -27,12 +28,12 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 
 public class MainActivity extends AppCompatActivity {
-   public int numNovasCaronas=0;
-   public int numNovasSolicitacoes=0;
+    public int numNovasCaronas = 0;
+    public int numNovasSolicitacoes = 0;
     MyReceiver receiver;
-    View v1,v3;
-     PagerAdapter adapter;
-   public BadgeView badge1,badge3;
+    View v1, v3;
+    PagerAdapter adapter;
+    public BadgeView badge1, badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
 
@@ -42,21 +43,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent it = new Intent(this, Servico.class);
         startService(it);
-        receiver=new MyReceiver(new Handler());
+        receiver = new MyReceiver(new Handler());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        TabLayout.Tab tab1= tabLayout.newTab();
-        TabLayout.Tab tab2= tabLayout.newTab();
-        TabLayout.Tab tab3= tabLayout.newTab();
+
+
+        TabLayout.Tab tab1 = tabLayout.newTab();
+        TabLayout.Tab tab2 = tabLayout.newTab();
+        TabLayout.Tab tab3 = tabLayout.newTab();
         tab1.setCustomView(R.layout.tab);
         tab2.setCustomView(R.layout.tab);
         tab3.setCustomView(R.layout.tab);
-        TextView txt1 = (TextView)tab1.getCustomView().findViewById(R.id.text1);
-        TextView txt2 = (TextView)tab2.getCustomView().findViewById(R.id.text1);
-        TextView txt3 = (TextView)tab3.getCustomView().findViewById(R.id.text1);
+        TextView txt1 = (TextView) tab1.getCustomView().findViewById(R.id.text1);
+        TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
+        TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
         txt1.setText("HOME");
         txt2.setText("RECEBIDAS");
         txt3.setText("OFERECIDAS");
@@ -66,15 +69,15 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tab3);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        v1= tabLayout.getTabAt(0).getCustomView();
-        v3= tabLayout.getTabAt(2).getCustomView();
+        v1 = tabLayout.getTabAt(0).getCustomView();
+        v3 = tabLayout.getTabAt(2).getCustomView();
         badge1 = new BadgeView(this, v1);
         badge3 = new BadgeView(this, v3);
 
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(2);
-         adapter = new PagerAdapter
+        adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -125,14 +128,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
                 // Ignore this exception. This is exactly what is desired
-                Log.w("oiooi","Tried to unregister the reciver when it's not registered");
+                Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
             } else {
                 // unexpected, re-throw
                 throw e;
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,16 +148,12 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.add) {
             startActivity(new Intent(this, Criar_Carona.class));
             return true;
-        }
-
-        if (id == R.id.action_perfil) {
+        } else if (id == R.id.action_perfil) {
             startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             return true;
-        }
-
-        if (id == R.id.action_sair) {
+        } else if (id == R.id.action_sair) {
             ManipulaDados mDados;
-            mDados=new ManipulaDados(MainActivity.this);
+            mDados = new ManipulaDados(MainActivity.this);
             mDados.limparDados();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -164,63 +162,65 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-   public void mostraBadge(String valor, BadgeView badge, int tipo){
-       switch (tipo){
-           case 1:
-               numNovasCaronas+=Integer.parseInt(valor);
-               badge.setText(numNovasCaronas+"");
-               badge.setBadgeBackgroundColor(R.color.color1);
-               badge.show();
-               break;
-           case 2:
-               numNovasSolicitacoes+=Integer.parseInt(valor);
-               badge.setText(numNovasSolicitacoes+"");
-               badge.setBadgeBackgroundColor(R.color.color1);
-               badge.show();
-               break;
-       }
+
+    public void mostraBadge(String valor, BadgeView badge, int tipo) {
+        switch (tipo) {
+            case 1:
+                numNovasCaronas += Integer.parseInt(valor);
+                badge.setText(numNovasCaronas + "");
+                badge.setBadgeBackgroundColor(R.color.color1);
+                badge.show();
+                break;
+            case 2:
+                numNovasSolicitacoes += Integer.parseInt(valor);
+                badge.setText(numNovasSolicitacoes + "");
+                badge.setBadgeBackgroundColor(R.color.color1);
+                badge.show();
+                break;
+        }
 
 
-   }
-    public void LimparBadge(BadgeView badge,int valor){
+    }
+
+    public void LimparBadge(BadgeView badge, int valor) {
         badge.hide();
-        if(valor==1) {
-            numNovasCaronas=0;
-        }else{
-            numNovasSolicitacoes=0;
+        if (valor == 1) {
+            numNovasCaronas = 0;
+        } else {
+            numNovasSolicitacoes = 0;
         }
 
     }
+
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread
 
         public MyReceiver(Handler handler) {
             this.handler = handler;
         }
+
         @Override
         public void onReceive(final Context context, Intent intent) {
 
-
-
-            String mensagem= intent.getStringExtra("mensagem");
-            final String valor= intent.getStringExtra("valor");
-            switch (mensagem){
+            String mensagem = intent.getStringExtra("mensagem");
+            final String valor = intent.getStringExtra("valor");
+            switch (mensagem) {
                 case "solicitacao":
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             mostraBadge(valor, badge3, 2);
-                                                    }
+                        }
                     });
 
                     break;
 
                 case "novaCarona":
-                    Log.e("foi recebico", valor+" novas caronas");
+                    Log.e("foi recebico", valor + " novas caronas");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mostraBadge(valor,badge1,1);
+                            mostraBadge(valor, badge1, 1);
                             Home.load.setVisibility(View.VISIBLE);
                         }
                     });

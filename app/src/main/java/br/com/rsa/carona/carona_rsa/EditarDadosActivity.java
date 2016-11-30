@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -57,12 +58,13 @@ public class EditarDadosActivity extends AppCompatActivity {
     AlertDialog actions;
     private Button salvarAteracoes;
 
-    boolean imagemEditada=false;
+    boolean imagemEditada = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_editar_dados);
         mDados = new ManipulaDados(EditarDadosActivity.this);
         usuarioEditar = mDados.getUsuario();
@@ -81,13 +83,13 @@ public class EditarDadosActivity extends AppCompatActivity {
         editarFoto.bringToFront();
 
         String nome = usuarioEditar.getNome();
-        String sobrenome= usuarioEditar.getSobrenome();
+        String sobrenome = usuarioEditar.getSobrenome();
         String matricula = usuarioEditar.getMatricula();
         String email = usuarioEditar.getEmail();
         String telefone = usuarioEditar.getTelefone();
         boolean cnhUsuario = usuarioEditar.isCnh();
         Log.e(usuarioEditar.getSexo().toString(), "sexo_antigo");
-        int  sexoUsuarioPosicao=(usuarioEditar.getSexo().equals("M")?0:1);
+        int sexoUsuarioPosicao = (usuarioEditar.getSexo().equals("M") ? 0 : 1);
 
         cnhEditar.setChecked(cnhUsuario);
         nomeEditar.setText(nome);
@@ -111,8 +113,11 @@ public class EditarDadosActivity extends AppCompatActivity {
         editarFoto.setOnClickListener(buttonListener);
 
         salvarAteracoes.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
+
 
                 final String nome = nomeEditar.getText().toString();
                 final String sobrenome = sobrenomeEditar.getText().toString();
@@ -121,50 +126,62 @@ public class EditarDadosActivity extends AppCompatActivity {
                 final String telefone = telefoneEditar.getText().toString();
                 final boolean cnh = cnhEditar.isChecked();
                 String sexo = sexoEditar.getSelectedItem().toString();
-                sexo= new Funcoes().retornaSimbolo(sexo);
+                sexo = new Funcoes().retornaSimbolo(sexo);
 
-                Usuario usuarioEditado=verificaCamposAlterados(matricula,nome,sobrenome,telefone,email,sexo,cnh);
+                final Usuario usuarioEditado = verificaCamposAlterados(matricula, nome, sobrenome, telefone, email, sexo, cnh);
 
                 if (usuarioEditado != null) {
                     if (!nome.equals("") && !sobrenome.equals("") && !matricula.equals("") && !email.equals("")) {
-                        usuarioEditado.setEditado(true);
-                        RequisicoesServidor rs = new RequisicoesServidor(EditarDadosActivity.this);
-                        rs.gravaDadosDoUsuario(usuarioEditado, new GetRetorno() {
-                            @Override
-                            public void concluido(Object object) {
-                                //AQUI
-                                        String nomeAlterar=nomeEditar.getText().toString();
-                                        String sobrenomeAlterar=sobrenomeEditar.getText().toString();
-                                        String matriculaAlterar=matriculaEditar.getText().toString();
-                                        String emailAlterar=emailEditar.getText().toString();
-                                        String telefoneAlterar=telefoneEditar.getText().toString();
-                                        String sexoAlterar=new Funcoes().retornaSimbolo(sexoEditar.getSelectedItem().toString());
-                                        boolean cnhAlterar=cnhEditar.isChecked();
-
-                                        BitmapDrawable drawable = (BitmapDrawable) imFoto.getDrawable();
-                                        Bitmap bitmap = drawable.getBitmap();
-                                        String ft=new Funcoes().BitMapToString(bitmap);
-
-                                        int idAlterar=usuarioEditar.getId();
-                                        String senhaAlterar=usuarioEditar.getSenha();
-                                        int idCaronaAlterar=usuarioEditar.getIdCaronaSolicitada();
-
-                                        Usuario usuarioLocal=new Usuario(nomeAlterar,sobrenomeAlterar,matriculaAlterar,emailAlterar,telefoneAlterar,sexoAlterar,cnhAlterar);
-                                        usuarioLocal.setFoto(ft);
-                                        usuarioLocal.setId(idAlterar);
-                                        usuarioLocal.setSenha(senhaAlterar);
-                                        usuarioLocal.setIdCaronaSolicitada(idCaronaAlterar);
-
-                                        mDados.gravarDados(usuarioLocal);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(EditarDadosActivity.this);
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_editar_perfil)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
                                         startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
-                            }
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        usuarioEditado.setEditado(true);
+                                        RequisicoesServidor rs = new RequisicoesServidor(EditarDadosActivity.this);
+                                        rs.gravaDadosDoUsuario(usuarioEditado, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
 
-                            @Override
-                            public void concluido(Object object, Object object2) {
+                                                String nomeAlterar = nomeEditar.getText().toString();
+                                                String sobrenomeAlterar = sobrenomeEditar.getText().toString();
+                                                String matriculaAlterar = matriculaEditar.getText().toString();
+                                                String emailAlterar = emailEditar.getText().toString();
+                                                String telefoneAlterar = telefoneEditar.getText().toString();
+                                                String sexoAlterar = new Funcoes().retornaSimbolo(sexoEditar.getSelectedItem().toString());
+                                                boolean cnhAlterar = cnhEditar.isChecked();
 
-                            }
+                                                BitmapDrawable drawable = (BitmapDrawable) imFoto.getDrawable();
+                                                Bitmap bitmap = drawable.getBitmap();
+                                                String ft = new Funcoes().BitMapToString(bitmap);
 
-                        });
+                                                int idAlterar = usuarioEditar.getId();
+                                                String senhaAlterar = usuarioEditar.getSenha();
+                                                int idCaronaAlterar = usuarioEditar.getIdCaronaSolicitada();
+
+                                                Usuario usuarioLocal = new Usuario(nomeAlterar, sobrenomeAlterar, matriculaAlterar, emailAlterar, telefoneAlterar, sexoAlterar, cnhAlterar);
+                                                usuarioLocal.setFoto(ft);
+                                                usuarioLocal.setId(idAlterar);
+                                                usuarioLocal.setSenha(senhaAlterar);
+                                                usuarioLocal.setIdCaronaSolicitada(idCaronaAlterar);
+
+                                                mDados.gravarDados(usuarioLocal);
+                                                startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+
+                                        });
+                                    }
+                                }).show();
                     } else {
                         Toast.makeText(EditarDadosActivity.this, "CAMPOS EM BRANCO!", Toast.LENGTH_SHORT).show();
                     }
@@ -174,6 +191,8 @@ public class EditarDadosActivity extends AppCompatActivity {
                     startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
                 }
             }
+
+
         });
     }
 
@@ -220,73 +239,73 @@ public class EditarDadosActivity extends AppCompatActivity {
     }
 
     //,String nome,String sobrenome,String telefone,String email,boolean cnh, String sexo
-    private Usuario verificaCamposAlterados(String matricula,String nome,String sobrenome,String telefone,String email,String sexo,boolean cnh){
+    private Usuario verificaCamposAlterados(String matricula, String nome, String sobrenome, String telefone, String email, String sexo, boolean cnh) {
 
-        Usuario usuarioEditado= new Usuario(usuarioEditar.getId());
-        int  alteracaoes=0;
-        Log.e("matricula_antigo1:",usuarioEditar.getMatricula().toString());
-        Log.e("matricula_novo1:",matricula);
-        if(!usuarioEditar.getMatricula().toString().equals(matricula)){
-            Log.e("diferente:","entrou");
+        Usuario usuarioEditado = new Usuario(usuarioEditar.getId());
+        int alteracaoes = 0;
+        Log.e("matricula_antigo1:", usuarioEditar.getMatricula().toString());
+        Log.e("matricula_novo1:", matricula);
+        if (!usuarioEditar.getMatricula().toString().equals(matricula)) {
+            Log.e("diferente:", "entrou");
             usuarioEditado.setMatricula(matricula);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setMatricula(null);
         }
 
-        if(!usuarioEditar.getNome().equals(nome)){
+        if (!usuarioEditar.getNome().equals(nome)) {
             usuarioEditado.setNome(nome);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setNome(null);
         }
 
-        if(!usuarioEditar.getSobrenome().equals(sobrenome)){
+        if (!usuarioEditar.getSobrenome().equals(sobrenome)) {
             usuarioEditado.setSobrenome(sobrenome);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setSobrenome(null);
         }
 
-        if(!usuarioEditar.getTelefone().equals(telefone)){
+        if (!usuarioEditar.getTelefone().equals(telefone)) {
             usuarioEditado.setTelefone(telefone);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setTelefone(null);
         }
 
-        if(!usuarioEditar.getEmail().equals(email)){
+        if (!usuarioEditar.getEmail().equals(email)) {
             usuarioEditado.setEmail(email);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setEmail(null);
         }
 
-        Log.e("camparacao user_antigo:",usuarioEditar.getSexo().toString());
-        Log.e("camparacao user_novo:",sexo);
-        if(!usuarioEditar.getSexo().toString().equals(sexo)){
-            Log.e("entrou","ok");
+        Log.e("camparacao user_antigo:", usuarioEditar.getSexo().toString());
+        Log.e("camparacao user_novo:", sexo);
+        if (!usuarioEditar.getSexo().toString().equals(sexo)) {
+            Log.e("entrou", "ok");
             usuarioEditado.setSexo(sexo);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setSexo(null);
         }
 
-        if(imagemEditada){
+        if (imagemEditada) {
             usuarioEditado.setFoto(foto);
             usuarioEditado.setExtFoto(extFoto);
             alteracaoes++;
-        }else{
+        } else {
             usuarioEditado.setFoto(null);
             usuarioEditado.setExtFoto(null);
         }
-        if(!cnh==usuarioEditar.isCnh()){
+        if (!cnh == usuarioEditar.isCnh()) {
             alteracaoes++;
         }
 
         usuarioEditado.setChn(cnh);
-        if(alteracaoes==0){
-            usuarioEditado=null;
+        if (alteracaoes == 0) {
+            usuarioEditado = null;
         }
         return usuarioEditado;
     }
@@ -338,7 +357,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                     imFoto.setImageResource(0);
                     imFoto.setImageBitmap(bitmap);
                     imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-                    imagemEditada=true;
+                    imagemEditada = true;
                     break;
                 }
             case IMAGEM_CAM:
@@ -377,6 +396,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();// A activity está prestes a se tornar visíve
@@ -388,9 +408,23 @@ public class EditarDadosActivity extends AppCompatActivity {
         super.onStop();
         // A activity não está mais visível mas permanece em memória
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // A activity está prestes a ser destruída (removida da memória)
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -5,6 +5,7 @@ package br.com.rsa.carona.carona_rsa.controllers;
 public interface GetRetorno {
 
     public abstract void concluido(Object object);
+
     public abstract void concluido(Object object, Object object2);
 
 }

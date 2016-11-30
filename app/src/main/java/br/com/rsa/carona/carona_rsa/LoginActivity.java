@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
-        mDados.limparDados();
+        //mDados.limparDados();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
-            mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
-            mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
+        mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
+        mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
     }
 
 
@@ -63,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
      * Se houver erros de formulário (e-mail inválido, campos em falta, etc.), os
      * erros são apresentados e nenhuma tentativa de login real é feita
      */
-
 
 
     //buscar dados para o usuário logar....
@@ -132,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
         // A activity não está mais visível mas permanece em memória
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

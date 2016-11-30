@@ -23,8 +23,15 @@
     <string name="add">NOVA CARONA</string>
     <string name="title_activity_detalhes__carona">Detalhes Carona</string>
     <string name="confirmacao_exclusao_viagem"> Tem certeza que deseja realizar essa ação ?</string>
-    <string name="sim"> sim </string>
-    <string name="nao"> nao </string>
+    <string name="sim"> SIM </string>
+    <string name="nao"> NÃO </string>
+    <string name="alert_editar_perfil">Editar Perfil. Deseja realmente continuar ? </string>
+    <string name="alert_cancelar_carona">Cancelar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_solicitar_carona">Cancelar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_aceitar_user">Aceitar Caroneiro. Deseja realmente continuar ? </string>
+    <string name="alert_recusar_user">Recusar Caroneiro. Deseja realmente continuar ? </string>
+    <string name="alert_criar_carona">Criar Carona. Deseja realmente continuar ? </string>
+
 
 
     <string-array name="sexo_usuario">
@@ -53,12 +60,13 @@
         <item>MORINHOS</item>
         <item>SÃO JOSÉ</item>
         <item>PASSAGEM DAS PEDRAS</item>
+        <item>BURITI GRANDE</item>
     </string-array>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_criar__carona">Criar_Carona</string>
-
+    <string name="title_confirmacao">Confirmar</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_registro2">Finalizar Registro</string>
     <string name="title_activity_detalhe_usuario">Detalhe do Usúario</string>

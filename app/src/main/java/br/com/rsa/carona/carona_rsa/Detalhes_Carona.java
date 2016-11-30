@@ -1,5 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class Detalhes_Carona extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detalhes__carona);
         ll = (LinearLayout) findViewById(R.id.caixa_participantes);
         tv_origem = (TextView) findViewById(R.id.tv_origem2);
@@ -100,7 +102,12 @@ public class Detalhes_Carona extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
+        if (id == android.R.id.home) {
+            Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

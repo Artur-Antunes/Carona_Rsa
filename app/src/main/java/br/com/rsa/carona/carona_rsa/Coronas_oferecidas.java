@@ -1,8 +1,10 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -45,14 +47,15 @@ public class Coronas_oferecidas extends Fragment {
     SwipeRefreshLayout swipeLayout;
     MyReceiver receiver;
     IntentFilter filter = new IntentFilter();
+    AlertDialog.Builder dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        activity=getActivity();
-        resource=getResources();
+        activity = getActivity();
+        resource = getResources();
         view = inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-        swipeLayout.setColorSchemeColors(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
+        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -60,11 +63,10 @@ public class Coronas_oferecidas extends Fragment {
                 swipeLayout.setRefreshing(false);
             }
         });
-
         lloferecidas = (LinearLayout) view.findViewById(R.id.caixa_oferecidas);
         atualizarSolicitantes();
-
-        receiver=new MyReceiver(new Handler());
+        dialog = new AlertDialog.Builder(getActivity());
+        receiver = new MyReceiver(new Handler());
 
         return view;
 
@@ -130,61 +132,82 @@ public class Coronas_oferecidas extends Fragment {
                             btnAceitar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    dialog.setTitle(R.string.title_confirmacao)
+                                            .setMessage(R.string.alert_aceitar_user)
+                                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
 
-                                    RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                    rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
-                                        @Override
-                                        public void concluido(Object object) {
-                                            Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                            if (object.equals("Usuario Aceito!")) {
-                                                ll.removeView(modelo2);
-                                                RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                                                TextView nomeSolicitante = (TextView) m.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
-                                                TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
-                                                ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
-                                                nomeSolicitante.setText(participantes.get(k).getNome());
-                                                telefoneSolicitante.setText(participantes.get(k).getTelefone());
-                                                byte[] decodedString = Base64.decode(participantes.get(k).getFoto(), Base64.DEFAULT);
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                                Resources res = resource;
-                                                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                                                dr.setCircular(true);
-                                                fotoSolicitante.setImageDrawable(dr);
-                                                m.setId(k);
-                                                ll.addView(m, 0);
-                                            }
-                                        }
+                                                }
+                                            })
+                                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
+                                                    RequisicoesServidor rs2 = new RequisicoesServidor(activity);
+                                                    rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
+                                                        @Override
+                                                        public void concluido(Object object) {
+                                                            Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
+                                                            if (object.equals("Usuario Aceito!")) {
+                                                                ll.removeView(modelo2);
+                                                                RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
+                                                                TextView nomeSolicitante = (TextView) m.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
+                                                                TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
+                                                                ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
+                                                                nomeSolicitante.setText(participantes.get(k).getNome());
+                                                                telefoneSolicitante.setText(participantes.get(k).getTelefone());
+                                                                byte[] decodedString = Base64.decode(participantes.get(k).getFoto(), Base64.DEFAULT);
+                                                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                                                Resources res = resource;
+                                                                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+                                                                dr.setCircular(true);
+                                                                fotoSolicitante.setImageDrawable(dr);
+                                                                m.setId(k);
+                                                                ll.addView(m, 0);
+                                                            }
+                                                        }
+                                                        @Override
+                                                        public void concluido(Object object, Object object2) {
 
-                                        @Override
-                                        public void concluido(Object object, Object object2) {
-
-                                        }
-                                    });
-
-
+                                                        }
+                                                    });
+                                                }
+                                            }).show();
                                 }
                             });
-
                             btnRecusar.setOnClickListener(new View.OnClickListener() {
+
                                 @Override
                                 public void onClick(View v) {
 
-                                    RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                    rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
-                                        @Override
-                                        public void concluido(Object object) {
-                                            Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                            if (object.equals("Usuario Recusado!")) {
-                                                tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
-                                                ll.removeView(modelo2);
-                                            }
-                                        }
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                                    dialog.setTitle(R.string.title_confirmacao)
+                                            .setMessage(R.string.alert_recusar_user)
+                                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
 
-                                        @Override
-                                        public void concluido(Object object, Object object2) {
 
-                                        }
-                                    });
+                                                }
+                                            })
+                                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialoginterface, int i) {
+
+                                                    RequisicoesServidor rs2 = new RequisicoesServidor(activity);
+                                                    rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
+                                                        @Override
+                                                        public void concluido(Object object) {
+                                                            Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
+                                                            if (object.equals("Usuario Recusado!")) {
+                                                                tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
+                                                                ll.removeView(modelo2);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void concluido(Object object, Object object2) {
+
+                                                        }
+                                                    });
+                                                }
+                                            }).show();
                                 }
                             });
 
@@ -196,6 +219,7 @@ public class Coronas_oferecidas extends Fragment {
                                     startActivity(it);
                                 }
                             });
+
                         } else {
                             RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                             TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
@@ -239,8 +263,8 @@ public class Coronas_oferecidas extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(((MainActivity)activity).numNovasSolicitacoes>0){
-            ((MainActivity)activity).LimparBadge(((MainActivity) activity).badge3, 2);
+        if (((MainActivity) activity).numNovasSolicitacoes > 0) {
+            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
         }
     }
 
@@ -259,7 +283,7 @@ public class Coronas_oferecidas extends Fragment {
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
                 // Ignore this exception. This is exactly what is desired
-                Log.w("oiooi","Tried to unregister the reciver when it's not registered");
+                Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
             } else {
                 // unexpected, re-throw
                 throw e;
@@ -273,14 +297,14 @@ public class Coronas_oferecidas extends Fragment {
         public MyReceiver(Handler handler) {
             this.handler = handler;
         }
+
         @Override
         public void onReceive(final Context context, Intent intent) {
 
 
-
-            String mensagem= intent.getStringExtra("mensagem");
-            final String valor= intent.getStringExtra("valor");
-            switch (mensagem){
+            String mensagem = intent.getStringExtra("mensagem");
+            final String valor = intent.getStringExtra("valor");
+            switch (mensagem) {
                 case "solicitacao":
                     handler.post(new Runnable() {
                         @Override
@@ -291,9 +315,8 @@ public class Coronas_oferecidas extends Fragment {
 
                     break;
 
+
             }
-
-
         }
     }
 
