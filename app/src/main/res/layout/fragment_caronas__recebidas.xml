@@ -1,24 +1,30 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView4"
-    android:layout_gravity="center_horizontal" >
+    android:layout_height="match_parent" >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="br.com.rsa.carona.carona_rsa.Home">
+        android:id="@+id/scrollView4"
+        android:layout_gravity="center_horizontal" >
 
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/caixa_recebidas"
-            android:background="@color/color1"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context="br.com.rsa.carona.carona_rsa.Home">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/caixa_aceito"
+                android:animateLayoutChanges="true"
+                android:layout_width="match_parent"
+                android:layout_height="639dp">
 
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+</android.support.v4.widget.SwipeRefreshLayout>

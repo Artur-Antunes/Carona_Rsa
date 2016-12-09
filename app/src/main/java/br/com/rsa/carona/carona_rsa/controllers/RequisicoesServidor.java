@@ -1056,9 +1056,12 @@ public class RequisicoesServidor {
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "UltimasCaronas.php");
+            String arquivoServ="UltimasCaronas.php";
+            if(this.idUltimaCarona==-100){
+                arquivoServ="caronasAceitas";
+            }
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + arquivoServ);
             String teste = "não";
             JSONObject jObjeto = null;
             try {

@@ -4,67 +4,67 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/linearLayout"
+    android:id="@+id/linearLayoutR"
     android:layout_centerHorizontal="true"
     android:paddingTop="2dp"
     android:paddingBottom="2dp">
 
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:background="@color/color3"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout2">
-
+        android:id="@+id/relativeLayoutR1">
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="nome"
-        android:id="@+id/nomeUserSolicitaCarona"
-        android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ACEITO"
+            android:id="@+id/tv_legenda"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/c_foto"
-            android:textSize="18dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/c_foto"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/imageViewR"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/icon_destino"
             android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Local de Destino"
+            android:id="@+id/tv_destino_ACEITO"
+            android:layout_above="@+id/imageViewRelogio"
+            android:layout_toEndOf="@+id/imageViewR"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/imageViewRelogio"
+            android:src="@drawable/icon_relogio"
+            android:layout_below="@+id/imageViewR"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="3dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.25dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_alignParentStart="true" />
+            android:layout_marginLeft="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="89981106513"
-            android:id="@+id/c_telefone"
-            android:textSize="14dp"
-            android:layout_below="@+id/nomeUserSolicitaCarona"
-            android:layout_alignStart="@+id/nomeUserSolicitaCarona" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="ACEITO"
-            android:id="@+id/textView2"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true" />
-
+            android:text="00:00pm"
+            android:id="@+id/tv_horario_ACEITO"
+            android:layout_alignTop="@+id/imageViewRelogio"
+            android:layout_alignStart="@+id/tv_destino_ACEITO"
+            android:textSize="20dp" />
     </RelativeLayout>
-
 </RelativeLayout>

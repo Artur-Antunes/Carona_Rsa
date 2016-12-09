@@ -62,9 +62,7 @@ public class Home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         activity = getActivity();
         resource = getResources();
-
         receiver = new MyReceiver(new Handler());
-
         dialog = new AlertDialog.Builder(getActivity());
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega = (ImageButton) view.findViewById(R.id.b_recarrega);
@@ -73,8 +71,6 @@ public class Home extends Fragment {
         if (m.getUsuario() != null) {
             atualizaCaronas();
             atualizarEspera();
-
-
         }
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
