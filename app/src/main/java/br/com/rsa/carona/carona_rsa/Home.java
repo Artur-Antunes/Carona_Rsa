@@ -137,6 +137,13 @@ public class Home extends Fragment {
                             modelo.setId(0);
                             modelo.setGravity(0);
                             ll.addView(modelo, 0);
+                            ll.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent i= new Intent(getActivity(),Detalhes_Carona.class);
+                                    Detalhes_Carona.carona=carona;
+                                }
+                            });
 
                             btnCancelar.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -183,6 +190,7 @@ public class Home extends Fragment {
 
     public void atualizaCaronas2() {
         load.setVisibility(View.INVISIBLE);
+        MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
 
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
@@ -216,7 +224,9 @@ public class Home extends Fragment {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     } else {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        btnSolicitar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_not), null, null, null);
+                        Drawable img = getContext().getResources().getDrawable(R.drawable.icon_not);
+                        img.setBounds(0, 0, 60, 60);
+                        btnSolicitar.setCompoundDrawables(img, null, null, null);
                         btnSolicitar.setText("CANCELAR");
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
@@ -284,7 +294,7 @@ public class Home extends Fragment {
 
                                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                                 dialog.setTitle(R.string.title_confirmacao)
-                                        .setMessage("teste")
+                                        .setMessage(R.string.alert_solicitar_carona)
                                         .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialoginterface, int i) {
                                                 startActivity(new Intent(getActivity(), ExibirDadosUsuarioActivity.class));
@@ -325,12 +335,14 @@ public class Home extends Fragment {
 
                 }
                 ultimoNum += caronas.size();
+                Log.e("vvvvvvvvvv", "u "+ultimoNum+" t"+totalViews);
             }
         });
     }
 
     public void atualizaCaronas() {
         load.setVisibility(View.INVISIBLE);
+        MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
 
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
@@ -468,7 +480,7 @@ public class Home extends Fragment {
                         }
                     });
                 }
-                ultimoNum += caronas.size();
+                ultimoNum = caronas.size();
             }
         });
 

@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     MyReceiver receiver;
     View v1, v3;
     PagerAdapter adapter;
-    public BadgeView badge1, badge3;
+    public static BadgeView badge1, badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
 
@@ -154,9 +154,11 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_sair) {
             ManipulaDados mDados;
             mDados = new ManipulaDados(MainActivity.this);
-            mDados.limparDados();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            if(mDados.limparDados()){
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            }
+
             return true;
         }
 
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void LimparBadge(BadgeView badge, int valor) {
+     public void LimparBadge(BadgeView badge, int valor) {
         badge.hide();
         if (valor == 1) {
             numNovasCaronas = 0;

@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (mDados.getUsuario() != null) {
+            Log.e("GGGGGGGGGGG ", "DIFERENTEEEEEEEEEEEEE");
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario

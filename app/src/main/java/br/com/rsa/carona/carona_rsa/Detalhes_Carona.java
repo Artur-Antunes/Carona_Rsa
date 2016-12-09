@@ -1,16 +1,25 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Detalhes_Carona extends AppCompatActivity {
@@ -28,6 +37,7 @@ public class Detalhes_Carona extends AppCompatActivity {
     private TextView tv_email;
     private Button b_salvar;
     private LinearLayout ll;
+    AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
 
@@ -35,6 +45,7 @@ public class Detalhes_Carona extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final ManipulaDados md = new ManipulaDados(Detalhes_Carona.this);
         setContentView(R.layout.activity_detalhes__carona);
         ll = (LinearLayout) findViewById(R.id.caixa_participantes);
         tv_origem = (TextView) findViewById(R.id.tv_origem2);
@@ -50,8 +61,89 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_cnh = (TextView) findViewById(R.id.tv_cnh);
         tv_nome = (TextView) findViewById(R.id.tv_nome);
         tv_email = (TextView) findViewById(R.id.tv_email);
-        b_salvar = (Button) findViewById(R.id.b_salvar);
+        b_salvar = (Button) findViewById(R.id.b_solicitar);
+        dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+        if (md.getUsuario().getId() != usuario.getId()) {
+            b_salvar.setBackgroundResource(R.drawable.cor_botao2);
+            b_salvar.setTextColor(Color.WHITE);
+        } else {
+            b_salvar.setBackgroundResource(R.drawable.cor_botao3);
+            Drawable img =getResources().getDrawable(R.drawable.icon_not);
+            img.setBounds(0, 0, 60, 60);
+            b_salvar.setCompoundDrawables(img, null, null, null);
+            b_salvar.setText("CANCELAR");
+        }
+        b_salvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                //teste aqui -
+                if (md.getUsuario().getId() != usuario.getId()) {
+                    if (md.getCaronaSolicitada() == -1) {
+
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_solicitar_carona)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        Usuario eu = md.getUsuario();
+                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                        rs.solicitaCarona(carona, eu, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
+                                                if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                                    md.setCaronaSolicitada(carona.getId());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+                                        });
+
+                                    }
+                                }).show();
+
+                    } else {
+                        Toast.makeText(Detalhes_Carona.this, " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+                    dialog.setTitle(R.string.title_confirmacao)
+                            .setMessage(R.string.alert_cancelar_carona)
+                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialoginterface, int i) {
+                                   // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
+                                }
+                            })
+                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialoginterface, int i) {
+                                    RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                    rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
+                                        @Override
+                                        public void concluido(Object object) {
+                                            Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+
+                                        }
+
+                                        @Override
+                                        public void concluido(Object object, Object object2) {
+
+                                        }
+                                    });
+                                }
+                            }).show();
+                }
+            }
+        });
         tv_origem.setText(carona.getOrigem());
         tv_destino.setText(carona.getDestino());
         tv_vagas.setText(carona.getVagas() + "");
@@ -103,7 +195,7 @@ public class Detalhes_Carona extends AppCompatActivity {
             return true;
         }
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             return true;

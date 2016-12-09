@@ -57,14 +57,17 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		return id_carona;
 	}
 	public int getUltimoIdCaronaAceita(){
-		int id_carona=usuarioLocal.getInt("ultimo_id_carona_aceita",0);
+		int id_carona=usuarioLocal.getInt("ultimo_id_carona_aceita", 0);
 		return id_carona;
 	}
 	
-	public void limparDados(){ //Metodo para limpar od dados.
+	public boolean limparDados(){ //Metodo para limpar od dados.
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();// editando..
 		editorBancoDeDados.clear();//limpar.
-		editorBancoDeDados.commit();// Executar limpeza.
+		if(editorBancoDeDados.commit()){// Executar limpeza.
+		return true;
+		}
+		return false;
 	}
 	
 	public void setLogado(boolean logado){ //Verifica se tem algum usuario ja logado.
