@@ -13,8 +13,12 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
+import br.com.rsa.carona.carona_rsa.entidades.NumFormatoBr;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class registroActivity extends AppCompatActivity {
@@ -41,6 +45,8 @@ public class registroActivity extends AppCompatActivity {
 
         matriculaRegistro = (EditText) findViewById(R.id.matricula_registro);
         telefoneRegistro = (EditText) findViewById(R.id.telefone_registro);
+        NumFormatoBr addLineNumberFormatter = new NumFormatoBr(new WeakReference(telefoneRegistro));
+        telefoneRegistro.addTextChangedListener(addLineNumberFormatter);
         emailRegistro = (EditText) findViewById(R.id.email_registro);
         senhaRegistro = (EditText) findViewById(R.id.senha_registro);
         senha2Registro = (EditText) findViewById(R.id.senha2_registro);
@@ -51,34 +57,39 @@ public class registroActivity extends AppCompatActivity {
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //VERIFICANDO DE OS CAMPOS ESTÃO PREENCHIDOS
-                if (!matriculaRegistro.getText().toString().trim().equals("") &&
-                        !telefoneRegistro.getText().toString().trim().equals("") &&
-                        !emailRegistro.getText().toString().trim().equals("") &&
-                        !senhaRegistro.getText().toString().trim().equals("") &&
-                        !senha2Registro.getText().toString().trim().equals("")
-                        ) {
-                    if (senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
-                        String matricula = matriculaRegistro.getText().toString();
-                        String telefone = telefoneRegistro.getText().toString();
-                        String email = emailRegistro.getText().toString();
-                        String senha = senhaRegistro.getText().toString();
-                        boolean cnh = cnhRegistro.isChecked();
-                        Log.e("testador", "cnh " + cnh);
-                        String sexo = sexoRegistro.getSelectedItem().toString();
-                        Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
-                        usuario.setSenha(senha);
-                        usuario.setAtivo(1);
+                    //VERIFICANDO DE OS CAMPOS ESTÃO PREENCHIDOS
+                if(new Funcoes().isEmailValid(emailRegistro.getText().toString())){
+                    if (!matriculaRegistro.getText().toString().trim().equals("") &&
+                            !telefoneRegistro.getText().toString().trim().equals("") &&
+                            !emailRegistro.getText().toString().trim().equals("") &&
+                            !senhaRegistro.getText().toString().trim().equals("") &&
+                            !senha2Registro.getText().toString().trim().equals("")
+                            ) {
+                        if (senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
+                            String matricula = matriculaRegistro.getText().toString();
+                            String telefone = telefoneRegistro.getText().toString();
+                            String email = emailRegistro.getText().toString();
+                            String senha = senhaRegistro.getText().toString();
+                            boolean cnh = cnhRegistro.isChecked();
+                            Log.e("testador", "cnh " + cnh);
+                            String sexo = sexoRegistro.getSelectedItem().toString();
+                            Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
+                            usuario.setSenha(senha);
+                            usuario.setAtivo(1);
 
-                        Intent i = new Intent(registroActivity.this, Registro2.class);
-                        Registro2.usuario = usuario;
-                        startActivity(i);
+                            Intent i = new Intent(registroActivity.this, Registro2.class);
+                            Registro2.usuario = usuario;
+                            startActivity(i);
 
+                        } else {
+                            Toast.makeText(registroActivity.this, "as senhas não conferem", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(registroActivity.this, "as senhas não conferem", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(registroActivity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(registroActivity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+
+                }else{
+                   emailRegistro.setError("Email inválido !");
                 }
             }
         });
