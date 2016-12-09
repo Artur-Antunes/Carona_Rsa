@@ -45,6 +45,16 @@ public class Registro2 extends AppCompatActivity {
         setContentView(R.layout.activity_registro2);
         imagem = (ImageView) findViewById(R.id.c_imagem);
         nomeRegistro = (EditText) findViewById(R.id.tv_nome);
+        nomeRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (nomeRegistro.length() <= 0) {
+                        nomeRegistro.setError(" Campo obrigatório !");
+                    }
+                }
+            }
+        });
         sobrenomeRegistro = (EditText) findViewById(R.id.c_sobrenome);
         bSalvar = (Button) findViewById(R.id.b_salvar);
         bCam = (Button) findViewById(R.id.b_camera);

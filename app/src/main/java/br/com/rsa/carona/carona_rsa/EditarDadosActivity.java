@@ -62,7 +62,6 @@ public class EditarDadosActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_editar_dados);
@@ -72,11 +71,51 @@ public class EditarDadosActivity extends AppCompatActivity {
         sexoEditar = (Spinner) findViewById(R.id.etSexoUsuario);
         sexoEditar.setAdapter(adapter);
         nomeEditar = (EditText) findViewById(R.id.editarNomeValor);
+        nomeEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (nomeEditar.length() <= 0) {
+                        nomeEditar.setError(" Campo obrigatório !");
+                    }
+                }
+            }
+        });
         sobrenomeEditar = (EditText) findViewById(R.id.editarSobrenomeValor);
         matriculaEditar = (EditText) findViewById(R.id.editarMatriculaValor);
+        matriculaEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (matriculaEditar.length() <= 7) {
+                        matriculaEditar.setError(" Digite todos os números !");
+                    }
+                }
+            }
+        });
         telefoneEditar = (EditText) findViewById(R.id.editarTelefoneValor);
+        telefoneEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (telefoneEditar.length() <= 13) {
+                        telefoneEditar.setError(" Digite todos os números !");
+                    }
+                }
+            }
+        });
         cnhEditar = (Switch) findViewById(R.id.editarCnhValor);
         emailEditar = (EditText) findViewById(R.id.editarEmailValor);
+        emailEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (!new Funcoes().isEmailValid(emailEditar.getText().toString())) {
+                        emailEditar.setError(" Formato inválido !");
+                    }
+                }
+            }
+        });
         imFoto = (ImageView) findViewById(R.id.editar_foto);
         salvarAteracoes = (Button) findViewById(R.id.b_salvar_alteracoes);
         editarFoto = (ImageButton) findViewById(R.id.button_editarImagem);
