@@ -1,7 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
@@ -103,7 +100,7 @@ public class Coronas_oferecidas extends Fragment {
                         final int k = j;
                         if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
                             final RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_solicitadas, null);
-                            TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
+                            TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
                             TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
                             ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
                             ImageButton btnAceitar = (ImageButton) modelo2.findViewById(R.id.b_aceitar_usuario_carona);
@@ -149,7 +146,7 @@ public class Coronas_oferecidas extends Fragment {
                                                             if (object.equals("Usuario Aceito!")) {
                                                                 ll.removeView(modelo2);
                                                                 RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                                                                TextView nomeSolicitante = (TextView) m.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
+                                                                TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
                                                                 TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
                                                                 ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
                                                                 nomeSolicitante.setText(participantes.get(k).getNome());
@@ -222,7 +219,7 @@ public class Coronas_oferecidas extends Fragment {
 
                         } else {
                             RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                            TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.nomeUserSolicitaCarona);//pega os elemetos do modelo para setar dados
+                            TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
                             TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
                             ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
                             nomeSolicitante.setText(participantes.get(j).getNome());

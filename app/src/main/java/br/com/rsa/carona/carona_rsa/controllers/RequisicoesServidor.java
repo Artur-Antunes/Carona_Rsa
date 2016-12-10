@@ -30,7 +30,9 @@ public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;//componente que mostra circulo de progresso
     public static final int TEMPO_CONEXAO = 1000 * 10; //tempo maximo de conex�o
+
     public static final String ENDERECO_SERVIDOR = "http://192.168.0.157/Caronas/";//local onde esta meu projeto php que salva e busca dados no banco
+
 
     //contrutor executa o circulo que pede pra aquardar at� que a conex�o seja terminada
     public RequisicoesServidor(Context context) {
@@ -182,7 +184,7 @@ public class RequisicoesServidor {
         }
     }
 
-    public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, Carona> {
+    public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, List> {
         //Campos da classe.
         Usuario usuario;
         Carona carona;
@@ -195,7 +197,7 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected Carona doInBackground(Void... params) { //Implementação obrigatória.
+        protected List doInBackground(Void... params) { //Implementação obrigatória.
 
             ArrayList<NameValuePair> dados = new ArrayList();
             dados.add(new BasicNameValuePair("id_usuario", this.usuario.getId() + ""));
@@ -215,8 +217,8 @@ public class RequisicoesServidor {
             HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "aguardaConfirmacaoCarona.php");    //Fazer uma requisição tipo Post no WebService.
             //Página de registro
-
-            Carona caronaRetornada = null;    //Variável que irá receber os dados do usuário.
+            Log.e(TAG, "6yyyyyyyyyyyyyyy ");
+           List dadosX = null;    //Variável que irá receber os dados do usuário.
 
             try {
 
@@ -232,8 +234,12 @@ public class RequisicoesServidor {
 
 
                 if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
-                    caronaRetornada = null;
-                } else {            //Senão,se o tamanho de jObj for diferente de zero.
+                   dadosX = null;
+                    Log.e(TAG, "66666666666666666 ");
+                } else {
+                          //Senão,se o tamanho de jObj for diferente de zero.
+                    dadosX= new LinkedList();
+                    Log.e(TAG, "66666666666666666 "+jObj);
                     String origem = jObj.getString("origem");        // Pegando o nome do usuário.
                     String destino = jObj.getString("destino");
                     String horario = jObj.getString("horario");
@@ -245,22 +251,60 @@ public class RequisicoesServidor {
                     Carona carona = new Carona(origem, destino, horario, veiculo, restricao, ponto);    //Novo obj de usuário.
                     carona.setId(this.carona.getId());
                     carona.setStatusUsuario(statusUsuario);
-                    caronaRetornada = carona;
+                    dadosX.add(carona);
+
+                    List<Usuario> participantes = new LinkedList<Usuario>();
+                    List participantesStatus = new LinkedList();
+                    for (int j = 0; j < jObj.getInt("participantes_tamanho"); j++) {
+                        int idPart = jObj.getInt("participantes_" + j + "_id");
+                        String nomePart = jObj.getString("participantes_" + j + "_nome");
+                        String statusSoliciacao =jObj.getString("participantes_" + j + "_status_solicitacao");
+                        Usuario participante = new Usuario(idPart, nomePart);
+                        participantes.add(participante);
+                        participantesStatus.add(statusSoliciacao);
+                    }
+                    carona.setParticipantes(participantes);
+                    carona.setParticipantesStatus(participantesStatus);
+
+
+                    String telefone = jObj.getString("telefone");
+                    String nome = jObj.getString("nome");
+                    String sobrenome = jObj.getString("sobrenome");
+                    String email = jObj.getString("email");
+                    String foto = jObj.getString("foto");
+                    int cnh1 = jObj.getInt("cnh");
+                    int idU = jObj.getInt("idUser");
+                    boolean cnh = true;
+                    if (cnh1 == 0) {
+                        cnh = false;
+                    }
+
+                    String matricula = jObj.getString("matricula");
+                    String sexo = jObj.getString("sexo");
+                    Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
+                    usuario.setFoto(foto);
+                    usuario.setId(idU);
+                    dadosX.add(usuario);
 
                 }
 
             } catch (Exception e) {
-                e.getMessage();// se não der certo:mensagem de erro
+                Log.e(TAG, "doInBackground " + e.getMessage());// se não der certo:mensagem de erro
             }
 
-            return caronaRetornada;    //Retorno para o método 'onPostExecute'.
+            return dadosX;    //Retorno para o método 'onPostExecute'.
         }//Fim método.
 
         @Override
-        protected void onPostExecute(Carona caronaRetornada) {
+        protected void onPostExecute(List x) {
+            if(x != null){
+                Log.e(TAG, " nao nullllllllllllll ");
+            }else{
+                Log.e(TAG, " sim nullllllllllllll ");
+            }
             progressDialog.dismiss(); //Finalizar
-            retornoUsuario.concluido(caronaRetornada);
-            super.onPostExecute(caronaRetornada);
+            retornoUsuario.concluido(x);
+            super.onPostExecute(x);
         }//Fim método.
     }//Fim classe.
 
@@ -1056,9 +1100,10 @@ public class RequisicoesServidor {
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "UltimasCaronas.php");
+            String arquivoServ="UltimasCaronas.php";
+
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + arquivoServ);
             String teste = "não";
             JSONObject jObjeto = null;
             try {

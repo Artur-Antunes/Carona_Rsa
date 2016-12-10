@@ -62,9 +62,7 @@ public class Home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         activity = getActivity();
         resource = getResources();
-
         receiver = new MyReceiver(new Handler());
-
         dialog = new AlertDialog.Builder(getActivity());
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega = (ImageButton) view.findViewById(R.id.b_recarrega);
@@ -73,8 +71,6 @@ public class Home extends Fragment {
         if (m.getUsuario() != null) {
             atualizaCaronas();
             atualizarEspera();
-
-
         }
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
@@ -118,14 +114,19 @@ public class Home extends Fragment {
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             Log.e("helder", "que doideira  " + M.getCaronaSolicitada());
             if (M.getCaronaSolicitada() != -1) {
+
                 Carona carona = new Carona(M.getCaronaSolicitada());
                 RequisicoesServidor rs = new RequisicoesServidor(getActivity());
                 rs.aguardaRespostaCarona(usuario, carona, new GetRetorno() {
 
                     @Override
                     public void concluido(Object object) {
-                        final Carona carona = (Carona) object;
-                        if (carona != null) {
+                        Log.e("erro", "concluido fora");
+                        if (object != null) {
+                            Log.e("erro", "acerto dentro");
+                            final List dados=(List)object;
+                            final Carona carona = (Carona)dados.get(0);
+                            final Usuario user = (Usuario)dados.get(1);
                             final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
                             TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
                             TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
@@ -137,14 +138,15 @@ public class Home extends Fragment {
                             modelo.setId(0);
                             modelo.setGravity(0);
                             ll.addView(modelo, 0);
-                            ll.setOnClickListener(new View.OnClickListener() {
+                            modelo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent i= new Intent(getActivity(),Detalhes_Carona.class);
                                     Detalhes_Carona.carona=carona;
+                                    Detalhes_Carona.usuario=user;
+                                    startActivity(i);
                                 }
                             });
-
                             btnCancelar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -271,10 +273,15 @@ public class Home extends Fragment {
                                                         @Override
                                                         public void concluido(Object object) {
                                                             Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                                            if (object.toString().trim().equals("1")) {
                                                                 md.setCaronaSolicitada(id_carona);
+                                                                Log.e("hhhhhhhhh", "id carona doida " + md.getCaronaSolicitada());
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
+                                                            Toast.makeText(getActivity(), "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
+                                                            }else{
+                                                                Log.e("gggg", "concluido ero "+object.toString());
+                                                                Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
 
@@ -422,11 +429,15 @@ public class Home extends Fragment {
                                                     rs.solicitaCarona(carona, eu, new GetRetorno() {
                                                         @Override
                                                         public void concluido(Object object) {
-                                                            Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
-                                                            if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
+                                                            if (object.toString().trim().equals("1")) {
                                                                 md.setCaronaSolicitada(id_carona);
+                                                                Log.e("hhhhhhhhh", "id carona doida " + md.getCaronaSolicitada());
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
+                                                                Toast.makeText(getActivity(), "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
+                                                            }else{
+                                                                Log.e("gggg", "concluido ero "+object.toString());
+                                                                Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
 

@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="nome"
-        android:id="@+id/nomeUserSolicitaCarona"
+        android:id="@+id/tv_destino_ACEITO2"
         android:layout_marginLeft="5dp"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/c_foto"
@@ -68,8 +68,8 @@
             android:text="89981106513"
             android:id="@+id/c_telefone"
             android:textSize="14dp"
-            android:layout_below="@+id/nomeUserSolicitaCarona"
-            android:layout_alignStart="@+id/nomeUserSolicitaCarona" />
+            android:layout_below="@+id/tv_destino_ACEITO2"
+            android:layout_alignStart="@+id/tv_destino_ACEITO2" />
 
     </RelativeLayout>
 

@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="89981106513"
-            android:id="@+id/c_telefone"
+            android:id="@+id/tv_horario_ACEITO"
             android:textSize="14dp"
             android:layout_below="@+id/tv_destino_ACEITO2"
             android:layout_alignStart="@+id/tv_destino_ACEITO2" />
