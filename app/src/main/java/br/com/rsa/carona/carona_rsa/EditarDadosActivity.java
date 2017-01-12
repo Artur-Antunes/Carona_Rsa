@@ -74,7 +74,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         nomeEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (nomeEditar.length() <= 0) {
                         nomeEditar.setError(" Campo obrigatório !");
                     }
@@ -86,7 +86,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         matriculaEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (matriculaEditar.length() <= 7) {
                         matriculaEditar.setError(" Digite todos os números !");
                     }
@@ -97,7 +97,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         telefoneEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (telefoneEditar.length() <= 13) {
                         telefoneEditar.setError(" Digite todos os números !");
                     }
@@ -109,7 +109,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         emailEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (!new Funcoes().isEmailValid(emailEditar.getText().toString())) {
                         emailEditar.setError(" Formato inválido !");
                     }

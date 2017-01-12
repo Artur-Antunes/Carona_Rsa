@@ -16,16 +16,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 public class testador extends AppCompatActivity {
     AlertDialog actions;
     private int valor = -1;
+    ManipulaDados mDados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Activity");
+        mDados = new ManipulaDados(testador.this);
 
         Button button = new Button(this);
         button.setText("Click for Options");
@@ -47,10 +58,31 @@ public class testador extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case 0: // Delete
-                    valor = -8;
-                    Toast.makeText(testador.this, valor + "sdfsd", Toast.LENGTH_LONG).show();
+                    DateFormat dformato = new SimpleDateFormat("HH:mm");
+                    String horaAtualString = dformato.format(Calendar.getInstance().getTime());
+
+                    String horaEscolhidaString="13:51";
+
+                    final DateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+
+                    try {
+                        final Date dateAtual = df.parse(horaAtualString);
+                        final Date dateEscolhida = df.parse(horaEscolhidaString);
+                        Log.e("teste->",dateAtual+"");
+                        Log.e("teste->",dateEscolhida+"");
+                        if(dateAtual.getTime()>dateEscolhida.getTime()){
+                            Log.e("resultado:","a data atual é maior.");
+                        }else{
+                            Log.e("resultado:","a data atual é menor.");
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    //Toast.makeText(testador.this,"bora : "+dateString, Toast.LENGTH_LONG).show();
                     break;
                 case 1: // Copy
+                    startActivity(new Intent(testador.this, LoginActivity.class));
                     break;
                 case 2: // Edit
                     break;

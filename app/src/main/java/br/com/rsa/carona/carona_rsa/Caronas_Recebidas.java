@@ -37,15 +37,15 @@ public class Caronas_Recebidas extends Fragment {
         if (M.getUsuario() != null) {
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-            rs.buscaUltimasCaronas(usuario, -100, new GetRetorno() {
+            rs.exibirMinhasSolicitações(usuario, new GetRetorno() {
                 @Override
                 public void concluido(Object object) {
                     final List<Carona> caronas = (List<Carona>) object;
                     if (caronas != null) {
                         for (int i = 0; i < caronas.size(); i++) {
-                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas2, null);
-                            TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destino_ACEITO2);
-                            TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_ACEITO);
+                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_minhas_caronas, null);
+                            TextView ta_destino = (TextView) modelo.findViewById(R.id.minha_carona_DESTINO);
+                            TextView ta_horario = (TextView) modelo.findViewById(R.id.minha_carona_SAIDA);
                             ta_destino.setText(caronas.get(i).getDestino());
                             ta_horario.setText(caronas.get(i).getHorario());
                             modelo.setId(i);

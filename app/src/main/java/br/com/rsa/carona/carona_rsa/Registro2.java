@@ -67,6 +67,7 @@ public class Registro2 extends AppCompatActivity {
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                 startActivityForResult(intent, IMAGEM_CAM);
+                Log.e("Foi_onde?","Câmera");
             }
         });
         bGal.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +77,10 @@ public class Registro2 extends AppCompatActivity {
                     //Pick Image From Gallery
                     Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, RESULT_SELECT_IMAGE);
+                    Log.e("Foi_onde?", "Galeria");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -130,7 +131,6 @@ public class Registro2 extends AppCompatActivity {
         File arquivo;
         switch (requestCode) {
             case RESULT_SELECT_IMAGE:
-
                 if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
                     try {
                         Uri selectedImage = data.getData();
@@ -156,14 +156,12 @@ public class Registro2 extends AppCompatActivity {
                         setResult(RESULT_CANCELED, returnFromGalleryIntent);
                         finish();
                     }
-                } else {
-                    Log.i("erro", "RESULT_CANCELED");
+                }else {
                     Intent returnFromGalleryIntent = new Intent();
                     setResult(RESULT_CANCELED, returnFromGalleryIntent);
                     finish();
                 }
                 break;
-
             case PIC_CROP:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
@@ -171,15 +169,19 @@ public class Registro2 extends AppCompatActivity {
                     foto = new Funcoes().BitMapToString(bitmap);
                     imagem.setImageBitmap(bitmap);
                     imagem.setScaleType(ImageView.ScaleType.FIT_XY);
-                    break;
-
+                }else if(resultCode==Activity.RESULT_CANCELED){
+                    Toast.makeText(Registro2.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }
-            case IMAGEM_CAM:
-                arquivo = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
-                extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
-                performCrop(Uri.fromFile(arquivo));
                 break;
-
+            case IMAGEM_CAM:
+                if(resultCode == Activity.RESULT_OK) {
+                    arquivo = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
+                    extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
+                    performCrop(Uri.fromFile(arquivo));
+                }else if(resultCode == Activity.RESULT_CANCELED){
+                    Toast.makeText(Registro2.this, "Cancelado !", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

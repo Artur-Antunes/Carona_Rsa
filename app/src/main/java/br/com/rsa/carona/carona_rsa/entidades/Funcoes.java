@@ -16,8 +16,14 @@ import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +55,28 @@ public class Funcoes {
         String[] aux = imgPath.split("\\.");
         return aux[aux.length - 1];
     }
+
+    public boolean validaHora(String horaSaida){
+        DateFormat dformato = new SimpleDateFormat("HH:mm");
+        String horaAtualString = dformato.format(Calendar.getInstance().getTime());
+        final DateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+        try {
+            final Date dateAtual = df.parse(horaAtualString);
+            final Date dateEscolhida = df.parse(horaSaida);
+            Log.e("hora dispositivo:",horaAtualString);
+            Log.e("hora parametro:",horaSaida);
+            Log.e("DATA dispositivo:",dateAtual+"");
+            Log.e("DATA parametro:",dateEscolhida+"");
+            if(dateEscolhida.getTime()>dateAtual.getTime()){
+                return true;
+            }else{
+                return false;            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+                return false;
+    }
+
     public void notificacaoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
         if(!checkApp(contexto)) {
             final Intent emptyIntent = new Intent(contexto, MainActivity.class);

@@ -1,199 +1,227 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView" >
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="br.com.rsa.carona.carona_rsa.Criar_Carona">
-
-
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/sp_origem"
-        android:layout_below="@+id/textView7"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="ORIGEM"
-        android:id="@+id/textView7"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/sp_destino"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="DESTINO"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/sp_origem"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/tv_vagas2"
-        android:textSize="50dp"
-        android:layout_below="@+id/textView11"
-        android:layout_toEndOf="@+id/tp_horario" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="TIPO VEÍCULO"
-        android:id="@+id/textView9"
-        android:layout_below="@+id/tv_vagas2"
-        android:layout_toEndOf="@+id/tp_horario"
-        android:layout_marginTop="10dp" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sp_tipos_veiculo"
-        android:layout_below="@+id/textView9"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/tp_horario" />
-
-    <RadioGroup
+    android:id="@+id/scrollView99" >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rd_restricoes"
-        android:layout_below="@+id/textView13"
-        android:orientation="horizontal"
-        android:layout_alignStart="@+id/view">
-        <RadioButton android:id="@+id/radio_todos"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context="br.com.rsa.carona.carona_rsa.Criar_Carona">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/todos"/>
-        <RadioButton android:id="@+id/radio_homens"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="ORIGEM"
+            android:textSize="18dp"
+            android:textColor="#388E3C"
+            android:id="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sp_origem"
+            android:layout_below="@+id/textView7"
+            android:layout_alignParentEnd="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/sp_origem"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/homens"/>
-        <RadioButton android:id="@+id/radio_mulheres"
-            android:layout_width="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="DESTINO"
+            android:id="@+id/textView6"
+            android:textSize="18dp"
+            android:textColor="#388E3C"
+            android:layout_below="@+id/sp_origem"
+            android:layout_alignParentStart="true" />
+
+        <Spinner
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/mulheres"/>
+            android:id="@+id/sp_destino"
+            android:layout_below="@+id/textView6"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="10dp" />
 
-    </RadioGroup>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view1.1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/sp_destino"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="HORÁRIO DE SAÍDA"
-        android:id="@+id/textView10"
-        android:layout_alignTop="@+id/tp_horario"
-        android:layout_alignParentStart="true" />
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_below="@+id/textView12"
-        android:id="@+id/t1"
-        android:layout_height="wrap_content">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/c_ponto"
-        android:inputType="textMultiLine"
+        <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1"
+            android:shrinkColumns="0,1"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/sp_destino">
 
-        android:layout_alignParentEnd="true" />
-    </android.support.design.widget.TextInputLayout>
+            <TableRow>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="VAGAS (max 5)"
-        android:id="@+id/textView11"
-        android:layout_below="@+id/sp_destino"
-        android:layout_toEndOf="@+id/tp_horario"
-        android:layout_marginTop="20dp" />
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="HORÁRIO DE SAÍDA"
+                    android:textSize="18dp"
+                    android:layout_gravity="left"
+                    android:textColor="#388E3C"
+                    android:id="@+id/textView10" />
 
-    <TimePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tp_horario"
-        android:timePickerMode="spinner"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignTop="@+id/textView11"
-        android:layout_alignParentStart="true" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/view"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/sp_destino"
-        android:layout_centerHorizontal="true" />
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="VEÍCULO"
+                    android:textSize="18dp"
+                    android:textColor="#388E3C"
+                    android:layout_gravity="center"
+                    android:id="@+id/textView11"
+                    />
+            </TableRow>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="PONTO DE ENCONTRO"
-        android:id="@+id/textView12"
-        android:layout_below="@+id/tp_horario"
-        android:layout_alignParentStart="true" />
+            <TableRow>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SALVAR"
-        android:id="@+id/b_salvar"
-        android:layout_below="@id/rd_restricoes"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+                <Button
+                    android:layout_height="wrap_content"
+                    android:text="Selecionar"
+                    android:id="@+id/tp_horario"
+                    android:layout_gravity="left"
+                    android:onClick="showTimePickerDialog" />
+                <Spinner
+                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/sp_tipos_veiculo" />
+            </TableRow>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="PERMIÇÕES PARA:"
-        android:id="@+id/textView13"
-        android:layout_below="@+id/t1"
-        android:layout_alignParentStart="true" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view1.2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/animacao"
-        android:src="@drawable/icon_mais"
-        android:id="@+id/b_mais"
-        android:layout_alignTop="@+id/tv_vagas2"
-        android:layout_alignEnd="@+id/sp_destino" />
+            <TableRow>
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="PONTO DE ENCONTRO"
+                    android:textSize="18dp"
+                    android:layout_gravity="left"
+                    android:textColor="#388E3C"
+                    android:id="@+id/textView12"
+                    />
 
-    <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/icon_menos"
-        android:background="@drawable/animacao"
-        android:id="@+id/b_menos"
-        android:layout_below="@+id/b_mais"
-        android:layout_alignStart="@+id/b_mais"
-        android:layout_marginTop="-5dp" />
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="VAGAS"
+                    android:textSize="18dp"
+                    android:layout_gravity="center"
+                    android:textColor="#388E3C"
+                    android:id="@+id/textView9"
+                    />
+            </TableRow>
+            <TableRow>
 
-</RelativeLayout>
-    </ScrollView>
+                <EditText
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/c_ponto"
+                    android:layout_gravity="left"
+                    android:inputType="textMultiLine"/>
+
+                <EditText
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:inputType="number"
+                    android:layout_gravity="center"
+                    android:id="@+id/tv_vagas2" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view1.3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="VOU LEVAR"
+                android:textSize="18dp"
+                android:textColor="#388E3C"
+                android:id="@+id/textView13"
+                />
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rd_restricoes"
+                android:layout_below="@+id/textView13"
+                android:orientation="horizontal"
+                android:layout_alignStart="@+id/view">
+                <RadioButton android:id="@+id/radio_todos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/todos"/>
+                <RadioButton android:id="@+id/radio_homens"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/homens"/>
+                <RadioButton android:id="@+id/radio_mulheres"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mulheres"/>
+
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/view1.4"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SALVAR"
+                android:id="@+id/b_salvar"
+                android:background="#388E3C"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
+        </TableLayout>
+
+
+    </RelativeLayout>
+</ScrollView>

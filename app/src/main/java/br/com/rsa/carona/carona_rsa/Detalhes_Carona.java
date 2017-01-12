@@ -68,7 +68,7 @@ public class Detalhes_Carona extends AppCompatActivity {
             b_salvar.setTextColor(Color.WHITE);
         } else {
             b_salvar.setBackgroundResource(R.drawable.cor_botao3);
-            Drawable img =getResources().getDrawable(R.drawable.icon_not);
+            Drawable img = getResources().getDrawable(R.drawable.icon_not);
             img.setBounds(0, 0, 60, 60);
             b_salvar.setCompoundDrawables(img, null, null, null);
             b_salvar.setText("CANCELAR");
@@ -120,7 +120,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                             .setMessage(R.string.alert_cancelar_carona)
                             .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialoginterface, int i) {
-                                   // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
+                                    // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
                                 }
                             })
                             .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
@@ -185,12 +185,7 @@ public class Detalhes_Carona extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

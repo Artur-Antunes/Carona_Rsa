@@ -24,6 +24,8 @@
         android:text="Galeria"
         android:id="@+id/b_galeria"
         android:layout_below="@+id/c_imagem"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
         android:layout_alignEnd="@+id/c_imagem" />
 
     <Button
@@ -32,6 +34,8 @@
         android:text="CAMERA"
         android:id="@+id/b_camera"
         android:layout_below="@+id/c_imagem"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
         android:layout_centerHorizontal="true" />
 
     <EditText

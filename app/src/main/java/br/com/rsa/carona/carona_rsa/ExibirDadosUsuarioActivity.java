@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +91,9 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.exibir_dados_usuario, menu);
+
+        Log.e("será aqui?","1");
+
         return true;
     }
 
@@ -97,13 +101,16 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Log.e("será aqui?","2");
             return true;
         }
         if (id == R.id.action_home) {
+            Log.e("será aqui?", "3");
             startActivity(new Intent(this, MainActivity.class));
             return true;
         }
         if (id == android.R.id.home) {
+            Log.e("será aqui?", "4");
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

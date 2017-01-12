@@ -41,10 +41,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent it = new Intent(this, Servico.class);
+        Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
         startService(it);
         receiver = new MyReceiver(new Handler());
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         v1 = tabLayout.getTabAt(0).getCustomView();
         v3 = tabLayout.getTabAt(2).getCustomView();
+
         badge1 = new BadgeView(this, v1);
         badge3 = new BadgeView(this, v3);
 
@@ -97,10 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
-
 
     @Override
     public void onResume() {
@@ -108,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction("abc");
         registerReceiver(receiver, filter);
         Log.e("registro", "registrado");
-
     }
 
     @Override
@@ -152,13 +148,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             return true;
         } else if (id == R.id.action_sair) {
+            Servico.ativo = false;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ManipulaDados mDados;
             mDados = new ManipulaDados(MainActivity.this);
-            if(mDados.limparDados()){
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-            }
-
+            mDados.limparDados();
+            startActivity(new Intent(this, LoginActivity.class));
             return true;
         }
 
@@ -180,18 +179,15 @@ public class MainActivity extends AppCompatActivity {
                 badge.show();
                 break;
         }
-
-
     }
 
-     public void LimparBadge(BadgeView badge, int valor) {
+    public void LimparBadge(BadgeView badge, int valor) {
         badge.hide();
         if (valor == 1) {
             numNovasCaronas = 0;
         } else {
             numNovasSolicitacoes = 0;
         }
-
     }
 
     public class MyReceiver extends BroadcastReceiver {
@@ -227,10 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
-
             }
-
-
         }
     }
 }

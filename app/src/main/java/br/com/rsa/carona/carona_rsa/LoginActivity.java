@@ -27,6 +27,7 @@ import android.widget.Toast;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
+import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 /**
@@ -36,22 +37,20 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mSenhaView;
     private EditText mMatriculaView;
-    private Button BtnLogar;
     ManipulaDados mDados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mDados = new ManipulaDados(LoginActivity.this);
-        //mDados.limparDados();
         try {
-            Thread.sleep(500);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        mDados = new ManipulaDados(LoginActivity.this);
+        //mDados.limparDados();
         if (mDados.getUsuario() != null) {
-            Log.e("GGGGGGGGGGG ", "DIFERENTEEEEEEEEEEEEE");
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario

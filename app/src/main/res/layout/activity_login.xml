@@ -39,8 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_matricula"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
+                        android:textSize="18dp"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
@@ -54,8 +53,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_senha"
                     android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
+                    android:textSize="18dp"
                     android:inputType="textPassword"
                     android:maxLines="1" android:singleLine="true" />
 

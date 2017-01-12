@@ -1,11 +1,13 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,10 +22,13 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.InputFilterMinMax;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 
 public class Criar_Carona extends AppCompatActivity {
@@ -31,12 +36,12 @@ public class Criar_Carona extends AppCompatActivity {
     private Spinner destino;
     private Spinner tipoVeiculo;
     private Button salvar;
-    private ImageButton bMais;
-    private ImageButton bMenos;
+    //private ImageButton bMais;
+    //private ImageButton bMenos;
     private EditText ponto;
     private EditText vagas;
     private RadioGroup restricoes;
-    private TimePicker horario;
+    private Button horario;
     AlertDialog.Builder dialog;
 
 
@@ -44,13 +49,11 @@ public class Criar_Carona extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         setContentView(R.layout.activity_criar__carona);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.locais, android.R.layout.simple_spinner_dropdown_item);
         origem = (Spinner) findViewById(R.id.sp_origem);
         destino = (Spinner) findViewById(R.id.sp_destino);
-        horario = (TimePicker) findViewById(R.id.tp_horario);
-        horario.setIs24HourView(true);
+        horario = (Button) findViewById(R.id.tp_horario);
         tipoVeiculo = (Spinner) findViewById(R.id.sp_tipos_veiculo);
         dialog = new AlertDialog.Builder(Criar_Carona.this);
         tipoVeiculo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -67,11 +70,20 @@ public class Criar_Carona extends AppCompatActivity {
             }
         });
         salvar = (Button) findViewById(R.id.b_salvar);
-        bMais = (ImageButton) findViewById(R.id.b_mais);
-        bMenos = (ImageButton) findViewById(R.id.b_menos);
+        //bMais = (ImageButton) findViewById(R.id.b_mais);
+        //bMenos = (ImageButton) findViewById(R.id.b_menos);
         ponto = (EditText) findViewById(R.id.c_ponto);
+        ponto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if (ponto.getText().toString().equals("")) {
+                        ponto.setError(" Campo obrigatório !");
+                    }
+                }
+            }
+        });
         vagas = (EditText) findViewById(R.id.tv_vagas2);
-
         vagas.setFilters(new InputFilter[]{new InputFilterMinMax("1", "5")});
         vagas.setText("1");
         restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
@@ -82,11 +94,10 @@ public class Criar_Carona extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!vagas.getText().toString().equals("")) {
-                    if (!ponto.getText().toString().equals("")) {
+                if(new Funcoes().validaHora(horario.getText().toString())) {
+                    if (!vagas.getText().toString().equals("")) {
                         if (!origem.getSelectedItem().toString().equals(destino.getSelectedItem().toString())) {
                             if (!(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA") && !vagas.getText().toString().equals("1"))) {
-
                                 dialog.setTitle(R.string.title_confirmacao)
                                         .setMessage(R.string.alert_criar_carona)
                                         .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
@@ -104,10 +115,10 @@ public class Criar_Carona extends AppCompatActivity {
                                                 String pontoValor = ponto.getText().toString();
                                                 RadioButton radioButton = (RadioButton) findViewById(restricoes.getCheckedRadioButtonId());
                                                 String resticaoValor = radioButton.getText().toString();
-                                                String horarioValor = horario.getCurrentHour() + ":" + horario.getCurrentMinute();
-                                                Carona carona = new Carona(origemValor, destinoValor, horarioValor, tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
+                                                Carona carona = new Carona(origemValor, destinoValor, horario.getText().toString(), tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
                                                 RequisicoesServidor rs = new RequisicoesServidor(Criar_Carona.this);
                                                 ManipulaDados md = new ManipulaDados(Criar_Carona.this);
+                                                // Log.e("hora?",carona.get);
                                                 rs.gravaCarona(carona, md.getUsuario(), new GetRetorno() {
                                                     @Override
                                                     public void concluido(Object object) {
@@ -133,15 +144,15 @@ public class Criar_Carona extends AppCompatActivity {
                             Toast.makeText(Criar_Carona.this, " ORIGEM E DESTINO PRECISAM SER DISTINTOS ", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(Criar_Carona.this, " PREENCHA O PONTE DE ENCONTRO ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Criar_Carona.this, " PREENCHA A QUANTIDADE DE VAGAS ", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(Criar_Carona.this, " PREENCHA A QUANTIDADE DE VAGAS ", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(Criar_Carona.this, " O HORÁRIO DE SAÍDA É INVÁLIDO ", Toast.LENGTH_SHORT).show();
                 }
             }
-
         });
 
+        /**
         bMenos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +174,23 @@ public class Criar_Carona extends AppCompatActivity {
                     vagas.setText(1 + "");
                 }
             }
-        });
+        });**/
+    }
+
+    public void showTimePickerDialog(View v) {
+
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(Criar_Carona.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                horario.setText( selectedHour + ":" + selectedMinute);
+            }
+        }, hour, minute, true);
+        mTimePicker.setTitle("HORÁRIO SÍDA");
+        mTimePicker.show();
     }
 
     @Override
@@ -175,12 +202,12 @@ public class Criar_Carona extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_perfil) {
+            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
+            return true;
+        }else if(id == R.id.action_home){
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         } else if (id == android.R.id.home) {
             Intent intent = new Intent(this, MainActivity.class);

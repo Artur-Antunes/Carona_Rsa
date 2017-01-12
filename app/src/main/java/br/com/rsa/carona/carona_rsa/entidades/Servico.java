@@ -1,41 +1,29 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
-import android.app.Activity;
-import android.app.ActivityManager;
+
 import android.app.IntentService;
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Message;
-import android.os.Messenger;
 import android.util.Base64;
 import android.util.Log;
-
-import java.util.LinkedList;
 import java.util.List;
-
-import br.com.rsa.carona.carona_rsa.Home;
-import br.com.rsa.carona.carona_rsa.MainActivity;
 import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 
-/**
- * Created by josehelder on 14/11/2016.
- */
 public class Servico extends IntentService {
     public static final String ACTION_MyIntentService = "br.com.rsa.carona.carona_rsa.entidades.RESPONSE";
 
     final Funcoes f = new Funcoes();
     private int cont;
-    private boolean ativo;
+    public static volatile boolean ativo;
+
     public Servico() {
-        super("Servico");
-        ativo=true;
-        cont=0;
+        super("Servico");//Nome do serviço
+        ativo = false;//Serviço ativo
+        cont = 0;
     }
 
     @Override
@@ -46,18 +34,20 @@ public class Servico extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        //Contém o código da tarefa que será executada em segundo plano.
         final ManipulaDados md = new ManipulaDados(this);
-        if(md.getUsuario()!=null) {
-            while (ativo && cont<500) {
+
+        if (md.getUsuario() != null) {
+            while (ativo && cont < 500) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                verificaNovasCaronas();
+                verificaNovasCaronas();//?
                 verificaSolicitacao("AGUARDANDO");
                 verificaSolicitacao("DESISTENCIA");
+
                 int idCaronaSolicitada = md.getCaronaSolicitada();
                 Log.e("testando", "o id doido " + idCaronaSolicitada);
 
@@ -66,27 +56,25 @@ public class Servico extends IntentService {
                 }
                 cont++;
                 Log.e("testando", "cont" + cont);
-
-
             }
-            ativo = true;
+            //ativo = true;
             cont = 0;
-        }else{
+        } else {
             stopSelf();
         }
     }
 
-   public void criaBroadcast(int valor, String tipo){
+    public void criaBroadcast(int valor, String tipo) {
+        Intent dialogIntent = new Intent();
+        dialogIntent.setAction("abc");
+        dialogIntent.putExtra("mensagem", tipo);
+        dialogIntent.putExtra("valor", valor + "");
+        sendBroadcast(dialogIntent);
+    }
 
-       Intent dialogIntent = new Intent();
-       dialogIntent.setAction("abc");
-       dialogIntent.putExtra("mensagem", tipo);
-       dialogIntent.putExtra("valor", valor+"");
-       sendBroadcast(dialogIntent);
-   }
-    public void verificaSolicitacao(final String status){
+    public void verificaSolicitacao(final String status) {
         final ManipulaDados md = new ManipulaDados(this);
-        Usuario us= md.getUsuario();
+        Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.verificaSolicitacoes(status, us, new GetRetorno() {
             @Override
@@ -137,7 +125,7 @@ public class Servico extends IntentService {
                     String titulo = "ME LEVA!";
                     String texto = usuarios.get(0).getNome() + " está " + tipoP + " carona:";
                     // String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
-                    f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap,120,120,false), titulo, texto, getApplicationContext(), 1);
+                    f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 1);
                 }
 
 
@@ -149,11 +137,12 @@ public class Servico extends IntentService {
             }
         });
     }
-    public void verificaSolicitacaoAceita(){
+
+    public void verificaSolicitacaoAceita() {
         final ManipulaDados md = new ManipulaDados(this);
-      final int idCaronaSolicitada=  md.getCaronaSolicitada();
+        final int idCaronaSolicitada = md.getCaronaSolicitada();
         Log.e("aiasdasds", "entrou   dsadasdas");
-      Usuario us= md.getUsuario();
+        Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.verificaCaronaSolitada(idCaronaSolicitada, us, new GetRetorno() {
             @Override
@@ -175,71 +164,62 @@ public class Servico extends IntentService {
             }
         });
     }
-    public void verificaNovasCaronas(){
+
+    public void verificaNovasCaronas() {
 
         final ManipulaDados md = new ManipulaDados(this);
-        int ultimoIdCarona=md.getUltimoIdCarona();
+        int ultimoIdCarona = md.getUltimoIdCarona();
         final Usuario usuario = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
 
-            rs.buscaUltimasCaronas(usuario, ultimoIdCarona, new GetRetorno() {
-                @Override
-                public void concluido(Object object) {
+        rs.buscaUltimasCaronas(usuario, ultimoIdCarona, new GetRetorno() {
+            @Override
+            public void concluido(Object object) {
 
+            }
+            @Override
+            public void concluido(Object object, Object object2) {
+                List<Usuario> usuarios = (List<Usuario>) object2;
+                List<Carona> caronas = (List<Carona>) object;
+
+                if (usuarios.size() > 0) {
+                    criaBroadcast(usuarios.size(), "novaCarona");
                 }
 
-                @Override
-                public void concluido(Object object, Object object2) {
-                    List<Usuario> usuarios = (List<Usuario>) object2;
-                    List<Carona> caronas = (List<Carona>) object;
-                    if (usuarios.size() > 0) {
-                        criaBroadcast(usuarios.size(), "novaCarona");
-                    }
-                    if (usuarios.size() > 1) {
-                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                        String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
-                        String texto = "";
-                        usuarios = f.removeUsuarioRepitidos(usuarios);
-                        for (int i = 0; i < usuarios.size(); i++) {
-                            if (i == 0) {
-                                texto += usuarios.get(i).getNome();
+                if (usuarios.size() > 1) {
+                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                    String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
+                    String texto = "";
+                    usuarios = f.removeUsuarioRepitidos(usuarios);
+                    for (int i = 0; i < usuarios.size(); i++) {
+                        if (i == 0) {
+                            texto += usuarios.get(i).getNome();
 
-                            } else {
-                                if (i < 2) {
-                                    if (i == (usuarios.size() - 1)) {
-                                        texto += " e " + usuarios.get(i).getNome() + " estão ofertando carona";
-                                    } else {
-                                        texto += ", " + usuarios.get(i).getNome();
-                                    }
+                        } else {
+                            if (i < 2) {
+                                if (i == (usuarios.size() - 1)) {
+                                    texto += " e " + usuarios.get(i).getNome() + " estão ofertando carona";
                                 } else {
-                                    texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão ofertando carona";
-                                    break;
+                                    texto += ", " + usuarios.get(i).getNome();
                                 }
-
+                            } else {
+                                texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão ofertando carona";
+                                break;
                             }
-
                         }
-
-
-                        f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 3);
-                        md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
-                    } else if (usuarios.size() == 1) {
-                        byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";
-                        String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
-                        Funcoes f = new Funcoes();
-                        f.notificacaoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 3);
-                        md.gravarUltimaCarona(caronas.get(0).getId());
                     }
-
-
+                    f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 3);
+                    md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
+                } else if (usuarios.size() == 1) {
+                    byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";
+                    String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
+                    Funcoes f = new Funcoes();
+                    f.notificacaoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 3);
+                    md.gravarUltimaCarona(caronas.get(0).getId());
                 }
-            });
-
+            }
+        });
     }
-
-
-
-
 }

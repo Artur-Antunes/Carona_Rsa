@@ -25,7 +25,7 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,17 +34,20 @@
         </activity>
         <activity
             android:name=".EditarDadosActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_edicao" >
         </activity>
-        <activity android:name=".recuperarSenhaActivity" >
-        </activity>
-        <activity android:name=".registroActivity" >
+        <activity android:name=".recuperarSenhaActivity" />
+        <activity
+            android:name=".registroActivity"
+            android:label="@string/title_activity_registro" >
         </activity>
         <activity
             android:name=".Criar_Carona"
             android:label="@string/title_activity_criar__carona" >
         </activity>
-        <activity android:name=".ExibirDadosUsuarioActivity" >
+        <activity
+            android:name=".ExibirDadosUsuarioActivity"
+            android:label="@string/action_perfil" >
         </activity>
         <activity
             android:name=".Detalhes_Carona"
@@ -65,10 +68,9 @@
 
         <activity
             android:name=".testador"
-            android:label="@string/title_activity_testador" >
+            android:label="@string/title_activity_testador" />
+        <activity android:name=".testador2" >
         </activity>
-
-
     </application>
 
 </manifest>

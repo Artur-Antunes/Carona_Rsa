@@ -253,8 +253,6 @@ public class Coronas_oferecidas extends Fragment {
 
             }
         });
-
-
     }
 
     @Override
@@ -309,10 +307,7 @@ public class Coronas_oferecidas extends Fragment {
                             atualizarSolicitantes();
                         }
                     });
-
                     break;
-
-
             }
         }
     }

@@ -1,10 +1,20 @@
 <resources>
-    <string name="app_name">Carona_Rsa</string>
+    <!--Strings relacionadas ao cabeçalho -->
+    <string name="app_name">Me Leva!</string>
     <string name="action_settings">Settings</string>
     <string name="action_perfil">PERFIL</string>
     <string name="action_sair">SAIR</string>
     <string name="section_format">Olá essa é a sessão: %1$d</string>
     <string name="title_activity_login">Bem-Vindo</string>
+    <string name="title_activity_edicao">Edição</string>
+    <string name="title_activity_registro">Registro</string>
+    <string name="title_activity_detalhes__carona">Detalhes da Carona</string>
+    <string name="title_activity_registro2">Finalizar Registro</string>
+    <string name="title_activity_detalhe_usuario">Detalhe do Usúario</string>
+    <string name="title_activity_testador">testador</string>
+    <string name="title_activity_criar__carona">Nova Carona</string>
+
+
 
     <!-- Strings relacionadas to login -->
     <string name="prompt_matricula">Matricula</string>
@@ -21,7 +31,6 @@
     <string name="mulheres">MULHERES</string>
     <string name="todos">TODOS</string>
     <string name="add">NOVA CARONA</string>
-    <string name="title_activity_detalhes__carona">Detalhes Carona</string>
     <string name="confirmacao_exclusao_viagem"> Tem certeza que deseja realizar essa ação ?</string>
     <string name="sim"> SIM </string>
     <string name="nao"> NÃO </string>
@@ -46,7 +55,7 @@
 
     <string-array name="tipo_veiculos">
         <item>CARRO</item>
-        <item>MOTOCICLETA</item>
+        <item>MOTO</item>
     </string-array>
 
 
@@ -63,13 +72,8 @@
         <item>BURITI GRANDE</item>
     </string-array>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_criar__carona">Criar_Carona</string>
     <string name="title_confirmacao">Confirmar</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_registro2">Finalizar Registro</string>
-    <string name="title_activity_detalhe_usuario">Detalhe do Usúario</string>
-    <string name="title_activity_testador">testador</string>
 
 </resources>
