@@ -4,8 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -38,32 +42,44 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mSenhaView;
     private EditText mMatriculaView;
     ManipulaDados mDados;
+    private Boolean exit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        try {
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mDados = new ManipulaDados(LoginActivity.this);
+        mDados=new ManipulaDados(LoginActivity.this);
         //mDados.limparDados();
-        if (mDados.getUsuario() != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+        if(isOnline()) {
+            if (mDados.getUsuario() != null) {
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
+        }else{
+            Toast.makeText(LoginActivity.this,"Sem conexão com a Internet!",Toast.LENGTH_LONG);
         }
+
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
         mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
+
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+        startActivity(intent);
+        finish();
+    }
 
-    /**
-     * As tentativas de login ou registre a conta especificada pelo formulário de login.
-     * Se houver erros de formulário (e-mail inválido, campos em falta, etc.), os
-     * erros são apresentados e nenhuma tentativa de login real é feita
-     */
-
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     //buscar dados para o usuário logar....
     public void logar(View view) {

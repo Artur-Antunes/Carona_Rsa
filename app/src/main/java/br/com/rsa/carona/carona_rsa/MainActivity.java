@@ -21,8 +21,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
@@ -37,74 +40,75 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
-        startService(it);
-        receiver = new MyReceiver(new Handler());
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-
-
-        TabLayout.Tab tab1 = tabLayout.newTab();
-        TabLayout.Tab tab2 = tabLayout.newTab();
-        TabLayout.Tab tab3 = tabLayout.newTab();
-        tab1.setCustomView(R.layout.tab);
-        tab2.setCustomView(R.layout.tab);
-        tab3.setCustomView(R.layout.tab);
-        TextView txt1 = (TextView) tab1.getCustomView().findViewById(R.id.text1);
-        TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
-        TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
-        txt1.setText("HOME");
-        txt2.setText("RECEBIDAS");
-        txt3.setText("OFERECIDAS");
-
-        tabLayout.addTab(tab1);
-        tabLayout.addTab(tab2);
-        tabLayout.addTab(tab3);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        v1 = tabLayout.getTabAt(0).getCustomView();
-        v3 = tabLayout.getTabAt(2).getCustomView();
-
-        badge1 = new BadgeView(this, v1);
-        badge3 = new BadgeView(this, v3);
+            Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
+            startService(it);
+            receiver = new MyReceiver(new Handler());
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(2);
-        adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
+            TabLayout.Tab tab1 = tabLayout.newTab();
+            TabLayout.Tab tab2 = tabLayout.newTab();
+            TabLayout.Tab tab3 = tabLayout.newTab();
+            tab1.setCustomView(R.layout.tab);
+            tab2.setCustomView(R.layout.tab);
+            tab3.setCustomView(R.layout.tab);
+            TextView txt1 = (TextView) tab1.getCustomView().findViewById(R.id.text1);
+            TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
+            TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
+            txt1.setText("HOME");
+            txt2.setText("RECEBIDAS");
+            txt3.setText("OFERECIDAS");
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            tabLayout.addTab(tab1);
+            tabLayout.addTab(tab2);
+            tabLayout.addTab(tab3);
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-            }
+            v1 = tabLayout.getTabAt(0).getCustomView();
+            v3 = tabLayout.getTabAt(2).getCustomView();
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            badge1 = new BadgeView(this, v1);
+            badge3 = new BadgeView(this, v3);
 
-            }
-        });
+
+            final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+            viewPager.setOffscreenPageLimit(2);
+            adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        filter.addAction("abc");
-        registerReceiver(receiver, filter);
-        Log.e("registro", "registrado");
+            filter.addAction("abc");
+            registerReceiver(receiver, filter);
+            Log.e("registro", "registrado");
     }
 
     @Override
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1);
         mNotificationManager.cancel(2);
-        mNotificationManager.cancel(3);
+            mNotificationManager.cancel(3);
     }
 
     @Override
@@ -133,10 +137,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+        startActivity(intent);
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,14 +164,18 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_sair) {
             Servico.ativo = false;
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             ManipulaDados mDados;
             mDados = new ManipulaDados(MainActivity.this);
             mDados.limparDados();
+            LimparBadge(badge1, 1);
+            new Funcoes().apagarNotificacoes(getApplicationContext());
             startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            //System.exit(0);
             return true;
         }
 
@@ -167,13 +185,13 @@ public class MainActivity extends AppCompatActivity {
     public void mostraBadge(String valor, BadgeView badge, int tipo) {
         switch (tipo) {
             case 1:
-                numNovasCaronas += Integer.parseInt(valor);
+                numNovasCaronas += Integer.parseInt(valor);//campo que é incrementado quando tem novas caronas.
                 badge.setText(numNovasCaronas + "");
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();
                 break;
             case 2:
-                numNovasSolicitacoes += Integer.parseInt(valor);
+                numNovasSolicitacoes += Integer.parseInt(valor);//campo que é incrementado quando tem novas solicitações.
                 badge.setText(numNovasSolicitacoes + "");
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();
@@ -190,6 +208,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void decrementarBadge(BadgeView badge, int valor){
+        badge.hide();
+        if (valor == 1) {
+            if(numNovasCaronas>0) {
+                --numNovasCaronas;
+            }
+        } else {
+            if(numNovasSolicitacoes>0) {
+                --numNovasSolicitacoes;
+            }
+        }
+    }
+
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread
 
@@ -199,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(final Context context, Intent intent) {
-
             String mensagem = intent.getStringExtra("mensagem");
             final String valor = intent.getStringExtra("valor");
             switch (mensagem) {
@@ -223,6 +254,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
+                case "solicitacao_expirou":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Home.load.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    break;
+
             }
         }
     }

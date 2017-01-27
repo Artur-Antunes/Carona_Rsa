@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#076d0e</color>
-    <color name="colorPrimaryDark">#388E3C</color>
+    <color name="colorPrimary">#331959</color>
+    <color name="colorPrimaryDark">#2b283d</color>
     <color name="colorAccent">#0e0f0e</color>
     <color name="color1">#C0C0C0C0</color>
     <color name="color2">#FFFF00</color>
@@ -10,4 +10,7 @@
     <color name="verde">#3CB371</color>
     <color name="fundo">#F0FFF0</color>
     <color name="vermelho">#FFA07A</color>
+    <color name="btnConfirmar">#0d0056</color>
+    <color name="btnCancelar">#936c66</color>
+
 </resources>

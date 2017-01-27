@@ -46,7 +46,7 @@
         android:singleLine="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="NOME" />
+        android:hint="Nome" />
 
     <EditText
         android:layout_width="match_parent"
@@ -55,12 +55,14 @@
         android:singleLine="true"
         android:layout_below="@+id/tv_nome"
         android:layout_centerHorizontal="true"
-        android:hint="SOBRENOME" />
+        android:hint="Sobrenome" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SALVAR"
+        android:text="Salvar"
+        android:textColor="@color/btnConfirmar"
+        android:background="@drawable/cor_botao"
         android:id="@+id/b_salvar"
         android:layout_below="@+id/c_sobrenome"
         android:layout_centerHorizontal="true" />

@@ -155,7 +155,7 @@
             android:layout_weight="1"
             android:textStyle="bold"
             android:paddingLeft="20dp"
-            android:drawablePadding="-30dp"
+            android:drawablePadding="-10dp"
             android:background="@drawable/cor_botao"
             android:drawableLeft="@drawable/icon_comments"
              />
@@ -167,7 +167,7 @@
         android:id="@+id/b_solicitar"
         android:textStyle="bold"
         android:paddingLeft="40dp"
-        android:drawablePadding="-30dp"
+        android:drawablePadding="-10dp"
         android:background="@drawable/cor_botao"
         android:drawableLeft="@drawable/icon_ok" />
 

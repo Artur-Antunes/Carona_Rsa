@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/cor_botao"
-                        android:src="@drawable/icon_origem"
+                        android:src="@drawable/icon_down"
                         android:text="MAIS" />
 
                 </LinearLayout>

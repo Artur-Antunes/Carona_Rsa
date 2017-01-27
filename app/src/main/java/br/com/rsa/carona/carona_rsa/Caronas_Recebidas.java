@@ -3,6 +3,7 @@ package br.com.rsa.carona.carona_rsa;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +23,19 @@ public class Caronas_Recebidas extends Fragment {
     View view;
     LinearLayout ll;
     FragmentActivity activity;
+    ManipulaDados M;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
         view = inflater.inflate(R.layout.fragment_caronas__recebidas, container, false);
         ll = (LinearLayout) view.findViewById(R.id.caixa_aceito);
+        M = new ManipulaDados(getActivity());
         atualizarCaronasAceitas();
         return view;
     }
 
     public void atualizarCaronasAceitas() {
-        final ManipulaDados M = new ManipulaDados(getActivity());
         if (M.getUsuario() != null) {
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
@@ -61,4 +63,17 @@ public class Caronas_Recebidas extends Fragment {
             });
         }
     }
+
+    @Override
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+
+
+        }
+    }
+
+
 }

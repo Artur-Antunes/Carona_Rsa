@@ -125,6 +125,7 @@ public class Criar_Carona extends AppCompatActivity {
                                                         Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
                                                         Intent it = new Intent(Criar_Carona.this, MainActivity.class);
                                                         startActivity(it);
+                                                        finish();
                                                     }
 
                                                     @Override
@@ -186,7 +187,14 @@ public class Criar_Carona extends AppCompatActivity {
         mTimePicker = new TimePickerDialog(Criar_Carona.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                horario.setText( selectedHour + ":" + selectedMinute);
+                timePicker.is24HourView();
+                String selectMinuteFinal;
+                if(selectedMinute<10){
+                    selectMinuteFinal="0"+selectedMinute;
+                }else{
+                    selectMinuteFinal=selectedMinute+"";
+                }
+                horario.setText(selectedHour + ":" + selectMinuteFinal);
             }
         }, hour, minute, true);
         mTimePicker.setTitle("HORÁRIO SÍDA");

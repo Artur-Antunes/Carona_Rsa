@@ -282,10 +282,7 @@ public class EditarDadosActivity extends AppCompatActivity {
 
         Usuario usuarioEditado = new Usuario(usuarioEditar.getId());
         int alteracaoes = 0;
-        Log.e("matricula_antigo1:", usuarioEditar.getMatricula().toString());
-        Log.e("matricula_novo1:", matricula);
         if (!usuarioEditar.getMatricula().toString().equals(matricula)) {
-            Log.e("diferente:", "entrou");
             usuarioEditado.setMatricula(matricula);
             alteracaoes++;
         } else {
@@ -320,10 +317,7 @@ public class EditarDadosActivity extends AppCompatActivity {
             usuarioEditado.setEmail(null);
         }
 
-        Log.e("camparacao user_antigo:", usuarioEditar.getSexo().toString());
-        Log.e("camparacao user_novo:", sexo);
         if (!usuarioEditar.getSexo().toString().equals(sexo)) {
-            Log.e("entrou", "ok");
             usuarioEditado.setSexo(sexo);
             alteracaoes++;
         } else {
@@ -381,7 +375,6 @@ public class EditarDadosActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    Log.i("erro", "RESULT_CANCELED");
                     Intent returnFromGalleryIntent = new Intent();
                     setResult(RESULT_CANCELED, returnFromGalleryIntent);
                     finish();
@@ -398,11 +391,18 @@ public class EditarDadosActivity extends AppCompatActivity {
                     imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
                     imagemEditada = true;
                     break;
+                }else if(resultCode==Activity.RESULT_CANCELED){
+                    Toast.makeText(EditarDadosActivity.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }
+                break;
             case IMAGEM_CAM:
-                arquivo = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
-                extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
-                performCrop(Uri.fromFile(arquivo));
+                if(resultCode == Activity.RESULT_OK) {
+                    arquivo = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
+                    extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
+                    performCrop(Uri.fromFile(arquivo));
+                }else if(resultCode == Activity.RESULT_CANCELED){
+                    Toast.makeText(EditarDadosActivity.this, "Cancelado !", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

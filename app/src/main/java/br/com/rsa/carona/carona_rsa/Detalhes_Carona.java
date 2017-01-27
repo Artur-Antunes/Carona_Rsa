@@ -19,6 +19,7 @@ import android.widget.Toast;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -63,91 +64,23 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_email = (TextView) findViewById(R.id.tv_email);
         b_salvar = (Button) findViewById(R.id.b_solicitar);
         dialog = new AlertDialog.Builder(Detalhes_Carona.this);
-        if (md.getUsuario().getId() != usuario.getId()) {
-            b_salvar.setBackgroundResource(R.drawable.cor_botao2);
-            b_salvar.setTextColor(Color.WHITE);
-        } else {
+        if ((md.getCaronaSolicitada()==carona.getId()) || (md.getUsuario().getId()==usuario.getId())){
+            Log.e("nome_botao:","cancelar");
             b_salvar.setBackgroundResource(R.drawable.cor_botao3);
             Drawable img = getResources().getDrawable(R.drawable.icon_not);
             img.setBounds(0, 0, 60, 60);
             b_salvar.setCompoundDrawables(img, null, null, null);
             b_salvar.setText("CANCELAR");
+        } else {
+            Log.e("nome_botao:","salvar");
+            b_salvar.setBackgroundResource(R.drawable.cor_botao2);
+            b_salvar.setTextColor(Color.WHITE);
         }
-        b_salvar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                //teste aqui -
-                if (md.getUsuario().getId() != usuario.getId()) {
-                    if (md.getCaronaSolicitada() == -1) {
-
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_solicitar_carona)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                    }
-                                })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-                                        Usuario eu = md.getUsuario();
-                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
-                                        rs.solicitaCarona(carona, eu, new GetRetorno() {
-                                            @Override
-                                            public void concluido(Object object) {
-                                                Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
-                                                if (object.toString().equals("Carona Solicitada Com Sucesso!")) {
-                                                    md.setCaronaSolicitada(carona.getId());
-                                                }
-                                            }
-
-                                            @Override
-                                            public void concluido(Object object, Object object2) {
-
-                                            }
-                                        });
-
-                                    }
-                                }).show();
-
-                    } else {
-                        Toast.makeText(Detalhes_Carona.this, " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
-                    dialog.setTitle(R.string.title_confirmacao)
-                            .setMessage(R.string.alert_cancelar_carona)
-                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialoginterface, int i) {
-                                    // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
-                                }
-                            })
-                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialoginterface, int i) {
-                                    RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
-                                    rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
-                                        @Override
-                                        public void concluido(Object object) {
-                                            Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
-
-                                        }
-
-                                        @Override
-                                        public void concluido(Object object, Object object2) {
-
-                                        }
-                                    });
-                                }
-                            }).show();
-                }
-            }
-        });
         tv_origem.setText(carona.getOrigem());
         tv_destino.setText(carona.getDestino());
         tv_vagas.setText(carona.getVagas() + "");
-        tv_horario.setText(carona.getHorario());
+        tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
         tv_ponto.setText(carona.getPonto());
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
@@ -155,6 +88,7 @@ public class Detalhes_Carona extends AppCompatActivity {
         } else {
             tv_status.setText("INDISPONÍVEL");
         }
+
         Log.e("testteddddd", usuario.getNome());
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());
@@ -181,7 +115,103 @@ public class Detalhes_Carona extends AppCompatActivity {
             ll.addView(modelo, 0);
         }
 
+        b_salvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(b_salvar.getText().toString().equals("CANCELAR")){
+                    if(md.getUsuario().getId()==usuario.getId()){//O dono vai cancelar sua carona!
+                        Log.e("usuario:","dono_cancela");
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_cancelar_carona)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                        rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+                                        });
+                                    }
+                                }).show();
+                    }
+                    else if(md.getCaronaSolicitada()==carona.getId()){//O usuário vai cancelar sua solicitação!
+                        Log.e("usuario:","caroneiro_cancelando!");
+                        RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
+                        Usuario userLocal=new Usuario((md.getUsuario().getId()));
+                        Log.e("id-carona",carona.getId()+"");
+                        Log.e("id-usuario",userLocal.getId()+"");
+                        rserv.desistirCarona(userLocal,carona, new GetRetorno() {
+                            @Override
+                            public void concluido(Object object) {
+                                Toast.makeText(Detalhes_Carona.this, object.toString(), Toast.LENGTH_LONG).show();
+                                md.setCaronaSolicitada(-1);
+                                startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                            }
+
+                            @Override
+                            public void concluido(Object object, Object object2) {
+
+                            }
+                        });
+
+                    }
+                }
+                else if(b_salvar.getText().toString().equals(("ME LEVA!"))){
+                    if (md.getCaronaSolicitada() == -1) {
+                        Log.e("usuario:","caroneiro_pedindo!");
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_solicitar_carona)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        Usuario eu = md.getUsuario();
+                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                        rs.solicitaCarona(carona, eu, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                if (object.toString().trim().equals("1")) {
+                                                    Toast.makeText(Detalhes_Carona.this, "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
+                                                    md.setCaronaSolicitada(carona.getId());
+                                                    startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                                                }
+                                            }
+
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+                                        });
+
+                                    }
+                                }).show();
+
+                    } else {
+                        Toast.makeText(Detalhes_Carona.this, " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

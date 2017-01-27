@@ -3,9 +3,12 @@ package br.com.rsa.carona.carona_rsa.entidades;
 
 import android.app.IntentService;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
 import java.util.List;
@@ -22,14 +25,14 @@ public class Servico extends IntentService {
 
     public Servico() {
         super("Servico");//Nome do serviço
-        ativo = false;//Serviço ativo
+        ativo = true;//Serviço ativo
         cont = 0;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        return Service.START_STICKY;
+            super.onStartCommand(intent, flags, startId);
+            return Service.START_STICKY;
     }
 
     @Override
@@ -38,24 +41,25 @@ public class Servico extends IntentService {
         final ManipulaDados md = new ManipulaDados(this);
 
         if (md.getUsuario() != null) {
-            while (ativo && cont < 500) {
+            while (ativo) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                verificaNovasCaronas();//?
-                verificaSolicitacao("AGUARDANDO");
-                verificaSolicitacao("DESISTENCIA");
+                verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
+                verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
+                verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
 
                 int idCaronaSolicitada = md.getCaronaSolicitada();
                 Log.e("testando", "o id doido " + idCaronaSolicitada);
-
-                if (idCaronaSolicitada != -1 && idCaronaSolicitada != md.getUltimoIdCaronaAceita()) {
+                if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
+                    Log.e("senhor1","entrou");
                     verificaSolicitacaoAceita();
                 }
                 cont++;
                 Log.e("testando", "cont" + cont);
+                //Log.e("conectado ??",estaConectado()+"000" );
             }
             //ativo = true;
             cont = 0;
@@ -64,7 +68,13 @@ public class Servico extends IntentService {
         }
     }
 
-    public void criaBroadcast(int valor, String tipo) {
+    private boolean estaConectado() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+        return info.isConnected();
+    }
+
+    public void criaBroadcast(int valor, String tipo) {//Enviar dados para MainActivity
         Intent dialogIntent = new Intent();
         dialogIntent.setAction("abc");
         dialogIntent.putExtra("mensagem", tipo);
@@ -72,7 +82,7 @@ public class Servico extends IntentService {
         sendBroadcast(dialogIntent);
     }
 
-    public void verificaSolicitacao(final String status) {
+    public void verificaSolicitacao(final String status) {//ESTUDAR ESSE ????
         final ManipulaDados md = new ManipulaDados(this);
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
@@ -87,7 +97,7 @@ public class Servico extends IntentService {
                         criaBroadcast(usuarios.size(), "solicitacao");
                     }
                 } else {
-                    tipoP = "desistido da";
+                    tipoP = "desistindo da";
                     if (usuarios.size() > 0) {
                         criaBroadcast(usuarios.size(), "solicitacao");
                     }
@@ -148,13 +158,21 @@ public class Servico extends IntentService {
             @Override
             public void concluido(Object object) {
                 Usuario us = (Usuario) object;
-                if (us != null) {
+                String titulo,texto;
+                if ((us != null) && (us.getId()!=-1) ) {
                     md.gravarUltimaCaronaAceita(idCaronaSolicitada);
-                    String titulo = "Carona Aceita";
-                    String texto = us.getNome() + " aceitou sua Solicitação de Carona";
+                    titulo = "Carona Aceita";
+                    texto = us.getNome() + " aceitou sua Solicitação de Carona";
                     byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 2);
+                }else if((us != null) && (us.getId()==-1)){
+                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                    md.setCaronaSolicitada(-1);
+                    titulo = "Solicitação expirou";
+                    texto = "Sua solicitação de carona expirou !";
+                    f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 1);
+                    criaBroadcast(-1,"solicitacao_expirou");
                 }
             }
 
@@ -172,6 +190,7 @@ public class Servico extends IntentService {
         final Usuario usuario = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
 
+        //Verifica no servidor as últimas caronas ...
         rs.buscaUltimasCaronas(usuario, ultimoIdCarona, new GetRetorno() {
             @Override
             public void concluido(Object object) {
@@ -187,6 +206,7 @@ public class Servico extends IntentService {
                 }
 
                 if (usuarios.size() > 1) {
+                    Log.e("hum?","okkkk");
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
                     String texto = "";
@@ -208,7 +228,7 @@ public class Servico extends IntentService {
                             }
                         }
                     }
-                    f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 3);
+                    f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 3);//Exibindo a notificaçõa
                     md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
                 } else if (usuarios.size() == 1) {
                     byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);

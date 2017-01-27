@@ -13,12 +13,8 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
-
-import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
-import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
-import br.com.rsa.carona.carona_rsa.entidades.NumFormatoBr;
+import br.com.rsa.carona.carona_rsa.entidades.Mask;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class registroActivity extends AppCompatActivity {
@@ -53,8 +49,12 @@ public class registroActivity extends AppCompatActivity {
             }
         });
         telefoneRegistro = (EditText) findViewById(R.id.telefone_registro);
-        NumFormatoBr addLineNumberFormatter = new NumFormatoBr(new WeakReference(telefoneRegistro));
-        telefoneRegistro.addTextChangedListener(addLineNumberFormatter);
+
+        //NumFormatoBr addLineNumberFormatter = new NumFormatoBr(new WeakReference(telefoneRegistro));
+
+        telefoneRegistro.addTextChangedListener(Mask.insert("(##)####-####", telefoneRegistro));
+
+        //telefoneRegistro.addTextChangedListener(addLineNumberFormatter);
         telefoneRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

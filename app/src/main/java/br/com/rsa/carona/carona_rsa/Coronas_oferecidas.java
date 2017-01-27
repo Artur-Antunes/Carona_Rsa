@@ -33,6 +33,7 @@ import java.util.List;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -45,11 +46,13 @@ public class Coronas_oferecidas extends Fragment {
     MyReceiver receiver;
     IntentFilter filter = new IntentFilter();
     AlertDialog.Builder dialog;
+    ManipulaDados M;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
         resource = getResources();
+         M = new ManipulaDados(getActivity());
         view = inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
@@ -71,11 +74,11 @@ public class Coronas_oferecidas extends Fragment {
 
 
     public void atualizarSolicitantes() {
-
         lloferecidas.removeAllViews();
-        ManipulaDados M = new ManipulaDados(activity);
+        Log.e("o que será ?", " parou aqui ?");
         Usuario usuario = new Usuario(M.getUsuario().getId());
-        RequisicoesServidor rs = new RequisicoesServidor(activity);
+        Log.e("o que será ?",M.getUsuario().getId()+" ");
+        RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         rs.buscasSolicitacoesCaronas(usuario, new GetRetorno() {
             @Override
             public void concluido(Object object) {
@@ -86,16 +89,47 @@ public class Coronas_oferecidas extends Fragment {
                     TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
                     TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
                     final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+                    ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
+
 
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
-                    tv_horario.setText(caronas.get(i).getHorario());
+                    tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
                     tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas());
 
                     final LinearLayout ll = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
                     final int m = i;
                     final List<Usuario> participantes = caronas.get(i).getParticipantes();
                     final List statusSolicitacao = caronas.get(i).getParticipantesStatus();
+
+                    final int idCarona=caronas.get(i).getId();
+                    final int idUsuario=M.getUsuario().getId();
+                    btnClose.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RequisicoesServidor rs3 = new RequisicoesServidor(activity);
+                            rs3.fecharCaronaOferecida(idCarona,idUsuario, new GetRetorno() {
+                                @Override
+                                public void concluido(Object object) {
+                                    if(object.toString().equals("1")){
+                                        Toast.makeText(activity, "Removido!", Toast.LENGTH_SHORT).show();
+                                        lloferecidas.removeView(modelo);
+                                    }else if(object.toString().equals("0")){
+                                        Toast.makeText(activity, "Carona ativa !", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void concluido(Object object, Object object2) {
+
+                                }
+                            });
+
+                        }
+                    });
+
+
+
                     for (int j = 0; j < participantes.size(); j++) {
                         final int k = j;
                         if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
@@ -117,15 +151,13 @@ public class Coronas_oferecidas extends Fragment {
                             dr.setCircular(true);
                             fotoSolicitante.setImageDrawable(dr);
                             fotoSolicitante.setScaleType(ImageView.ScaleType.FIT_XY);
-                            int idSolicitante = participantes.get(j).getId();
 
+                            int idSolicitante = participantes.get(j).getId();
                             final Usuario userAtual = new Usuario(idSolicitante);
 
 
                             modelo2.setId(j);
-
                             ll.addView(modelo2, 0);
-
                             btnAceitar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -139,11 +171,12 @@ public class Coronas_oferecidas extends Fragment {
                                             .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialoginterface, int i) {
                                                     RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                    rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
+                                                    rs2.aceitarRecusarCaronas(userAtual,"ACEITO", new GetRetorno() {
                                                         @Override
                                                         public void concluido(Object object) {
                                                             Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
                                                             if (object.equals("Usuario Aceito!")) {
+                                                                ((MainActivity) activity).decrementarBadge(((MainActivity) activity).badge3, 2);
                                                                 ll.removeView(modelo2);
                                                                 RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                                                                 TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
@@ -188,7 +221,7 @@ public class Coronas_oferecidas extends Fragment {
                                                 public void onClick(DialogInterface dialoginterface, int i) {
 
                                                     RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                    rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
+                                                    rs2.aceitarRecusarCaronas(userAtual,"RECUSADO", new GetRetorno() {
                                                         @Override
                                                         public void concluido(Object object) {
                                                             Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
@@ -216,6 +249,7 @@ public class Coronas_oferecidas extends Fragment {
                                     startActivity(it);
                                 }
                             });
+
 
                         } else {
                             RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
@@ -263,6 +297,16 @@ public class Coronas_oferecidas extends Fragment {
         }
     }
 
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+
+
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -295,8 +339,6 @@ public class Coronas_oferecidas extends Fragment {
 
         @Override
         public void onReceive(final Context context, Intent intent) {
-
-
             String mensagem = intent.getStringExtra("mensagem");
             final String valor = intent.getStringExtra("valor");
             switch (mensagem) {
@@ -307,7 +349,6 @@ public class Coronas_oferecidas extends Fragment {
                             atualizarSolicitantes();
                         }
                     });
-                    break;
             }
         }
     }

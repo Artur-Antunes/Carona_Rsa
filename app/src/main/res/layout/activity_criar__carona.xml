@@ -16,9 +16,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="ORIGEM"
+            android:text="Origem"
             android:textSize="18dp"
-            android:textColor="#388E3C"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/textView7"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true" />
@@ -44,10 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="DESTINO"
+            android:text="Destino"
             android:id="@+id/textView6"
             android:textSize="18dp"
-            android:textColor="#388E3C"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_below="@+id/sp_origem"
             android:layout_alignParentStart="true" />
 
@@ -83,18 +83,18 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="HORÁRIO DE SAÍDA"
+                    android:text="Horário saida"
                     android:textSize="18dp"
                     android:layout_gravity="left"
-                    android:textColor="#388E3C"
+                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/textView10" />
 
                 <TextView
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="VEÍCULO"
+                    android:text="Veiculo"
                     android:textSize="18dp"
-                    android:textColor="#388E3C"
+                    android:textColor="@color/colorPrimaryDark"
                     android:layout_gravity="center"
                     android:id="@+id/textView11"
                     />
@@ -129,20 +129,20 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="PONTO DE ENCONTRO"
+                    android:text="Ponte de encontro"
                     android:textSize="18dp"
                     android:layout_gravity="left"
-                    android:textColor="#388E3C"
+                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/textView12"
                     />
 
                 <TextView
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="VAGAS"
+                    android:text="Vagas"
                     android:textSize="18dp"
                     android:layout_gravity="center"
-                    android:textColor="#388E3C"
+                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/textView9"
                     />
             </TableRow>
@@ -175,9 +175,9 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="VOU LEVAR"
+                android:text="Vou levar"
                 android:textSize="18dp"
-                android:textColor="#388E3C"
+                android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView13"
                 />
             <RadioGroup
@@ -215,9 +215,10 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SALVAR"
+                android:text="Salvar"
                 android:id="@+id/b_salvar"
-                android:background="#388E3C"
+                android:background="@drawable/cor_botao"
+                android:textColor="@color/btnConfirmar"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp" />
         </TableLayout>

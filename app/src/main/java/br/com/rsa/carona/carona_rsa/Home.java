@@ -40,6 +40,7 @@ import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
@@ -56,6 +57,7 @@ public class Home extends Fragment {
     int ultimoNum = 0;
     MyReceiver receiver;
     AlertDialog.Builder dialog;
+    ManipulaDados m;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,10 +69,13 @@ public class Home extends Fragment {
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega = (ImageButton) view.findViewById(R.id.b_recarrega);
         load = (FloatingActionButton) view.findViewById(R.id.b_atualiza);
-        ManipulaDados m = new ManipulaDados(getActivity());
+        m = new ManipulaDados(activity);
         if (m.getUsuario() != null) {
             atualizaCaronas();
-            atualizarEspera();
+            if (m.getCaronaSolicitada()!=-1) {
+                Log.e("senhor3","entrou");
+                atualizarEspera();
+            }
         }
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
@@ -85,6 +90,9 @@ public class Home extends Fragment {
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (m.getCaronaSolicitada()!=-1) {
+                    atualizarEspera();
+                }
                 atualizaCaronas();
             }
         });
@@ -114,7 +122,6 @@ public class Home extends Fragment {
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             Log.e("helder", "que doideira  " + M.getCaronaSolicitada());
             if (M.getCaronaSolicitada() != -1) {
-
                 Carona carona = new Carona(M.getCaronaSolicitada());
                 RequisicoesServidor rs = new RequisicoesServidor(getActivity());
                 rs.aguardaRespostaCarona(usuario, carona, new GetRetorno() {
@@ -134,7 +141,7 @@ public class Home extends Fragment {
                             Button btnCancelar = (Button) modelo.findViewById(R.id.b_desistencia);
                             ta_destino.setText(carona.getDestino());
                             ta_status.setText(carona.getStatusUsuario());
-                            ta_horario.setText(carona.getHorario());
+                            ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
                             modelo.setId(0);
                             modelo.setGravity(0);
                             ll.addView(modelo, 0);
@@ -159,7 +166,6 @@ public class Home extends Fragment {
                                             M.setCaronaSolicitada(-1);
                                             ultimoNum = 0;
                                             atualizaCaronas();
-
                                             ll.removeView(modelo);
                                         }
 
@@ -241,6 +247,10 @@ public class Home extends Fragment {
                     c_foto.setImageDrawable(dr);
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
+                    String teste=new Funcoes().horaSimples(caronas.get(i).getHorario());
+
+                    Log.e("teste-fim",teste);
+
                     tv_horario.setText(caronas.get(i).getHorario());
                     tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
@@ -278,10 +288,12 @@ public class Home extends Fragment {
                                                                 Log.e("hhhhhhhhh", "id carona doida " + md.getCaronaSolicitada());
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
-                                                            Toast.makeText(getActivity(), "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
-                                                            }else{
-                                                                Log.e("gggg", "concluido ero "+object.toString());
-                                                                Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
+                                                                exibirMsg("Carona solicitada!");
+                                                            }else if(object.toString().trim().equals("2")) {
+                                                                exibirMsg("Carona expirou");
+                                                                ll.removeView(modelo);
+                                                            } else{
+                                                                exibirMsg((String)object);
                                                             }
                                                         }
 
@@ -295,7 +307,7 @@ public class Home extends Fragment {
                                             }).show();
 
                                 } else {
-                                    Toast.makeText(getActivity(), " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                                        exibirMsg(" Você já tem uma carona solicitada ! ");
                                 }
                             } else {
 
@@ -351,7 +363,6 @@ public class Home extends Fragment {
         load.setVisibility(View.INVISIBLE);
         MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
-
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         ll.removeAllViews();
         rs.buscaCaronas(M.getUsuario(), 0, totalViews, new GetRetorno() {
@@ -399,7 +410,7 @@ public class Home extends Fragment {
                     c_foto.setImageDrawable(dr);
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
-                    tv_horario.setText(caronas.get(i).getHorario());
+                    tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
                     tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
                     modelo.setId(i + 1);
@@ -410,7 +421,6 @@ public class Home extends Fragment {
                         public void onClick(View v) {
 
                             final ManipulaDados md = new ManipulaDados(getActivity());
-                            //teste aqui -
                             if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                 if (md.getCaronaSolicitada() == -1) {
                                     dialog.setTitle(R.string.title_confirmacao)
@@ -427,17 +437,19 @@ public class Home extends Fragment {
                                                     Carona carona = caronas.get(j);
                                                     RequisicoesServidor rs = new RequisicoesServidor(getActivity());
                                                     rs.solicitaCarona(carona, eu, new GetRetorno() {
+
                                                         @Override
                                                         public void concluido(Object object) {
                                                             if (object.toString().trim().equals("1")) {
                                                                 md.setCaronaSolicitada(id_carona);
-                                                                Log.e("hhhhhhhhh", "id carona doida " + md.getCaronaSolicitada());
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
-                                                                Toast.makeText(getActivity(), "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
+                                                                exibirMsg("Carona solicitada!");
+                                                            }else if(object.toString().trim().equals("2")){
+                                                                ll.removeView(modelo);
+                                                                exibirMsg("Carona expirou!");
                                                             }else{
-                                                                Log.e("gggg", "concluido ero "+object.toString());
-                                                                Toast.makeText(getActivity(), (String)object, Toast.LENGTH_SHORT).show();
+                                                                exibirMsg(object.toString());
                                                             }
                                                         }
 
@@ -449,7 +461,7 @@ public class Home extends Fragment {
                                                 }
                                             }).show();
                                 } else {
-                                    Toast.makeText(getActivity(), " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                                    exibirMsg("Você já solicitou uma carona!");
                                 }
                             } else {
 
@@ -467,7 +479,7 @@ public class Home extends Fragment {
                                                 rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
                                                     @Override
                                                     public void concluido(Object object) {
-                                                        Toast.makeText(getActivity(), (String) object, Toast.LENGTH_SHORT).show();
+                                                        exibirMsg((String)object);
                                                         atualizaCaronas();
                                                     }
                                                     @Override
@@ -498,14 +510,25 @@ public class Home extends Fragment {
 
     }
 
+    public void exibirMsg(String msg){
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
-        if (((MainActivity) getActivity()).numNovasCaronas > 0) {
-            ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
+        ManipulaDados md= new ManipulaDados(getActivity());
+        if(md.getUsuario()==null){
+            Intent i= new Intent(getActivity(),LoginActivity.class);
+            startActivity(i);
+        }else{
+            Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
+            if (((MainActivity) getActivity()).numNovasCaronas > 0) {
+                ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
+            }
         }
     }
+
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread
 

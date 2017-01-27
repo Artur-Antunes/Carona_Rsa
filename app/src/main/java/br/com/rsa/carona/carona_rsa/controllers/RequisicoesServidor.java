@@ -19,6 +19,8 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +42,18 @@ public class RequisicoesServidor {
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Processando...");
         progressDialog.setMessage("Aguarde por favor...");
+    }
+
+    public boolean isConnectedToServer(String url, int timeout) {
+        try{
+            URL myUrl = new URL(url);
+            URLConnection connection = myUrl.openConnection();
+            connection.setConnectTimeout(timeout);
+            connection.connect();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     //metodo para guardar usuario no banco usando uma classe que economiza recursos do celular
@@ -76,6 +90,11 @@ public class RequisicoesServidor {
         new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
+    public void fecharCaronaOferecida(int idCarona, int idUsuario, GetRetorno retorno) {
+        progressDialog.show();
+        new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario, retorno).execute();
+    }
+
     public void exibirMinhasSolicitações(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
         new exibirMinhasSolicitaçõesAsyncTask(usuario, retorno).execute();
@@ -86,9 +105,9 @@ public class RequisicoesServidor {
         new exibirUsuariosSolicitantesAsyncTask(usuario, retorno).execute();
     }
 
-    public void aceitarRecusarCaronas(Usuario usuario, String resposta, GetRetorno retorno) {
+    public void aceitarRecusarCaronas(Usuario usuario,String resposta, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
-        new aceitaOuRecusaCaronaAsyncTask(usuario, resposta, retorno).execute();
+        new aceitaOuRecusaCaronaAsyncTask(usuario ,resposta, retorno).execute();
     }
 
     public void alteraStatusCarona(int idCarona, int valor, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
@@ -190,7 +209,6 @@ public class RequisicoesServidor {
     }
 
     public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, List> {
-        //Campos da classe.
         Usuario usuario;
         Carona carona;
         GetRetorno retornoUsuario;
@@ -208,10 +226,6 @@ public class RequisicoesServidor {
             dados.add(new BasicNameValuePair("id_usuario", this.usuario.getId() + ""));
             dados.add(new BasicNameValuePair("id_carona", this.carona.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
 
-/**
- * HppParams:interface que representa um conjunto de valores imutáveis ​​
- * que define um comportamento de tempo de execução de um componente.
- */
 
             HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
 
@@ -373,13 +387,81 @@ public class RequisicoesServidor {
         }//Fim método.
     }//Fim classe.
 
+
+    //DAQUI-------------------------------------------
+
+    public class fecharCaronaOferecidaAsyncTask extends AsyncTask<Void, Void, String> {
+        //Campos da classe.
+        int idCarona;
+        int idUsuario;
+        GetRetorno retornoUsuario;
+
+        public fecharCaronaOferecidaAsyncTask(int idCarona, int status, GetRetorno retorno) {
+            this.idCarona = idCarona;
+            this.idUsuario = status; //O campo usuário recebe o parâmetro de usuário.
+            this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
+        }
+
+        @Override
+        protected String doInBackground(Void... params) { //Implementação obrigatória.
+
+            ArrayList<NameValuePair> dados = new ArrayList();
+            dados.add(new BasicNameValuePair("id_user_close", this.idUsuario + ""));
+            dados.add(new BasicNameValuePair("id_carona_close", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
+
+            Log.e("id_user:", this.idUsuario + "");
+            Log.e("id_carona:",this.idCarona + "");
+
+
+            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
+
+            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
+            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
+
+
+            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService.
+            //Página de registro
+            String mensagem = "Houve Um Erro ao se conectar ao Banco";    //Variável que irá receber os dados do usuário.
+
+            try {
+
+
+                post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
+                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
+
+                // Recebendo a resposta do servidor após a execução do HTTP POST.
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);
+                //
+                JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
+                mensagem = jObj.getString("mensagem");
+
+            } catch (Exception e) {
+                Log.e(TAG, "vamo lá " + e);
+            }
+
+            return mensagem;    //Retorno para o método 'onPostExecute'.
+        }//Fim método.
+
+        @Override
+        protected void onPostExecute(String mensagem) {
+            progressDialog.dismiss(); //Finalizar
+            retornoUsuario.concluido(mensagem);
+            super.onPostExecute(mensagem);
+        }//Fim método.
+    }//Fim classe.
+
+    //ATTÉ AQUI------------------------------------
+
     public class aceitaOuRecusaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
         GetRetorno retornoUsuario;
         String resposta;
+        int idCarona;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public aceitaOuRecusaCaronaAsyncTask(Usuario usuario, String resposta, GetRetorno retorno) {
+        public aceitaOuRecusaCaronaAsyncTask(Usuario usuario,String resposta, GetRetorno retorno) {
             this.usuario = usuario;
             this.resposta = resposta;
             this.retornoUsuario = retorno;
@@ -392,7 +474,6 @@ public class RequisicoesServidor {
 
             dadosParaEnvio.add(new BasicNameValuePair("id", usuario.getId() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("resposta", this.resposta));
-
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
@@ -824,6 +905,8 @@ public class RequisicoesServidor {
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));
+                }else if(teste == -1){
+                    usuario=new Usuario(teste);
                 }
 
             } catch (Exception e) {
@@ -1288,7 +1371,6 @@ public class RequisicoesServidor {
             this.carona = carona;
             this.retorno = retorno;
             this.usuario = usuario;
-
         }
 
         @Override //metodo que � execudado em segundo plano para economia de recursos

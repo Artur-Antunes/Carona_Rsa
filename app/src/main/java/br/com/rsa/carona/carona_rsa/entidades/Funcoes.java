@@ -63,10 +63,6 @@ public class Funcoes {
         try {
             final Date dateAtual = df.parse(horaAtualString);
             final Date dateEscolhida = df.parse(horaSaida);
-            Log.e("hora dispositivo:",horaAtualString);
-            Log.e("hora parametro:",horaSaida);
-            Log.e("DATA dispositivo:",dateAtual+"");
-            Log.e("DATA parametro:",dateEscolhida+"");
             if(dateEscolhida.getTime()>dateAtual.getTime()){
                 return true;
             }else{
@@ -103,7 +99,8 @@ public class Funcoes {
             }
         }
     }
-    public void notificacaoAbertoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
+
+    public void notificacaoAbertoFechado(Bitmap imagem, String titulo, String texto,Context contexto, int numero){
 
             final Intent emptyIntent = new Intent(contexto, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -116,10 +113,14 @@ public class Funcoes {
                             .setContentIntent(pendingIntent);
 
             mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
             NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(numero, mBuilder.build());
 
+    }
+
+    public void apagarNotificacoes(Context contexto){
+        NotificationManager notifManager= (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancelAll();
     }
 
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){
@@ -160,6 +161,11 @@ public class Funcoes {
             return "NÃO";
         }
 
+    }
+
+    public String horaSimples(String hora){
+        String horaRetorno=hora.substring(hora.length() - 8);
+        return horaRetorno;
     }
 
     public boolean isEmailValid(String email)

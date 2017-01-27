@@ -1,4 +1,3 @@
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -13,69 +12,82 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DE:"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Origem"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/textView8"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="36dp"
             android:layout_marginTop="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Local de origem"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
             android:id="@+id/tv_origem2"
             android:layout_marginLeft="10dp"
             android:layout_alignTop="@+id/textView8"
             android:layout_toEndOf="@+id/textView8"
-            android:layout_marginStart="10dp" />
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Destino:"
+            android:id="@+id/textView16"
+            android:layout_below="@+id/tv_origem2"
+            android:layout_marginLeft="15dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Local de Destino"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
             android:id="@+id/tv_destino2"
             android:layout_alignTop="@+id/textView16"
             android:layout_alignStart="@+id/tv_origem2" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PARA:"
-            android:id="@+id/textView16"
-            android:layout_below="@+id/tv_origem2"
-            android:layout_toStartOf="@+id/tv_origem2"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="HORÁRIO:"
-            android:id="@+id/textView17"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view2"
             android:layout_below="@+id/tv_destino2"
-            android:layout_alignStart="@+id/view2"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="00:00pm"
-            android:id="@+id/tv_horario2"
-            android:layout_alignTop="@+id/textView17"
-            android:layout_toEndOf="@+id/textView17"
-            android:layout_marginLeft="10dp" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Horário:"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/textView17"
+            android:layout_below="@+id/textView16"
+            android:layout_alignStart="@+id/textView16"
+            android:layout_marginTop="15dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="VAGAS:"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="00:00"
+            android:id="@+id/tv_horario2"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/textView8"
+            android:layout_alignTop="@+id/textView17"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Vagas:"
             android:id="@+id/textView19"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_alignTop="@+id/tv_horario2"
             android:layout_toEndOf="@+id/tv_horario2"
             android:layout_marginLeft="20dp" />
@@ -83,188 +95,189 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="0/0"
             android:id="@+id/tv_vagas2"
             android:layout_alignTop="@+id/textView19"
             android:layout_toEndOf="@+id/textView19"
             android:layout_marginLeft="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="PONTO DE ENCONTRO"
-            android:id="@+id/textView22"
-            android:layout_alignStart="@+id/textView17"
-            android:layout_marginTop="15dp"
-            android:layout_below="@+id/view3" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="LOCAL ONDE SE ENCONTARÃO AS PESSOAS DA CARONA"
-            android:id="@+id/tv_ponto"
-            android:layout_below="@+id/textView22"
-            android:layout_toEndOf="@+id/textView16"
-            android:layout_alignStart="@+id/textView22" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_below="@+id/tv_tipoVeiculo"
+            android:id="@+id/view2.1"
+            android:layout_below="@+id/tv_horario2"
             android:layout_alignParentStart="true"
             android:layout_marginTop="10dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view3"
-            android:layout_below="@+id/tv_vagas2"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="TIPO DE VEICULO"
-            android:id="@+id/textView21"
-            android:layout_below="@+id/tv_ponto"
-            android:layout_alignStart="@+id/tv_ponto"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="CARRO"
-            android:id="@+id/tv_tipoVeiculo"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/textView21"
-            android:layout_alignStart="@+id/textView21" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="STATUS"
-            android:id="@+id/textView23"
-            android:layout_marginLeft="20dp"
-            android:layout_alignTop="@+id/textView21"
-            android:layout_alignEnd="@+id/textView19" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="ATIVO"
-            android:id="@+id/tv_status"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/textView23"
-            android:layout_alignStart="@+id/textView23" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="INFORMACÕES DO CARONEIRO"
-            android:id="@+id/textView27"
-            android:layout_below="@+id/view2"
-            android:layout_alignStart="@+id/tv_destino2"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="JOSÉ HELDER"
-            android:id="@+id/tv_nome"
-            android:layout_below="@+id/textView27"
-            android:layout_alignStart="@+id/view2"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="MATRÍCULA"
-            android:id="@+id/textView25"
-            android:layout_below="@+id/tv_email"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="13202014"
-            android:id="@+id/tv_matricula"
-            android:layout_below="@+id/textView25"
-            android:layout_alignStart="@+id/tv_nome"
-            android:layout_alignEnd="@+id/textView22" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="TELEFONE"
-            android:id="@+id/textView30"
-            android:layout_above="@+id/tv_matricula"
-            android:layout_toEndOf="@+id/textView22" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="089981106513"
-            android:id="@+id/tv_telefone"
-            android:layout_below="@+id/textView30"
-            android:layout_toEndOf="@+id/tv_matricula" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="jshelderhd@gmail.com"
+            android:text="Encontro:"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/textView22"
+            android:layout_alignStart="@+id/textView17"
+            android:layout_below="@+id/view2.1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
+            android:id="@+id/tv_ponto"
+            android:layout_alignTop="@+id/textView22"
+            android:layout_toEndOf="@+id/textView22"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Veículo"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/textView21"
+            android:layout_below="@+id/tv_ponto"
+            android:layout_alignStart="@+id/textView22"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
+            android:id="@+id/tv_tipoVeiculo"
+            android:layout_alignTop="@+id/textView21"
+            android:layout_toEndOf="@+id/textView21"
+            android:layout_marginLeft="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Status"
+            android:id="@+id/textView23"
+            android:layout_below="@+id/textView21"
+            android:layout_alignStart="@+id/textView21"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
+            android:id="@+id/tv_status"
+            android:layout_alignTop="@+id/textView23"
+            android:layout_toEndOf="@+id/textView23"
+            android:layout_marginLeft="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view2.3"
+            android:layout_below="@+id/textView23"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Dono:"
+            android:id="@+id/textView27"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@+id/view2.3"
+            android:layout_alignStart="@+id/textView21"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
+            android:id="@+id/tv_nome"
+            android:layout_alignTop="@+id/textView27"
+            android:layout_toEndOf="@+id/textView27"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="aqui"
             android:id="@+id/tv_email"
             android:layout_below="@+id/tv_nome"
             android:layout_alignStart="@+id/tv_nome" />
 
-
-
-        <Button
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ME LEVA!"
-            android:layout_weight="1"
-            android:id="@+id/b_solicitar"
-            android:paddingLeft="120dp"
-            android:drawablePadding="-80dp"
-            android:layout_below="@+id/caixa_participantes"
-            android:background="@drawable/cor_botao2"
-            android:drawableLeft="@drawable/icon_ok"
-            android:layout_marginTop="20dp"
-            android:textSize="20dp" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Matrícula"
+            android:id="@+id/textView25"
+            android:layout_below="@+id/tv_email"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignStart="@+id/textView22"
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="000"
+            android:id="@+id/tv_matricula"
+            android:layout_alignTop="@+id/textView25"
+            android:layout_toEndOf="@+id/textView25"
+            android:layout_marginLeft="10dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="POSSUI CNH"
-        android:id="@+id/tv_cnh"
-        android:layout_below="@+id/tv_matricula"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Possui CNH"
+            android:id="@+id/tv_cnh"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@+id/textView31"
+            android:layout_alignStart="@+id/textView31"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Fone:"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/textView31"
+            android:layout_below="@+id/textView25"
+            android:layout_alignStart="@+id/textView25"
+            android:layout_marginTop="10dp"  />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="089981106513"
+            android:id="@+id/tv_telefone"
+            android:layout_alignTop="@+id/textView31"
+            android:layout_toEndOf="@+id/textView31"
+            android:layout_marginLeft="10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/view2.5"
+            android:layout_below="@+id/tv_cnh"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp" />
+
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/titulo"
             android:background="@color/color1"
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_cnh"
+            android:layout_below="@+id/view2.5"
             android:layout_marginTop="15dp">
 
             <TextView
@@ -288,6 +301,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="13dp"
                 android:layout_marginRight="10dp" />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -295,12 +309,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/titulo"
-            android:background="@drawable/fundo_carona"
             android:layout_alignParentStart="true"
             android:id="@+id/caixa_participantes"
-            android:layout_marginTop="1dp"
-            android:minHeight="50dp"></LinearLayout>
-
-
+            android:layout_marginTop="5dp"
+            android:minHeight="50dp">
+        </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ME LEVA!"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/cor_botao"
+            android:layout_weight="1"
+            android:id="@+id/b_solicitar"
+            android:paddingLeft="120dp"
+            android:drawablePadding="-100dp"
+            android:layout_below="@+id/caixa_participantes"
+            android:drawableLeft="@drawable/icon_ok"
+            android:layout_marginTop="20dp"
+            android:textSize="20dp" />
     </RelativeLayout>
 </ScrollView>
