@@ -65,14 +65,9 @@ public class Detalhes_Carona extends AppCompatActivity {
         b_salvar = (Button) findViewById(R.id.b_solicitar);
         dialog = new AlertDialog.Builder(Detalhes_Carona.this);
         if ((md.getCaronaSolicitada()==carona.getId()) || (md.getUsuario().getId()==usuario.getId())){
-            Log.e("nome_botao:","cancelar");
-            b_salvar.setBackgroundResource(R.drawable.cor_botao3);
-            Drawable img = getResources().getDrawable(R.drawable.icon_not);
-            img.setBounds(0, 0, 60, 60);
-            b_salvar.setCompoundDrawables(img, null, null, null);
             b_salvar.setText("CANCELAR");
+            b_salvar.setTextColor(Color.parseColor("#936c66"));
         } else {
-            Log.e("nome_botao:","salvar");
             b_salvar.setBackgroundResource(R.drawable.cor_botao2);
             b_salvar.setTextColor(Color.WHITE);
         }
@@ -84,20 +79,19 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_ponto.setText(carona.getPonto());
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
-            tv_status.setText("DISPONÍVEL");
+            tv_status.setText("Disponível");
         } else {
-            tv_status.setText("INDISPONÍVEL");
+            tv_status.setText("Indisponível");
         }
 
-        Log.e("testteddddd", usuario.getNome());
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());
         tv_nome.setText(usuario.getNome());
         tv_email.setText(usuario.getEmail());
         if (usuario.isCnh()) {
-            tv_cnh.setText("POSSUI CNH");
+            tv_cnh.setText("CNH:Sim");
         } else {
-            tv_cnh.setText("NÃO POSSUI CNH");
+            tv_cnh.setText("CNH:Não");
         }
         ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
@@ -107,7 +101,7 @@ public class Detalhes_Carona extends AppCompatActivity {
             TextView status = (TextView) modelo.findViewById(R.id.tv_status);
             nome.setText(carona.getParticipantes().get(i).getNome());
             status.setText(carona.getParticipantesStatus().get(i).toString());
-            if (carona.getParticipantesStatus().get(i).toString().equals("ACEITO")) {
+            if (carona.getParticipantesStatus().get(i).toString().equals("Aceito")) {
                 status.setTextColor(getResources().getColor(R.color.verde));
             } else {
                 status.setTextColor(getResources().getColor(R.color.color1));
@@ -170,7 +164,7 @@ public class Detalhes_Carona extends AppCompatActivity {
 
                     }
                 }
-                else if(b_salvar.getText().toString().equals(("ME LEVA!"))){
+                else if(b_salvar.getText().toString().equals(("Me leva !"))){
                     if (md.getCaronaSolicitada() == -1) {
                         Log.e("usuario:","caroneiro_pedindo!");
                         dialog.setTitle(R.string.title_confirmacao)

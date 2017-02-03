@@ -1,75 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/linearLayout"
     android:layout_centerHorizontal="true"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:background="@color/fundo"
+    android:orientation="horizontal"
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp">
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@color/color3"
+        android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout2">
+        android:background="@color/color3">
 
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="nome"
-        android:id="@+id/tv_destino_ACEITO2"
-        android:layout_marginLeft="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/c_foto"
-            android:textSize="18dp"
-            android:layout_marginTop="10dp" />
-
-        <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-            android:id="@+id/b_aceitar_usuario_carona"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_ok"
-            android:layout_toStartOf="@+id/b_recusar_usuario_carona" />
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/b_recusar_usuario_carona"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_not"
-            android:layout_alignParentEnd="true" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/c_foto"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="3dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_alignParentStart="true" />
-
-        <TextView
+            android:id="@+id/tv_destino_ACEITO2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="89981106513"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/c_foto"
+            android:text="nome"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18dp" />
+
+        <ImageButton
+            android:id="@+id/b_aceitar_usuario_carona"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/b_recusar_usuario_carona"
+            android:background="@color/color3"
+            android:src="@drawable/icon_ok" />
+
+        <ImageButton
+            android:id="@+id/b_recusar_usuario_carona"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@color/color3"
+            android:src="@drawable/icon_not" />
+
+        <ImageView
+            android:id="@+id/c_foto"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
             android:id="@+id/c_telefone"
-            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_destino_ACEITO2"
             android:layout_below="@+id/tv_destino_ACEITO2"
-            android:layout_alignStart="@+id/tv_destino_ACEITO2" />
+            android:text="89981106513"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14dp" />
 
     </RelativeLayout>
 

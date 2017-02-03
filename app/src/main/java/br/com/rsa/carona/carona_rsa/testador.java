@@ -35,21 +35,8 @@ public class testador extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Activity");
-        mDados = new ManipulaDados(testador.this);
+        setContentView(R.layout.testador);
 
-        Button button = new Button(this);
-        button.setText("Click for Options");
-        button.setOnClickListener(buttonListener);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Foto de Perfil");
-        String[] options = {"GALERIA", "CÂMERA", "REMOVER TUDO"};
-        builder.setItems(options, actionListener);
-        builder.setNegativeButton("Cancel", null);
-        actions = builder.create();
-
-        setContentView(button);
     }
 
     DialogInterface.OnClickListener actionListener = new DialogInterface.OnClickListener() {

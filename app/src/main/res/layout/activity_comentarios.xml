@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/footer"
+        android:background="@color/fundo"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/caixa_comentario"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="@color/fundo"
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/b_commentar"
+            android:layout_alignParentRight="true"
+            android:background="@color/fundo"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/icon_comment"
+            android:layout_height="wrap_content">
+        </ImageButton>
+
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="fill_parent"
+            android:hint="Digite aqui..."
+            android:layout_margin="6dp"
+            android:background="@color/color3"
+            android:layout_toLeftOf="@id/b_commentar"
+            android:layout_height="match_parent">
+        </EditText>
+    </RelativeLayout>
+</RelativeLayout>

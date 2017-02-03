@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,6 +30,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
 
 public class MainActivity extends AppCompatActivity {
+
     public int numNovasCaronas = 0;
     public int numNovasSolicitacoes = 0;
     MyReceiver receiver;

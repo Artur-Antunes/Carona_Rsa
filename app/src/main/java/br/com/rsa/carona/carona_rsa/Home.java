@@ -1,6 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import junit.framework.Test;
 
 import java.util.List;
 
@@ -58,10 +63,12 @@ public class Home extends Fragment {
     MyReceiver receiver;
     AlertDialog.Builder dialog;
     ManipulaDados m;
+    ViewGroup container;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        this.container=container;
         activity = getActivity();
         resource = getResources();
         receiver = new MyReceiver(new Handler());
@@ -73,7 +80,6 @@ public class Home extends Fragment {
         if (m.getUsuario() != null) {
             atualizaCaronas();
             if (m.getCaronaSolicitada()!=-1) {
-                Log.e("senhor3","entrou");
                 atualizarEspera();
             }
         }
@@ -148,15 +154,16 @@ public class Home extends Fragment {
                             modelo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i= new Intent(getActivity(),Detalhes_Carona.class);
-                                    Detalhes_Carona.carona=carona;
-                                    Detalhes_Carona.usuario=user;
+                                    Intent i = new Intent(getActivity(), Detalhes_Carona.class);
+                                    Detalhes_Carona.carona = carona;
+                                    Detalhes_Carona.usuario = user;
                                     startActivity(i);
                                 }
                             });
                             btnCancelar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Log.e("botao :","cancelarrrr");
                                     Carona caronaLocal = new Carona(M.getCaronaSolicitada());
                                     RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
                                     rserv.desistirCarona(usuario, caronaLocal, new GetRetorno() {
@@ -176,6 +183,7 @@ public class Home extends Fragment {
                                     });
                                 }
                             });
+
                         }else{
                             M.setCaronaSolicitada(-1);
                         }
@@ -228,14 +236,13 @@ public class Home extends Fragment {
                     ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
                     TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
                     Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
+                    Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
+
                     if (M.getUsuario().getId() != usuarios.get(i).getId()) {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     } else {
-                        btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        Drawable img = getContext().getResources().getDrawable(R.drawable.icon_not);
-                        img.setBounds(0, 0, 60, 60);
-                        btnSolicitar.setCompoundDrawables(img, null, null, null);
-                        btnSolicitar.setText("CANCELAR");
+                        btnSolicitar.setText("Cancelar");
+                        btnSolicitar.setTextColor(Color.parseColor("#936c66"));
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
@@ -258,6 +265,16 @@ public class Home extends Fragment {
                     modelo.setId(i + 1);
                     ll.addView(modelo);
                     final int j = i;
+
+
+                    btnComentar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent it = new Intent(getActivity(), ComentariosActivity.class);
+                            ComentariosActivity.idCarona=id_carona;
+                            startActivity(it);
+                        }
+                    });
 
                     btnSolicitar.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -391,14 +408,12 @@ public class Home extends Fragment {
                     ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
                     TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
                     Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
+                    Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
                     if (M.getUsuario().getId() != usuarios.get(i).getId()) {
                         btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
                     } else {
-                        btnSolicitar.setBackgroundResource(R.drawable.cor_botao_remover);
-                        Drawable img = getContext().getResources().getDrawable(R.drawable.icon_not);
-                        img.setBounds(0, 0, 60, 60);
-                        btnSolicitar.setCompoundDrawables(img, null, null, null);
-                        btnSolicitar.setText("CANCELAR");
+                        btnSolicitar.setText("Cancelar");
+                        btnSolicitar.setTextColor(Color.parseColor("#936c66"));
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
@@ -416,6 +431,18 @@ public class Home extends Fragment {
                     modelo.setId(i + 1);
                     ll.addView(modelo);
                     final int j = i;
+
+                    //final int finalI = i;
+                    btnComentar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent it = new Intent(getActivity(), ComentariosActivity.class);
+                            ComentariosActivity.idCarona=id_carona;
+                            startActivity(it);
+                        }
+                    });
+
+
                     btnSolicitar.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

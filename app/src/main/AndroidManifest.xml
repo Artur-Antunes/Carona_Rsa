@@ -69,7 +69,7 @@
         <activity
             android:name=".testador"
             android:label="@string/title_activity_testador" />
-        <activity android:name=".testador2" >
+        <activity android:name=".ComentariosActivity" >
         </activity>
     </application>
 

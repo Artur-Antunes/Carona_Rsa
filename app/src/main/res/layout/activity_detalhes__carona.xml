@@ -3,9 +3,9 @@
     android:layout_height="wrap_content"
     android:id="@+id/scrollView4" >
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@color/color3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/fundo"
         android:id="@+id/relativeLayout"
         android:padding="10dp">
 
@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Origem"
+            android:text="Origem:"
             android:textColor="@color/colorPrimaryDark"
             android:id="@+id/textView8"
             android:layout_marginLeft="15dp"
@@ -38,6 +38,7 @@
             android:textColor="@color/colorPrimaryDark"
             android:text="Destino:"
             android:id="@+id/textView16"
+            android:layout_marginTop="5dp"
             android:layout_below="@+id/tv_origem2"
             android:layout_marginLeft="15dp"
             />
@@ -135,12 +136,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Veículo"
+            android:text="Veículo:"
             android:textColor="@color/colorPrimaryDark"
             android:id="@+id/textView21"
             android:layout_below="@+id/tv_ponto"
             android:layout_alignStart="@+id/textView22"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -155,11 +156,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Status"
+            android:text="Status:"
             android:id="@+id/textView23"
             android:layout_below="@+id/textView21"
             android:layout_alignStart="@+id/textView21"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:textColor="@color/colorPrimaryDark"
             />
         <TextView
@@ -240,7 +241,7 @@
             android:textColor="@color/colorPrimaryDark"
             android:layout_below="@+id/textView31"
             android:layout_alignStart="@+id/textView31"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -251,7 +252,7 @@
             android:id="@+id/textView31"
             android:layout_below="@+id/textView25"
             android:layout_alignStart="@+id/textView25"
-            android:layout_marginTop="10dp"  />
+            android:layout_marginTop="5dp"  />
 
         <TextView
             android:layout_width="wrap_content"
@@ -317,16 +318,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ME LEVA!"
-            android:textColor="@color/colorPrimaryDark"
+            android:text="Me leva !"
+            android:textColor="@color/btnConfirmar"
             android:background="@drawable/cor_botao"
             android:layout_weight="1"
             android:id="@+id/b_solicitar"
-            android:paddingLeft="120dp"
-            android:drawablePadding="-100dp"
             android:layout_below="@+id/caixa_participantes"
-            android:drawableLeft="@drawable/icon_ok"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:textSize="20dp" />
     </RelativeLayout>
 </ScrollView>

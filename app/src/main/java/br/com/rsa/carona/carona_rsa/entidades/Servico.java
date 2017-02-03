@@ -11,6 +11,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
+
 import java.util.List;
 import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
@@ -40,31 +42,36 @@ public class Servico extends IntentService {
         //Contém o código da tarefa que será executada em segundo plano.
         final ManipulaDados md = new ManipulaDados(this);
 
-        if (md.getUsuario() != null) {
-            while (ativo) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
-                verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
-                verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
+        if(new RequisicoesServidor(Servico.this).isConnectedToServer("http://10.0.2.2/Caronas",10000)) {
+            if (md.getUsuario() != null) {
+                while (ativo) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
+                    verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
+                    verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
 
-                int idCaronaSolicitada = md.getCaronaSolicitada();
-                Log.e("testando", "o id doido " + idCaronaSolicitada);
-                if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
-                    Log.e("senhor1","entrou");
-                    verificaSolicitacaoAceita();
+                    int idCaronaSolicitada = md.getCaronaSolicitada();
+                    Log.e("testando", "o id doido " + idCaronaSolicitada);
+                    if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
+                        Log.e("senhor1", "entrou");
+                        verificaSolicitacaoAceita();
+                    }
+                    cont++;
+                    Log.e("testando", "cont" + cont);
+                    //Log.e("conectado ??",estaConectado()+"000" );
                 }
-                cont++;
-                Log.e("testando", "cont" + cont);
-                //Log.e("conectado ??",estaConectado()+"000" );
+                //ativo = true;
+                cont = 0;
+            } else {
+                stopSelf();
             }
-            //ativo = true;
-            cont = 0;
-        } else {
-            stopSelf();
+        }else{
+            Log.e("verifica","sem conexão");
+            Toast.makeText(Servico.this, "Sem Conexão!", Toast.LENGTH_SHORT).show();
         }
     }
 

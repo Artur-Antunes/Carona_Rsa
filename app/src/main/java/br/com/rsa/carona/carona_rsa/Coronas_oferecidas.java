@@ -52,7 +52,7 @@ public class Coronas_oferecidas extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
         resource = getResources();
-         M = new ManipulaDados(getActivity());
+        M = new ManipulaDados(getActivity());
         view = inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
@@ -64,7 +64,9 @@ public class Coronas_oferecidas extends Fragment {
             }
         });
         lloferecidas = (LinearLayout) view.findViewById(R.id.caixa_oferecidas);
-        atualizarSolicitantes();
+        if(M.getUsuario()!=null) {
+            atualizarSolicitantes();
+        }
         dialog = new AlertDialog.Builder(getActivity());
         receiver = new MyReceiver(new Handler());
 
@@ -75,9 +77,7 @@ public class Coronas_oferecidas extends Fragment {
 
     public void atualizarSolicitantes() {
         lloferecidas.removeAllViews();
-        Log.e("o que será ?", " parou aqui ?");
         Usuario usuario = new Usuario(M.getUsuario().getId());
-        Log.e("o que será ?",M.getUsuario().getId()+" ");
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         rs.buscasSolicitacoesCaronas(usuario, new GetRetorno() {
             @Override
@@ -292,9 +292,11 @@ public class Coronas_oferecidas extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (((MainActivity) activity).numNovasSolicitacoes > 0) {
-            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
-        }
+
+            if (((MainActivity) activity).numNovasSolicitacoes > 0) {
+                ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
+            }
+
     }
 
     public void setUserVisibleHint(boolean visible)

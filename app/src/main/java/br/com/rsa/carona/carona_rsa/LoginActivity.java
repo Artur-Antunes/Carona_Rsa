@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados=new ManipulaDados(LoginActivity.this);
-        //mDados.limparDados();
+        mDados.limparDados();
 
         if(isOnline()) {
             if (mDados.getUsuario() != null) {

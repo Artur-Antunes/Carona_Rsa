@@ -2,15 +2,16 @@
 <resources>
     <color name="colorPrimary">#331959</color>
     <color name="colorPrimaryDark">#2b283d</color>
-    <color name="colorAccent">#0e0f0e</color>
+    <color name="colorAccent">#12e812</color>
     <color name="color1">#C0C0C0C0</color>
     <color name="color2">#FFFF00</color>
     <color name="color3">#FFF</color>
     <color name="gold">#FFD700</color>
+    <color name="meio_transparente">#80000000</color>
     <color name="verde">#3CB371</color>
-    <color name="fundo">#F0FFF0</color>
+    <color name="fundo">#dddbe0</color>
     <color name="vermelho">#FFA07A</color>
     <color name="btnConfirmar">#0d0056</color>
     <color name="btnCancelar">#936c66</color>
-
+    <color name="Salmon">#FA8072</color>
 </resources>

@@ -43,6 +43,7 @@
         android:id="@+id/b_close_oferecida"
         android:layout_centerVertical="true"
         android:src="@drawable/icon_not"
+        android:background="@color/color3"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
          />
