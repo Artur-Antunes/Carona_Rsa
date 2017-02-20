@@ -3,21 +3,24 @@ package br.com.rsa.carona.carona_rsa;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.Mask;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class registroActivity extends AppCompatActivity {
+public class Registro2Activity extends AppCompatActivity {
 
     private Spinner sexoRegistro;
     private Switch cnhRegistro;
@@ -25,23 +28,30 @@ public class registroActivity extends AppCompatActivity {
     private EditText matriculaRegistro;
     private EditText senhaRegistro;
     private EditText senha2Registro;
+    public static Usuario usuario = null;
     private EditText telefoneRegistro;
     private Button btnCadastrar;
+    private ImageView fotoRg;
+    private TextView nomeSobrenome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro);
+        setContentView(R.layout.activity_registro2);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario, android.R.layout.simple_spinner_dropdown_item);
         sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
         sexoRegistro.setAdapter(adapter);
         matriculaRegistro = (EditText) findViewById(R.id.matricula_registro);
+        nomeSobrenome = (TextView) findViewById(R.id.nome_sobrenome_rg);
+        nomeSobrenome.setText(usuario.getNome().toString() + " " + usuario.getSobrenome().toString());
+        fotoRg = (ImageView) findViewById(R.id.foto_rg);
+        fotoRg.setImageDrawable(new Funcoes().imagemArredondada(usuario.getFoto(), getResources()));
         matriculaRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (matriculaRegistro.length() <= 7) {
                         matriculaRegistro.setError(" Digite todos os números !");
                     }
@@ -49,17 +59,12 @@ public class registroActivity extends AppCompatActivity {
             }
         });
         telefoneRegistro = (EditText) findViewById(R.id.telefone_registro);
-
-        //NumFormatoBr addLineNumberFormatter = new NumFormatoBr(new WeakReference(telefoneRegistro));
-
-        telefoneRegistro.addTextChangedListener(Mask.insert("(##)####-####", telefoneRegistro));
-
-        //telefoneRegistro.addTextChangedListener(addLineNumberFormatter);
+        telefoneRegistro.addTextChangedListener(Mask.insert("(##)#####-####", telefoneRegistro));
         telefoneRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    if (telefoneRegistro.length() <= 13) {
+                if (!hasFocus) {
+                    if (telefoneRegistro.length() < 13) {
                         telefoneRegistro.setError(" Digite todos os números !");
                     }
                 }
@@ -69,7 +74,7 @@ public class registroActivity extends AppCompatActivity {
         emailRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     if (!new Funcoes().isEmailValid(emailRegistro.getText().toString())) {
                         emailRegistro.setError(" Formato inválido !");
                     }
@@ -82,13 +87,11 @@ public class registroActivity extends AppCompatActivity {
         cnhRegistro = (Switch) findViewById(R.id.cnh_registro);
         cnhRegistro.setChecked(true);
         //PEGAR VALORES APÓS CLICAR NO BOTÃO CADASTRAR E SALVAR NO BANCO.
-            btnCadastrar.setOnClickListener(new View.OnClickListener()
+        btnCadastrar.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
-                    Log.e("telefoneee:",telefoneRegistro.length()+"");
-                //VERIFICANDO DE OS CAMPOS ESTÃO PREENCHIDOS
+        {
+            @Override
+            public void onClick(View v) {
                 if (!matriculaRegistro.getText().toString().trim().equals("") &&
                         !telefoneRegistro.getText().toString().trim().equals("") &&
                         !emailRegistro.getText().toString().trim().equals("") &&
@@ -101,28 +104,36 @@ public class registroActivity extends AppCompatActivity {
                         String email = emailRegistro.getText().toString();
                         String senha = senhaRegistro.getText().toString();
                         boolean cnh = cnhRegistro.isChecked();
-                        Log.e("testador", "cnh " + cnh);
                         String sexo = sexoRegistro.getSelectedItem().toString();
                         Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
                         usuario.setSenha(senha);
                         usuario.setAtivo(1);
 
-                        Intent i = new Intent(registroActivity.this, Registro2.class);
-                        Registro2.usuario = usuario;
-                        startActivity(i);
+                        RequisicoesServidor rs = new RequisicoesServidor(Registro2Activity.this);
+                        rs.gravaDadosDoUsuario(usuario, new GetRetorno() {
+                            @Override
+                            public void concluido(Object object) {
+                                Toast.makeText(Registro2Activity.this, object.toString(), Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(Registro2Activity.this, LoginActivity.class));
+                            }
 
+                            @Override
+                            public void concluido(Object object, Object object2) {
+
+                            }
+                        });
                     } else {
-                        Toast.makeText(registroActivity.this, "as senhas não conferem", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Registro2Activity.this, "As senhas não conferem", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(registroActivity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registro2Activity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         if (id == android.R.id.home) {
             Intent intent = new Intent(this, LoginActivity.class);

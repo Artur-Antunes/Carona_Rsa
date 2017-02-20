@@ -11,9 +11,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.List;
+
 import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
@@ -24,6 +27,7 @@ public class Servico extends IntentService {
     final Funcoes f = new Funcoes();
     private int cont;
     public static volatile boolean ativo;
+    private boolean verificaConnexao = true;
 
     public Servico() {
         super("Servico");//Nome do serviço
@@ -33,18 +37,19 @@ public class Servico extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-            super.onStartCommand(intent, flags, startId);
-            return Service.START_STICKY;
+        super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        //Contém o código da tarefa que será executada em segundo plano.
         final ManipulaDados md = new ManipulaDados(this);
-
-        if(new RequisicoesServidor(Servico.this).isConnectedToServer("http://10.0.2.2/Caronas",10000)) {
-            if (md.getUsuario() != null) {
-                while (ativo) {
+        RequisicoesServidor rs = new RequisicoesServidor(Servico.this);
+        Log.e("instancia:", "criada");
+        if (md.getUsuario() != null) {
+            while (ativo) {
+                if (rs.isConnectedToServer("http://10.0.2.2/Caronas", 10000)) {
+                    Log.e("CONEXÃO:", "ATIVA");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -62,24 +67,23 @@ public class Servico extends IntentService {
                     }
                     cont++;
                     Log.e("testando", "cont" + cont);
-                    //Log.e("conectado ??",estaConectado()+"000" );
+                } else {
+                    Log.e("CONEXÃO:", "DESATIVADA");
+                    criaBroadcast(0, "sem_conexao");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                //ativo = true;
-                cont = 0;
-            } else {
-                stopSelf();
             }
-        }else{
-            Log.e("verifica","sem conexão");
-            Toast.makeText(Servico.this, "Sem Conexão!", Toast.LENGTH_SHORT).show();
+            //ativo = true;
+            cont = 0;
+        } else {
+            stopSelf();
         }
     }
 
-    private boolean estaConectado() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
-        return info.isConnected();
-    }
 
     public void criaBroadcast(int valor, String tipo) {//Enviar dados para MainActivity
         Intent dialogIntent = new Intent();
@@ -96,56 +100,56 @@ public class Servico extends IntentService {
         rs.verificaSolicitacoes(status, us, new GetRetorno() {
             @Override
             public void concluido(Object object) {
-                List<Usuario> usuarios = (List<Usuario>) object;
-                String tipoP = "";
-                if (status.equals("AGUARDANDO")) {
-                    tipoP = "solicitando";
-                    if (usuarios.size() > 0) {
-                        criaBroadcast(usuarios.size(), "solicitacao");
-                    }
-                } else {
-                    tipoP = "desistindo da";
-                    if (usuarios.size() > 0) {
-                        criaBroadcast(usuarios.size(), "solicitacao");
-                    }
-
-                }
-
-                if (usuarios.size() > 1) {
-                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                    String titulo = usuarios.size() + " pessoas estão " + tipoP + " carona";
-                    String texto = "";
-                    usuarios = f.removeUsuarioRepitidos(usuarios);
-                    for (int i = 0; i < usuarios.size(); i++) {
-                        if (i == 0) {
-                            texto += usuarios.get(i).getNome();
-
-                        } else {
-                            if (i < 2) {
-                                if (i == (usuarios.size() - 1)) {
-                                    texto += " e " + usuarios.get(i).getNome() + " estão " + tipoP + " carona";
-                                } else {
-                                    texto += ", " + usuarios.get(i).getNome();
-                                }
-                            } else {
-                                texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão " + tipoP + " carona";
-                                break;
-                            }
-
+                if(object!=null) {
+                    List<Usuario> usuarios = (List<Usuario>) object;
+                    String tipoP = "";
+                    if (status.equals("AGUARDANDO")) {
+                        tipoP = "solicitando";
+                        if (usuarios.size() > 0) {
+                            criaBroadcast(usuarios.size(), "solicitacao");
+                        }
+                    } else {
+                        tipoP = "desistindo da";
+                        if (usuarios.size() > 0) {
+                            criaBroadcast(usuarios.size(), "solicitacao");
                         }
 
                     }
-                    f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 1);
-                } else if (usuarios.size() == 1) {
-                    byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    String titulo = "ME LEVA!";
-                    String texto = usuarios.get(0).getNome() + " está " + tipoP + " carona:";
-                    // String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
-                    f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 1);
+
+                    if (usuarios.size() > 1) {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                        String titulo = usuarios.size() + " pessoas estão " + tipoP + " carona";
+                        String texto = "";
+                        usuarios = f.removeUsuarioRepitidos(usuarios);
+                        for (int i = 0; i < usuarios.size(); i++) {
+                            if (i == 0) {
+                                texto += usuarios.get(i).getNome();
+
+                            } else {
+                                if (i < 2) {
+                                    if (i == (usuarios.size() - 1)) {
+                                        texto += " e " + usuarios.get(i).getNome() + " estão " + tipoP + " carona";
+                                    } else {
+                                        texto += ", " + usuarios.get(i).getNome();
+                                    }
+                                } else {
+                                    texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão " + tipoP + " carona";
+                                    break;
+                                }
+
+                            }
+
+                        }
+                        f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 1);
+                    } else if (usuarios.size() == 1) {
+                        byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        String titulo = "ME LEVA!";
+                        String texto = usuarios.get(0).getNome() + " está " + tipoP + " carona:";
+                        f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 1);
+                    }
+                    //termina aqui!
                 }
-
-
             }
 
             @Override
@@ -165,21 +169,21 @@ public class Servico extends IntentService {
             @Override
             public void concluido(Object object) {
                 Usuario us = (Usuario) object;
-                String titulo,texto;
-                if ((us != null) && (us.getId()!=-1) ) {
+                String titulo, texto;
+                if ((us != null) && (us.getId() != -1)) {
                     md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                     titulo = "Carona Aceita";
                     texto = us.getNome() + " aceitou sua Solicitação de Carona";
                     byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 2);
-                }else if((us != null) && (us.getId()==-1)){
+                } else if ((us != null) && (us.getId() == -1)) {
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     md.setCaronaSolicitada(-1);
                     titulo = "Solicitação expirou";
                     texto = "Sua solicitação de carona expirou !";
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 1);
-                    criaBroadcast(-1,"solicitacao_expirou");
+                    criaBroadcast(-1, "solicitacao_expirou");
                 }
             }
 
@@ -203,6 +207,7 @@ public class Servico extends IntentService {
             public void concluido(Object object) {
 
             }
+
             @Override
             public void concluido(Object object, Object object2) {
                 List<Usuario> usuarios = (List<Usuario>) object2;
@@ -213,7 +218,7 @@ public class Servico extends IntentService {
                 }
 
                 if (usuarios.size() > 1) {
-                    Log.e("hum?","okkkk");
+                    Log.e("hum?", "okkkk");
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
                     String texto = "";

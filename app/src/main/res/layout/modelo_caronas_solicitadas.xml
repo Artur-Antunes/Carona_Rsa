@@ -70,9 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tv_destino_ACEITO2"
             android:layout_below="@+id/tv_destino_ACEITO2"
-            android:text="89981106513"
+            android:text="000"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 

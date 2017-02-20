@@ -24,23 +24,14 @@ import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Detalhes_Carona extends AppCompatActivity {
-    private TextView tv_origem;
-    private TextView tv_destino;
-    private TextView tv_vagas;
-    private TextView tv_horario;
-    private TextView tv_nome;
-    private TextView tv_ponto;
-    private TextView tv_tipoVeiculo;
-    private TextView tv_status;
-    private TextView tv_matricula;
-    private TextView tv_telefone;
-    private TextView tv_cnh;
-    private TextView tv_email;
+    private TextView tv_origem, tv_destino, tv_vagas, tv_horario, tv_nome, tv_ponto, tv_tipoVeiculo, tv_status, tv_matricula, tv_telefone, tv_cnh, tv_email,tv_link_mais;
     private Button b_salvar;
     private LinearLayout ll;
+    private RelativeLayout rl;
     AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +40,11 @@ public class Detalhes_Carona extends AppCompatActivity {
         final ManipulaDados md = new ManipulaDados(Detalhes_Carona.this);
         setContentView(R.layout.activity_detalhes__carona);
         ll = (LinearLayout) findViewById(R.id.caixa_participantes);
+        rl = (RelativeLayout) findViewById(R.id.titulo_geral);
         tv_origem = (TextView) findViewById(R.id.tv_origem2);
         tv_destino = (TextView) findViewById(R.id.tv_destino2);
         tv_vagas = (TextView) findViewById(R.id.tv_vagas2);
+        tv_link_mais = (TextView) findViewById(R.id.link_mais);
         tv_horario = (TextView) findViewById(R.id.tv_horario2);
         tv_ponto = (TextView) findViewById(R.id.tv_ponto);
         tv_tipoVeiculo = (TextView) findViewById(R.id.tv_tipoVeiculo);
@@ -64,7 +57,7 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_email = (TextView) findViewById(R.id.tv_email);
         b_salvar = (Button) findViewById(R.id.b_solicitar);
         dialog = new AlertDialog.Builder(Detalhes_Carona.this);
-        if ((md.getCaronaSolicitada()==carona.getId()) || (md.getUsuario().getId()==usuario.getId())){
+        if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             b_salvar.setText("CANCELAR");
             b_salvar.setTextColor(Color.parseColor("#936c66"));
         } else {
@@ -113,9 +106,9 @@ public class Detalhes_Carona extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(b_salvar.getText().toString().equals("CANCELAR")){
-                    if(md.getUsuario().getId()==usuario.getId()){//O dono vai cancelar sua carona!
-                        Log.e("usuario:","dono_cancela");
+                if (b_salvar.getText().toString().equals("CANCELAR")) {
+                    if (md.getUsuario().getId() == usuario.getId()) {//O dono vai cancelar sua carona!
+                        Log.e("usuario:", "dono_cancela");
                         AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
                         dialog.setTitle(R.string.title_confirmacao)
                                 .setMessage(R.string.alert_cancelar_carona)
@@ -141,14 +134,13 @@ public class Detalhes_Carona extends AppCompatActivity {
                                         });
                                     }
                                 }).show();
-                    }
-                    else if(md.getCaronaSolicitada()==carona.getId()){//O usuário vai cancelar sua solicitação!
-                        Log.e("usuario:","caroneiro_cancelando!");
+                    } else if (md.getCaronaSolicitada() == carona.getId()) {//O usuário vai cancelar sua solicitação!
+                        Log.e("usuario:", "caroneiro_cancelando!");
                         RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
-                        Usuario userLocal=new Usuario((md.getUsuario().getId()));
-                        Log.e("id-carona",carona.getId()+"");
-                        Log.e("id-usuario",userLocal.getId()+"");
-                        rserv.desistirCarona(userLocal,carona, new GetRetorno() {
+                        Usuario userLocal = new Usuario((md.getUsuario().getId()));
+                        Log.e("id-carona", carona.getId() + "");
+                        Log.e("id-usuario", userLocal.getId() + "");
+                        rserv.desistirCarona(userLocal, carona, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
                                 Toast.makeText(Detalhes_Carona.this, object.toString(), Toast.LENGTH_LONG).show();
@@ -163,10 +155,9 @@ public class Detalhes_Carona extends AppCompatActivity {
                         });
 
                     }
-                }
-                else if(b_salvar.getText().toString().equals(("Me leva !"))){
+                } else if (b_salvar.getText().toString().equals(("Me leva !"))) {
                     if (md.getCaronaSolicitada() == -1) {
-                        Log.e("usuario:","caroneiro_pedindo!");
+                        Log.e("usuario:", "caroneiro_pedindo!");
                         dialog.setTitle(R.string.title_confirmacao)
                                 .setMessage(R.string.alert_solicitar_carona)
                                 .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
@@ -204,6 +195,13 @@ public class Detalhes_Carona extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void exibirParticipantes(View view) {
+        Log.e("123", "okkk");
+        rl.setVisibility(View.VISIBLE);
+        ll.setVisibility(View.VISIBLE);
+        //tv_link_mais.;
     }
 
 

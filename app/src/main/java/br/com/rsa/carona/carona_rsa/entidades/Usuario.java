@@ -54,6 +54,14 @@ public class Usuario {
 
     }
 
+    public Usuario(String nome){
+
+        this.nome=nome;
+        this.editado=false;
+
+    }
+
+
     public void setIdCaronaSolicitada(int id){
         this.idCaronaSolicitada=id;
     }

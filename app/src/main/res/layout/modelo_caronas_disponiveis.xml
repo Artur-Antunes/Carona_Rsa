@@ -13,9 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-
         android:background="@drawable/fundo_carona">
-
 
         <TextView
             android:id="@+id/tv_origem2"
@@ -23,8 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/imageView"
             android:layout_alignStart="@+id/tv_destino2"
-            android:text="Local de origem"
+            android:text="origem"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -34,8 +33,9 @@
             android:layout_above="@+id/imageView3"
             android:layout_marginLeft="10dp"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Local de Destino"
+            android:text="Destino"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -44,8 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tv_destino2"
             android:layout_alignTop="@+id/imageView3"
-            android:text="00:00pm"
+            android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -55,7 +56,7 @@
             android:layout_alignBottom="@+id/tv_origem2"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp"
-            android:text="VAGAS:"
+            android:text="VAGAS"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -68,15 +69,17 @@
             android:layout_marginTop="5dp"
             android:text="0/0"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="40dp" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="28dp" />
 
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/c_foto"
+            android:layout_below="@+id/tv_telefone"
             android:layout_marginLeft="60dp"
+            android:layout_marginTop="4dp"
             android:background="@color/color1" />
 
         <TextView
@@ -86,8 +89,9 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
             android:layout_toEndOf="@+id/c_foto"
-            android:text="José das Quantas"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:text="Nome"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="25dp" />
 
         <TextView
             android:id="@+id/tv_telefone"
@@ -95,9 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tv_nome"
             android:layout_below="@+id/tv_nome"
-            android:text="99999999999"
+            android:text="00"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="10dp" />
+            android:textSize="15dp" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -172,5 +176,4 @@
 
         </LinearLayout>
     </RelativeLayout>
-
 </RelativeLayout>

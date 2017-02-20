@@ -1,0 +1,167 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/fundo">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="br.com.rsa.carona.carona_rsa.Registro1Activity">
+
+        <ImageView
+            android:id="@+id/c_imagem"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/user" />
+
+        <Button
+            android:id="@+id/b_galeria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/c_imagem"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/c_imagem"
+            android:layout_marginRight="10dp"
+            android:text="Galeria" />
+
+        <Button
+            android:id="@+id/b_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/c_imagem"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:text="CAMERA" />
+
+        <View
+            android:id="@+id/viewPrincipal"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/b_camera"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:id="@+id/lyPrincipal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewPrincipal"
+            android:background="@color/color3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ly12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/user_icon" />
+
+                <EditText
+                    android:id="@+id/tv_nome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:background="#00000000"
+                    android:hint="Nome"
+                    android:inputType="text"
+                    android:letterSpacing="0.1"
+                    android:textColor="#000000"
+                    android:textColorHint="#69686b"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tv_nome"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/darker_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/user_icon" />
+
+                <EditText
+                    android:id="@+id/c_sobrenome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:background="#00000000"
+                    android:hint="Sobrenome"
+                    android:inputType="text"
+                    android:letterSpacing="0.1"
+                    android:textColor="#000000"
+                    android:textColorHint="#69686b"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/c_sobrenome"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/lyPrincipal"
+            android:layout_marginBottom="20dp"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp">
+
+            <Button
+                android:id="@+id/b_salvar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="8dp"
+                android:background="#009a9a"
+                android:gravity="center"
+                android:letterSpacing="0.2"
+                android:text="Continuar"
+                android:textColor="#d9e5f3"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/lin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:letterSpacing="0.1"
+                android:text="Já tem uma conta ?"
+                android:textColor="#0d0056" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

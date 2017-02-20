@@ -38,7 +38,7 @@
         </activity>
         <activity android:name=".recuperarSenhaActivity" />
         <activity
-            android:name=".registroActivity"
+            android:name=".Registro2Activity"
             android:label="@string/title_activity_registro" >
         </activity>
         <activity
@@ -54,7 +54,7 @@
             android:label="@string/title_activity_detalhes__carona" >
         </activity>
         <activity
-            android:name=".Registro2"
+            android:name=".Registro1Activity"
             android:label="@string/title_activity_registro2" >
         </activity>
         <activity

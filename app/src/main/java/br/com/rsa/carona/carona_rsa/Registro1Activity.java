@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,15 +19,13 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
-import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class Registro2 extends AppCompatActivity {
+public class Registro1Activity extends AppCompatActivity {
     private EditText nomeRegistro;
     private EditText sobrenomeRegistro;
-    public static Usuario usuario = null;
     private Button bSalvar;
     private Button bCam;
     private Button bGal;
@@ -42,7 +39,7 @@ public class Registro2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro2);
+        setContentView(R.layout.activity_registro1);
         imagem = (ImageView) findViewById(R.id.c_imagem);
         nomeRegistro = (EditText) findViewById(R.id.tv_nome);
         nomeRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -67,7 +64,6 @@ public class Registro2 extends AppCompatActivity {
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                 startActivityForResult(intent, IMAGEM_CAM);
-                Log.e("Foi_onde?","Câmera");
             }
         });
         bGal.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +73,6 @@ public class Registro2 extends AppCompatActivity {
                     //Pick Image From Gallery
                     Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, RESULT_SELECT_IMAGE);
-                    Log.e("Foi_onde?", "Galeria");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -89,41 +84,27 @@ public class Registro2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (foto != null && usuario != null) {
+                if (foto != null) {
                     String nome = nomeRegistro.getText().toString();
                     String sobrenome = sobrenomeRegistro.getText().toString();
                     if (!nome.equals("") && !sobrenome.equals("")) {
-                        usuario.setNome(nome);
-                        usuario.setSobrenome(sobrenome);
-                        usuario.setFoto(foto);
-                        usuario.setExtFoto(extFoto);
+                        Usuario user=new Usuario(nome);
+                        user.setSobrenome(sobrenome);
+                        user.setFoto(foto);
+                        user.setExtFoto(extFoto);
 
-
-                        RequisicoesServidor rs = new RequisicoesServidor(Registro2.this);
-                        rs.gravaDadosDoUsuario(usuario, new GetRetorno() {
-                            @Override
-                            public void concluido(Object object) {
-
-                                Toast.makeText(Registro2.this, "o resultado foi:" + object, Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Registro2.this, LoginActivity.class));
-                            }
-
-                            @Override
-                            public void concluido(Object object, Object object2) {
-
-                            }
-                        });
+                        Intent i = new Intent(Registro1Activity.this, Registro2Activity.class);
+                        Registro2Activity.usuario = user;
+                        startActivity(i);
                     } else {
-                        Toast.makeText(Registro2.this, "PREENCHA TODOS OS CAMPOS!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Registro1Activity.this, "PREENCHA TODOS OS CAMPOS!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Registro2.this, "COLOQUE UMA FOTO NO PERFIL!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registro1Activity.this, "COLOQUE UMA FOTO NO PERFIL!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -170,7 +151,7 @@ public class Registro2 extends AppCompatActivity {
                     imagem.setImageBitmap(bitmap);
                     imagem.setScaleType(ImageView.ScaleType.FIT_XY);
                 }else if(resultCode==Activity.RESULT_CANCELED){
-                    Toast.makeText(Registro2.this, "Cancelado!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registro1Activity.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case IMAGEM_CAM:
@@ -179,7 +160,7 @@ public class Registro2 extends AppCompatActivity {
                     extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
                     performCrop(Uri.fromFile(arquivo));
                 }else if(resultCode == Activity.RESULT_CANCELED){
-                    Toast.makeText(Registro2.this, "Cancelado !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registro1Activity.this, "Cancelado !", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

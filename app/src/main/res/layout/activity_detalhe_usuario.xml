@@ -38,6 +38,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Matricula"
                 android:textColor="@color/colorPrimaryDark"
+                android:textSize="18dp"
                 android:id="@+id/textView14"
                 android:layout_gravity="center_vertical"
                 android:layout_alignParentStart="true" />
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="13202014"
+                android:textSize="15dp"
                 android:id="@+id/exibirMatriculaValor"
                 android:layout_below="@+id/textView14"
                 android:layout_alignParentStart="true" />
@@ -65,6 +67,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Sexo"
                 android:textColor="@color/colorPrimaryDark"
+                android:textSize="18dp"
                 android:id="@+id/tv15"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="30dp"
@@ -77,6 +80,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="SEXO"
+                android:textSize="15dp"
                 android:id="@+id/exibirSexoValor"
                 android:layout_above="@+id/textView15"
                 android:layout_alignParentEnd="true" />
@@ -86,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Nome"
+                android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView15"
                 android:layout_gravity="center_vertical"
@@ -97,11 +102,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="NOME COMPLETO DA PESSOA"
+                android:text="NOME"
+                android:textSize="15dp"
                 android:id="@+id/exibirNomeValor"
                 android:layout_below="@+id/textView15"
-                android:layout_alignParentStart="true"
-                android:textSize="18dp" />
+                android:layout_alignParentStart="true" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
@@ -116,6 +121,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="E-MAIL"
+                android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView20"
                 android:layout_gravity="center_vertical"
@@ -131,7 +137,7 @@
                 android:id="@+id/exibirEmailValor"
                 android:layout_below="@+id/textView20"
                 android:layout_alignParentStart="true"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
@@ -146,6 +152,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="TELEFONE"
+                android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView18"
                 android:layout_gravity="center_vertical"
@@ -159,6 +166,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="9999999999"
                 android:id="@+id/exibirTelefoneValor"
+                android:textSize="15dp"
                 android:layout_below="@+id/textView18"
                 android:layout_alignParentStart="true" />
 
@@ -167,6 +175,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="CNH"
+                android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView26"
                 android:layout_gravity="center_vertical"
@@ -181,6 +190,7 @@
                 android:text="SIM"
                 android:id="@+id/exibirCnhValor"
                 android:layout_marginLeft="20dp"
+                android:textSize="15dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignEnd="@+id/exibirSexoValor"
                 android:layout_alignParentEnd="true" />

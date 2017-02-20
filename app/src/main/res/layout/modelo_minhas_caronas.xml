@@ -26,6 +26,7 @@
             android:layout_toEndOf="@+id/c_foto"
             android:text="DESTINO"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <ImageView

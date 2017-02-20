@@ -2,10 +2,11 @@
 <resources>
     <color name="colorPrimary">#331959</color>
     <color name="colorPrimaryDark">#2b283d</color>
-    <color name="colorAccent">#12e812</color>
+    <color name="colorAccent">#0d0056</color>
     <color name="color1">#C0C0C0C0</color>
     <color name="color2">#FFFF00</color>
     <color name="color3">#FFF</color>
+    <color name="linha">#e3e3e5</color>
     <color name="gold">#FFD700</color>
     <color name="meio_transparente">#80000000</color>
     <color name="verde">#3CB371</color>

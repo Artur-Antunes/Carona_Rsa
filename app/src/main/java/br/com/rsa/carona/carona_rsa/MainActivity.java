@@ -7,6 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -46,69 +49,69 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-            Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
-            startService(it);
-            receiver = new MyReceiver(new Handler());
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
+        startService(it);
+        receiver = new MyReceiver(new Handler());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
 
-            TabLayout.Tab tab1 = tabLayout.newTab();
-            TabLayout.Tab tab2 = tabLayout.newTab();
-            TabLayout.Tab tab3 = tabLayout.newTab();
-            tab1.setCustomView(R.layout.tab);
-            tab2.setCustomView(R.layout.tab);
-            tab3.setCustomView(R.layout.tab);
-            TextView txt1 = (TextView) tab1.getCustomView().findViewById(R.id.text1);
-            TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
-            TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
-            txt1.setText("HOME");
-            txt2.setText("RECEBIDAS");
-            txt3.setText("OFERECIDAS");
+        TabLayout.Tab tab1 = tabLayout.newTab();
+        TabLayout.Tab tab2 = tabLayout.newTab();
+        TabLayout.Tab tab3 = tabLayout.newTab();
+        tab1.setCustomView(R.layout.tab);
+        tab2.setCustomView(R.layout.tab);
+        tab3.setCustomView(R.layout.tab);
+        TextView txt1 = (TextView) tab1.getCustomView().findViewById(R.id.text1);
+        TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
+        TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
+        txt1.setText("HOME");
+        txt2.setText("RECEBIDAS");
+        txt3.setText("OFERECIDAS");
 
-            tabLayout.addTab(tab1);
-            tabLayout.addTab(tab2);
-            tabLayout.addTab(tab3);
-            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.addTab(tab1);
+        tabLayout.addTab(tab2);
+        tabLayout.addTab(tab3);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-            v1 = tabLayout.getTabAt(0).getCustomView();
-            v3 = tabLayout.getTabAt(2).getCustomView();
+        v1 = tabLayout.getTabAt(0).getCustomView();
+        v3 = tabLayout.getTabAt(2).getCustomView();
 
-            badge1 = new BadgeView(this, v1);
-            badge3 = new BadgeView(this, v3);
+        badge1 = new BadgeView(this, v1);
+        badge3 = new BadgeView(this, v3);
 
 
-            final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-            viewPager.setOffscreenPageLimit(2);
-            adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-            viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager.setCurrentItem(tab.getPosition());
-                }
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(2);
+        adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-                }
+            }
 
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-                }
-            });
+            }
+        });
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-            filter.addAction("abc");
-            registerReceiver(receiver, filter);
-            Log.e("registro", "registrado");
+        filter.addAction("abc");
+        registerReceiver(receiver, filter);
+        Log.e("registro", "registrado");
     }
 
     @Override
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1);
         mNotificationManager.cancel(2);
-            mNotificationManager.cancel(3);
+        mNotificationManager.cancel(3);
     }
 
     @Override
@@ -175,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             new Funcoes().apagarNotificacoes(getApplicationContext());
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-            //System.exit(0);
             return true;
         }
 
@@ -209,14 +211,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void decrementarBadge(BadgeView badge, int valor){
+    public void decrementarBadge(BadgeView badge, int valor) {
         badge.hide();
         if (valor == 1) {
-            if(numNovasCaronas>0) {
+            if (numNovasCaronas > 0) {
                 --numNovasCaronas;
             }
         } else {
-            if(numNovasSolicitacoes>0) {
+            if (numNovasSolicitacoes > 0) {
                 --numNovasSolicitacoes;
             }
         }
@@ -262,7 +264,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
-
+                case "sem_conexao":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Home.load.setVisibility(View.VISIBLE);
+                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.no_con_icon);
+                            Home.load.setImageBitmap(bm);
+                        }
+                    });
+                    break;
             }
         }
     }

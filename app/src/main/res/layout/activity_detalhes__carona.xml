@@ -1,330 +1,378 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView4"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/scrollView4" >
+    android:layout_height="wrap_content">
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/fundo"
-        android:id="@+id/relativeLayout"
+        android:background="@color/color3"
         android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Origem:"
-            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/textView8"
-            android:layout_marginLeft="15dp"
+            android:text="Origem:"
+            android:drawableLeft="@drawable/local_icon"
+            android:drawablePadding="4dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="20dp" />
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
             android:id="@+id/tv_origem2"
-            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView8"
+            android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView8"
-            />
+            android:text="aqui"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="Destino:"
             android:id="@+id/textView16"
-            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_origem2"
             android:layout_marginLeft="15dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
-            android:id="@+id/tv_destino2"
-            android:layout_alignTop="@+id/textView16"
-            android:layout_alignStart="@+id/tv_origem2" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_below="@+id/tv_destino2"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Horário:"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/textView17"
-            android:layout_below="@+id/textView16"
-            android:layout_alignStart="@+id/textView16"
-            android:layout_marginTop="15dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/tv_horario2"
-            android:layout_marginLeft="10dp"
-            android:layout_toEndOf="@+id/textView8"
-            android:layout_alignTop="@+id/textView17"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Vagas:"
-            android:id="@+id/textView19"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_alignTop="@+id/tv_horario2"
-            android:layout_toEndOf="@+id/tv_horario2"
-            android:layout_marginLeft="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="0/0"
-            android:id="@+id/tv_vagas2"
-            android:layout_alignTop="@+id/textView19"
-            android:layout_toEndOf="@+id/textView19"
-            android:layout_marginLeft="10dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2.1"
-            android:layout_below="@+id/tv_horario2"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Encontro:"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/textView22"
-            android:layout_alignStart="@+id/textView17"
-            android:layout_below="@+id/view2.1"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
-            android:id="@+id/tv_ponto"
-            android:layout_alignTop="@+id/textView22"
-            android:layout_toEndOf="@+id/textView22"
-            android:layout_marginLeft="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Veículo:"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/textView21"
-            android:layout_below="@+id/tv_ponto"
-            android:layout_alignStart="@+id/textView22"
-            android:layout_marginTop="5dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
-            android:id="@+id/tv_tipoVeiculo"
-            android:layout_alignTop="@+id/textView21"
-            android:layout_toEndOf="@+id/textView21"
-            android:layout_marginLeft="10dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Status:"
-            android:id="@+id/textView23"
-            android:layout_below="@+id/textView21"
-            android:layout_alignStart="@+id/textView21"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@drawable/local_icon"
             android:layout_marginTop="5dp"
-            android:textColor="@color/colorPrimaryDark"
-            />
+            android:text="Destino:"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"/>
+
         <TextView
+            android:id="@+id/tv_destino2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignStart="@+id/tv_origem2"
+            android:layout_alignTop="@+id/textView16"
             android:text="aqui"
-            android:id="@+id/tv_status"
-            android:layout_alignTop="@+id/textView23"
-            android:layout_toEndOf="@+id/textView23"
-            android:layout_marginLeft="10dp" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
+            android:id="@+id/view2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2.3"
-            android:layout_below="@+id/textView23"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+            android:layout_below="@+id/tv_destino2"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/saida_icon"
+            android:layout_alignStart="@+id/textView16"
+            android:layout_below="@+id/textView16"
+            android:drawablePadding="4dp"
+            android:layout_marginTop="15dp"
+            android:textSize="18dp"
+            android:text="Saída:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Dono:"
-            android:id="@+id/textView27"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_below="@+id/view2.3"
-            android:layout_alignStart="@+id/textView21"
-            android:layout_marginTop="10dp" />
+            android:textColor="@color/colorPrimaryDark"/>
 
         <TextView
+            android:id="@+id/tv_horario2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView17"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView8"
+            android:text="00:00"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_horario2"
+            android:layout_marginLeft="20dp"
+            android:drawableLeft="@drawable/vagas_icon"
+            android:textSize="18dp"
+            android:drawablePadding="4dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_toEndOf="@+id/tv_horario2"
+            android:text="Vagas:" />
+
+        <TextView
+            android:id="@+id/tv_vagas2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView19"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView19"
+            android:text="0/0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <View
+            android:id="@+id/view2.1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
-            android:id="@+id/tv_nome"
-            android:layout_alignTop="@+id/textView27"
-            android:layout_toEndOf="@+id/textView27"
-            android:layout_marginLeft="10dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_horario2"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/textView22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView17"
+            android:layout_below="@+id/view2.1"
+            android:text="Encontro:"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@drawable/encontro_icon"
+            android:textSize="18dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aqui"
-            android:id="@+id/tv_email"
-            android:layout_below="@+id/tv_nome"
-            android:layout_alignStart="@+id/tv_nome" />
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
+            android:id="@+id/tv_ponto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Matrícula"
-            android:id="@+id/textView25"
-            android:layout_below="@+id/tv_email"
-            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignTop="@+id/textView22"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView22"
+            android:text="aqui"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView22"
-            android:layout_marginTop="10dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ponto"
+            android:drawableLeft="@drawable/veiculo_icon"
+            android:textSize="18dp"
+            android:drawablePadding="4dp"
+            android:layout_marginTop="5dp"
+            android:text="Veículo:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="000"
-            android:id="@+id/tv_matricula"
-            android:layout_alignTop="@+id/textView25"
-            android:layout_toEndOf="@+id/textView25"
-            android:layout_marginLeft="10dp" />
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
+            android:id="@+id/tv_tipoVeiculo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Possui CNH"
-            android:id="@+id/tv_cnh"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_below="@+id/textView31"
-            android:layout_alignStart="@+id/textView31"
-            android:layout_marginTop="5dp" />
+            android:layout_alignTop="@+id/textView21"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView21"
+            android:text="aqui"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
+            android:id="@+id/textView23"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView21"
+            android:layout_below="@+id/textView21"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/status_icon"
+            android:textSize="18dp"
+            android:text="Status:"
+            android:drawablePadding="4dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Fone:"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/textView31"
-            android:layout_below="@+id/textView25"
-            android:layout_alignStart="@+id/textView25"
-            android:layout_marginTop="5dp"  />
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
+            android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="089981106513"
-            android:id="@+id/tv_telefone"
-            android:layout_alignTop="@+id/textView31"
-            android:layout_toEndOf="@+id/textView31"
-            android:layout_marginLeft="10dp"/>
+            android:layout_alignTop="@+id/textView23"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView23"
+            android:text="aqui"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
+            android:id="@+id/view2.3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2.5"
-            android:layout_below="@+id/tv_cnh"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+            android:layout_below="@+id/textView23"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView21"
+            android:layout_below="@+id/view2.3"
+            android:layout_marginTop="10dp"
+            android:text="Dono:"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@drawable/prop_icon"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/tv_nome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView27"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView27"
+            android:text="aqui"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_nome"
+            android:layout_below="@+id/tv_nome"
+            android:text="aqui"
+            android:textSize="15dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView22"
+            android:layout_below="@+id/tv_email"
+            android:layout_marginTop="10dp"
+            android:text="Matrícula:"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@drawable/matri_icon"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/tv_matricula"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView25"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView25"
+            android:text="000"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_cnh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView31"
+            android:layout_below="@+id/textView31"
+            android:layout_marginTop="5dp"
+            android:text="Possui CNH"
+            android:drawableLeft="@drawable/ct_icon"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView25"
+            android:layout_below="@+id/textView25"
+            android:layout_marginTop="5dp"
+            android:text="Fone:"
+            android:drawableLeft="@drawable/phone_icon"
+            android:textSize="18dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/tv_telefone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView31"
+            android:layout_marginLeft="2dp"
+            android:layout_toEndOf="@+id/textView31"
+            android:text="0899"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <View
+            android:id="@+id/view2.5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_cnh"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/link_mais"
+            android:text="Mais"
+            android:clickable="true"
+            android:onClick="exibirParticipantes"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/view2.5"
+            />
 
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/titulo"
-            android:background="@color/color1"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_below="@+id/view2.5"
-            android:layout_marginTop="15dp">
+            android:id="@+id/titulo_geral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/link_mais"
+            android:layout_marginTop="15dp"
+            android:visibility="invisible"
+            android:background="@color/meio_transparente">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="PARTICIPANTE"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="12dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="10dp"
-                android:textSize="20dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="12dp"
+                android:text="PARTICIPANTE"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="18dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="STATUS"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="13dp"
-                android:layout_marginRight="10dp" />
+                android:text="STATUS"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/caixa_participantes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/titulo"
+            android:visibility="invisible"
             android:layout_alignParentStart="true"
-            android:id="@+id/caixa_participantes"
+            android:layout_below="@+id/titulo_geral"
             android:layout_marginTop="5dp"
-            android:minHeight="50dp">
-        </LinearLayout>
+            android:minHeight="50dp"
+            android:orientation="vertical"></LinearLayout>
+
         <Button
+            android:id="@+id/b_solicitar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/link_mais"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/cor_botao"
             android:text="Me leva !"
             android:textColor="@color/btnConfirmar"
-            android:background="@drawable/cor_botao"
-            android:layout_weight="1"
-            android:id="@+id/b_solicitar"
-            android:layout_below="@+id/caixa_participantes"
-            android:layout_marginTop="10dp"
             android:textSize="20dp" />
     </RelativeLayout>
 </ScrollView>

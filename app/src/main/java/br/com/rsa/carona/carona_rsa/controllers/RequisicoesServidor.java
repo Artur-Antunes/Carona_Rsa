@@ -56,7 +56,8 @@ public class RequisicoesServidor {
         }
     }
 
-    public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
+
+        public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
     }
@@ -885,13 +886,11 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(List<Usuario> usuariosRetornado) {
-            // progressDialog.dismiss(); //Finalizar
-            if (usuariosRetornado==null) {
-                Log.e("Problema conexão!", "HEHE!");
-            } else {
+            if(usuariosRetornado==null) {
+                Log.e("Problema conexão!", "HEHE111!");
+            }
                 retornoUsuario.concluido(usuariosRetornado);
                 super.onPostExecute(usuariosRetornado);
-            }
         }//Fim método.
     }//Fim classe.
 

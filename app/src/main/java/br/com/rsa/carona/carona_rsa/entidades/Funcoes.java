@@ -6,16 +6,21 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +54,14 @@ public class Funcoes {
         byte [] b=baos.toByteArray();
         String temp=Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
+    }
+
+    public RoundedBitmapDrawable imagemArredondada(String foto,Resources res){
+        byte[] decodedString = Base64.decode(foto, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+        dr.setCircular(true);
+        return dr;
     }
 
     public String getExtencaoImagem(String imgPath) {
@@ -163,8 +176,21 @@ public class Funcoes {
 
     }
 
+    public boolean getConecxao(){
+        try{
+            URL myUrl = new URL("http://10.0.2.2/Caronas");
+            URLConnection connection = myUrl.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.connect();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public String horaSimples(String hora){
         String horaRetorno=hora.substring(hora.length() - 8);
+        horaRetorno=horaRetorno.substring(0,horaRetorno.length()-3);
         return horaRetorno;
     }
 

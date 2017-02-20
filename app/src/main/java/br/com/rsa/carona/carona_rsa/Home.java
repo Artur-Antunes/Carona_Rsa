@@ -34,6 +34,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +69,7 @@ public class Home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        this.container=container;
+        this.container = container;
         activity = getActivity();
         resource = getResources();
         receiver = new MyReceiver(new Handler());
@@ -79,7 +80,7 @@ public class Home extends Fragment {
         m = new ManipulaDados(activity);
         if (m.getUsuario() != null) {
             atualizaCaronas();
-            if (m.getCaronaSolicitada()!=-1) {
+            if (m.getCaronaSolicitada() != -1) {
                 atualizarEspera();
             }
         }
@@ -96,7 +97,7 @@ public class Home extends Fragment {
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (m.getCaronaSolicitada()!=-1) {
+                if (m.getCaronaSolicitada() != -1) {
                     atualizarEspera();
                 }
                 atualizaCaronas();
@@ -134,12 +135,10 @@ public class Home extends Fragment {
 
                     @Override
                     public void concluido(Object object) {
-                        Log.e("erro", "concluido fora");
                         if (object != null) {
-                            Log.e("erro", "acerto dentro");
-                            final List dados=(List)object;
-                            final Carona carona = (Carona)dados.get(0);
-                            final Usuario user = (Usuario)dados.get(1);
+                            final List dados = (List) object;
+                            final Carona carona = (Carona) dados.get(0);
+                            final Usuario user = (Usuario) dados.get(1);
                             final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
                             TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
                             TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
@@ -151,6 +150,9 @@ public class Home extends Fragment {
                             modelo.setId(0);
                             modelo.setGravity(0);
                             ll.addView(modelo, 0);
+                            Log.e("tamanhoooo",ll.getChildCount()+"");
+
+
                             modelo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -160,10 +162,10 @@ public class Home extends Fragment {
                                     startActivity(i);
                                 }
                             });
+
                             btnCancelar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Log.e("botao :","cancelarrrr");
                                     Carona caronaLocal = new Carona(M.getCaronaSolicitada());
                                     RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
                                     rserv.desistirCarona(usuario, caronaLocal, new GetRetorno() {
@@ -174,6 +176,7 @@ public class Home extends Fragment {
                                             ultimoNum = 0;
                                             atualizaCaronas();
                                             ll.removeView(modelo);
+                                            getContInflater();
                                         }
 
                                         @Override
@@ -184,7 +187,7 @@ public class Home extends Fragment {
                                 }
                             });
 
-                        }else{
+                        } else {
                             M.setCaronaSolicitada(-1);
                         }
 
@@ -225,7 +228,6 @@ public class Home extends Fragment {
                     if (caronas.get(i).getId() == M.getCaronaSolicitada()) {
                         continue;
                     }
-                    //pega layout modelo de coronas
 
                     final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
                     TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
@@ -254,16 +256,14 @@ public class Home extends Fragment {
                     c_foto.setImageDrawable(dr);
                     tv_destino.setText(caronas.get(i).getDestino());
                     tv_origem.setText(caronas.get(i).getOrigem());
-                    String teste=new Funcoes().horaSimples(caronas.get(i).getHorario());
 
-                    Log.e("teste-fim",teste);
-
-                    tv_horario.setText(caronas.get(i).getHorario());
+                    tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
                     tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
                     final int id_carona = caronas.get(i).getId();
 
                     modelo.setId(i + 1);
                     ll.addView(modelo);
+
                     final int j = i;
 
 
@@ -271,7 +271,7 @@ public class Home extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent it = new Intent(getActivity(), ComentariosActivity.class);
-                            ComentariosActivity.idCarona=id_carona;
+                            ComentariosActivity.idCarona = id_carona;
                             startActivity(it);
                         }
                     });
@@ -280,7 +280,6 @@ public class Home extends Fragment {
                         @Override
                         public void onClick(View v) {
                             final ManipulaDados md = new ManipulaDados(getActivity());
-                            //teste aqui -
                             if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                 if (md.getCaronaSolicitada() == -1) {
 
@@ -306,11 +305,11 @@ public class Home extends Fragment {
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona solicitada!");
-                                                            }else if(object.toString().trim().equals("2")) {
+                                                            } else if (object.toString().trim().equals("2")) {
                                                                 exibirMsg("Carona expirou");
                                                                 ll.removeView(modelo);
-                                                            } else{
-                                                                exibirMsg((String)object);
+                                                            } else {
+                                                                exibirMsg((String) object);
                                                             }
                                                         }
 
@@ -324,7 +323,7 @@ public class Home extends Fragment {
                                             }).show();
 
                                 } else {
-                                        exibirMsg(" Você já tem uma carona solicitada ! ");
+                                    exibirMsg(" Você já tem uma carona solicitada ! ");
                                 }
                             } else {
 
@@ -371,10 +370,17 @@ public class Home extends Fragment {
 
                 }
                 ultimoNum += caronas.size();
-                Log.e("vvvvvvvvvv", "u "+ultimoNum+" t"+totalViews);
+                Log.e("vvvvvvvvvv", "u " + ultimoNum + " t" + totalViews);
             }
         });
     }
+
+    private void getContInflater() {
+        if (ll.getChildCount() >= 3) {
+                recarrega.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     public void atualizaCaronas() {
         load.setVisibility(View.INVISIBLE);
@@ -382,6 +388,7 @@ public class Home extends Fragment {
         final ManipulaDados M = new ManipulaDados(getActivity());
         RequisicoesServidor rs = new RequisicoesServidor(getActivity());
         ll.removeAllViews();
+        getContInflater();
         rs.buscaCaronas(M.getUsuario(), 0, totalViews, new GetRetorno() {
             @Override
             public void concluido(Object object) {
@@ -430,6 +437,8 @@ public class Home extends Fragment {
                     final int id_carona = caronas.get(i).getId();
                     modelo.setId(i + 1);
                     ll.addView(modelo);
+                    getContInflater();
+
                     final int j = i;
 
                     //final int finalI = i;
@@ -437,7 +446,7 @@ public class Home extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent it = new Intent(getActivity(), ComentariosActivity.class);
-                            ComentariosActivity.idCarona=id_carona;
+                            ComentariosActivity.idCarona = id_carona;
                             startActivity(it);
                         }
                     });
@@ -472,10 +481,10 @@ public class Home extends Fragment {
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona solicitada!");
-                                                            }else if(object.toString().trim().equals("2")){
+                                                            } else if (object.toString().trim().equals("2")) {
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona expirou!");
-                                                            }else{
+                                                            } else {
                                                                 exibirMsg(object.toString());
                                                             }
                                                         }
@@ -506,9 +515,10 @@ public class Home extends Fragment {
                                                 rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
                                                     @Override
                                                     public void concluido(Object object) {
-                                                        exibirMsg((String)object);
+                                                        exibirMsg((String) object);
                                                         atualizaCaronas();
                                                     }
+
                                                     @Override
                                                     public void concluido(Object object, Object object2) {
                                                     }
@@ -537,24 +547,27 @@ public class Home extends Fragment {
 
     }
 
-    public void exibirMsg(String msg){
+
+    private void exibirMsg(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        ManipulaDados md= new ManipulaDados(getActivity());
-        if(md.getUsuario()==null){
-            Intent i= new Intent(getActivity(),LoginActivity.class);
+        ManipulaDados md = new ManipulaDados(getActivity());
+        if (md.getUsuario() == null) {
+            Intent i = new Intent(getActivity(), LoginActivity.class);
             startActivity(i);
-        }else{
+        } else {
             Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
             if (((MainActivity) getActivity()).numNovasCaronas > 0) {
                 ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
             }
         }
     }
+
 
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread

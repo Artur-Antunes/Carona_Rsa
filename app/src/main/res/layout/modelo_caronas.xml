@@ -1,125 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/linearLayout"
-    android:layout_centerHorizontal="true"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/fundo_carona"
-    android:layout_margin="5dp"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/relativeLayout3">
+    android:layout_centerHorizontal="true"
+    android:orientation="horizontal"
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Local de origem"
-        android:id="@+id/tv_origem2"
-        android:layout_above="@+id/imageView"
-        android:layout_alignStart="@+id/tv_destino2"
-        android:textSize="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Local de Destino"
-        android:id="@+id/tv_destino2"
-        android:layout_above="@+id/imageView3"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_marginLeft="10dp"
-        android:textSize="20dp" />
-
-    <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/b_close_oferecida"
-        android:layout_centerVertical="true"
-        android:src="@drawable/icon_not"
-        android:background="@color/color3"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-         />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="00:00"
-        android:id="@+id/tv_horario2"
-        android:layout_alignTop="@+id/imageView3"
-        android:layout_alignStart="@+id/tv_destino2"
-        android:textSize="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="VAGAS:"
-        android:id="@+id/textView5"
-        android:layout_alignBottom="@+id/tv_destino2"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="0/0"
-        android:id="@+id/tv_vagas2"
-        android:layout_below="@id/textView5"
-        android:layout_alignParentEnd="true"
-        android:textSize="40dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="5dp" />
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/icon_destino"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp" />
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:id="@+id/imageView2"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/icon_origem"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp" />
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:id="@+id/imageView3"
-        android:src="@drawable/icon_relogio"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp" />
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_horario2"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:animateLayoutChanges="true"
-        android:id="@+id/caixa_partic"></LinearLayout>
+        android:layout_margin="5dp"
+        android:background="@drawable/fundo_carona">
 
-</RelativeLayout>
 
+        <TextView
+            android:id="@+id/tv_origem2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18dp"
+            android:layout_above="@+id/imageView"
+            android:layout_alignStart="@+id/tv_destino2"
+            android:text="Local de origem"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+             />
+
+        <TextView
+            android:id="@+id/tv_destino2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView3"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18dp"
+            android:layout_toEndOf="@+id/imageView"
+            android:text="Local de Destino"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+             />
+
+        <ImageButton
+            android:id="@+id/b_close_oferecida"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:background="@color/color3"
+            android:src="@drawable/icon_not" />
+
+        <TextView
+            android:id="@+id/tv_horario2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_destino2"
+            android:layout_alignTop="@+id/imageView3"
+            android:text="00:00"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_destino2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:text="VAGAS"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tv_vagas2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/textView5"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:text="0/0"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageView2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/icon_destino" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/icon_origem" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/icon_relogio" />
+
+        <LinearLayout
+            android:id="@+id/caixa_partic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/tv_horario2"
+            android:layout_marginTop="5dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"></LinearLayout>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

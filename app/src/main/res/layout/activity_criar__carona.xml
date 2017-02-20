@@ -1,228 +1,239 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView99"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView99" >
+    android:layout_height="match_parent">
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/color3"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         tools:context="br.com.rsa.carona.carona_rsa.Criar_Carona">
 
         <TextView
+            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Origem"
-            android:textSize="18dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/textView7"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:text="Origem"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp" />
 
         <Spinner
+            android:id="@+id/sp_origem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sp_origem"
+            android:layout_alignParentEnd="true"
             android:layout_below="@+id/textView7"
-            android:layout_alignParentEnd="true" />
+            android:textSize="15dp" />
 
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view"
+            android:layout_below="@+id/sp_origem"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_below="@+id/sp_origem"
-            android:layout_centerHorizontal="true" />
+            android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Destino"
-            android:id="@+id/textView6"
-            android:textSize="18dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/sp_origem"
-            android:layout_alignParentStart="true" />
+            android:text="Destino"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp" />
 
         <Spinner
+            android:id="@+id/sp_destino"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sp_destino"
-            android:layout_below="@+id/textView6"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="10dp" />
+            android:layout_below="@+id/textView6"
+            android:layout_marginBottom="10dp"
+            android:textSize="15dp" />
 
         <View
+            android:id="@+id/view1.1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view1.1"
+            android:layout_below="@+id/sp_destino"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_below="@+id/sp_destino"
-            android:layout_centerHorizontal="true" />
+            android:background="@android:color/darker_gray" />
 
-        <TableLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="0,1"
-            android:shrinkColumns="0,1"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/sp_destino">
+            android:layout_below="@+id/sp_destino"
+            android:shrinkColumns="0,1"
+            android:stretchColumns="0,1">
 
             <TableRow>
 
                 <TextView
+                    android:id="@+id/textView10"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Horário saida"
-                    android:textSize="18dp"
                     android:layout_gravity="left"
+                    android:text="Horário saida"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/colorPrimaryDark"
-                    android:id="@+id/textView10" />
+                    android:textSize="18dp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Veiculo"
-                    android:textSize="18dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:layout_gravity="center"
                     android:id="@+id/textView11"
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Veículo"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18dp" />
             </TableRow>
 
             <TableRow>
 
                 <Button
-                    android:layout_height="wrap_content"
-                    android:text="Selecionar"
                     android:id="@+id/tp_horario"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:onClick="showTimePickerDialog" />
+                    android:onClick="showTimePickerDialog"
+                    android:text="Selecionar"
+                    android:textSize="15dp" />
+
                 <Spinner
-                    android:layout_height="wrap_content"
+                    android:id="@+id/sp_tipos_veiculo"
                     android:layout_width="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:id="@+id/sp_tipos_veiculo" />
+                    android:textSize="15dp" />
             </TableRow>
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
                 android:id="@+id/view1.2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_centerHorizontal="true" />
+                android:background="@android:color/darker_gray" />
 
             <TableRow>
+
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Ponte de encontro"
-                    android:textSize="18dp"
-                    android:layout_gravity="left"
-                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/textView12"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Ponte de encontro"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18dp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Vagas"
-                    android:textSize="18dp"
-                    android:layout_gravity="center"
-                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/textView9"
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Vagas"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18dp" />
             </TableRow>
+
             <TableRow>
 
                 <EditText
-                    android:layout_height="wrap_content"
-                    android:ems="10"
                     android:id="@+id/c_ponto"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:inputType="textMultiLine"/>
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:textSize="15dp" />
 
                 <EditText
-                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_vagas2"
                     android:layout_width="wrap_content"
-                    android:inputType="number"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:id="@+id/tv_vagas2" />
+                    android:inputType="number"
+                    android:textSize="15dp" />
             </TableRow>
 
             <View
+                android:id="@+id/view1.3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/view1.3"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_centerHorizontal="true" />
+                android:background="@android:color/darker_gray" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Vou levar"
-                android:textSize="18dp"
-                android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView13"
-                />
+                android:layout_height="wrap_content"
+                android:text="Vou levar"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18dp" />
+
             <RadioGroup
+                android:id="@+id/rd_restricoes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/rd_restricoes"
+                android:layout_alignStart="@+id/view"
                 android:layout_below="@+id/textView13"
-                android:orientation="horizontal"
-                android:layout_alignStart="@+id/view">
-                <RadioButton android:id="@+id/radio_todos"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_todos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/todos"/>
-                <RadioButton android:id="@+id/radio_homens"
+                    android:text="@string/todos" />
+
+                <RadioButton
+                    android:id="@+id/radio_homens"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/homens"/>
-                <RadioButton android:id="@+id/radio_mulheres"
+                    android:text="@string/homens" />
+
+                <RadioButton
+                    android:id="@+id/radio_mulheres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mulheres"/>
+                    android:text="@string/mulheres" />
 
             </RadioGroup>
 
             <View
+                android:id="@+id/view1.4"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/view1.4"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_centerHorizontal="true" />
+                android:background="@android:color/darker_gray" />
 
             <Button
+                android:id="@+id/b_salvar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Salvar"
-                android:id="@+id/b_salvar"
-                android:background="@drawable/cor_botao"
-                android:textColor="@color/btnConfirmar"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:background="@drawable/cor_botao"
+                android:text="Salvar"
+                android:textColor="@color/btnConfirmar" />
         </TableLayout>
-
-
     </RelativeLayout>
 </ScrollView>

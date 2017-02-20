@@ -41,11 +41,13 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Local de Destino"
+            android:textSize="18dp"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/tv_destinoR"
             android:layout_above="@+id/imageViewRelogio"
             android:layout_toEndOf="@+id/imageViewR"
             android:layout_marginLeft="10dp"
-            android:textSize="20dp" />
+             />
 
         <ImageView
             android:layout_width="20dp"
@@ -61,11 +63,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00pm"
+            android:text="00:00"
             android:id="@+id/tv_horario_r"
+            android:textSize="18dp"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_alignTop="@+id/imageViewRelogio"
             android:layout_alignStart="@+id/tv_destinoR"
-            android:textSize="20dp" />
+             />
 
         <TextView
             android:layout_width="wrap_content"
@@ -82,19 +86,22 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="aguardando"
+            android:textSize="18dp"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/tv_status_aguarda"
             android:layout_below="@id/textView5R"
             android:layout_alignParentEnd="true"
-            android:textSize="20dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CANCELAR SOLICITAÇÃO"
+            android:text="CANCELAR"
+            android:textStyle="bold"
+            android:textColor="@color/btnCancelar"
             android:id="@+id/b_desistencia"
-            android:background="@drawable/cor_botao_remover"
+            android:background="@color/color3"
             android:layout_below="@+id/imageViewRelogio"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp" />

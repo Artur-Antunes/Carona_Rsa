@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -26,12 +27,7 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
 
     ManipulaDados mDados;
     Usuario usuarioEditar;
-    private TextView nomeExibir;
-    private TextView emailExibir;
-    private TextView matriculaExibir;
-    private TextView telefoneExibir;
-    private TextView sexoExibir;
-    private TextView cnhExibir;
+    private TextView nomeExibir,emailExibir,matriculaExibir,telefoneExibir,sexoExibir,cnhExibir;
     private ImageView imFoto;
 
     @Override
@@ -55,10 +51,9 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
         emailExibir.setText(usuarioEditar.getEmail());
         matriculaExibir.setText(usuarioEditar.getMatricula());
         telefoneExibir.setText(usuarioEditar.getTelefone());
-        byte[] decodedString = Base64.decode(usuarioEditar.getFoto(), Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        imFoto.setImageBitmap(bitmap);
-        imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        imFoto.setImageDrawable(new Funcoes().imagemArredondada(usuarioEditar.getFoto(), getResources()));
+
         String converterCnh;
 
         if (usuarioEditar.isCnh()) {
@@ -91,9 +86,6 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.exibir_dados_usuario, menu);
-
-        Log.e("será aqui?","1");
-
         return true;
     }
 
@@ -101,16 +93,13 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Log.e("será aqui?","2");
             return true;
         }
         if (id == R.id.action_home) {
-            Log.e("será aqui?", "3");
             startActivity(new Intent(this, MainActivity.class));
             return true;
         }
         if (id == android.R.id.home) {
-            Log.e("será aqui?", "4");
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
