@@ -105,12 +105,14 @@ public class Registro2Activity extends AppCompatActivity {
                         String senha = senhaRegistro.getText().toString();
                         boolean cnh = cnhRegistro.isChecked();
                         String sexo = sexoRegistro.getSelectedItem().toString();
-                        Usuario usuario = new Usuario(null, null, matricula, email, telefone, sexo, cnh);
-                        usuario.setSenha(senha);
-                        usuario.setAtivo(1);
+                        Usuario usuario1 = new Usuario(usuario.getNome(), usuario.getSobrenome(), matricula, email, telefone, sexo, cnh);
+                        usuario1.setSenha(senha);
+                        usuario1.setFoto(usuario.getFoto());
+                        usuario1.setExtFoto(usuario.getExtFoto());
+                        usuario1.setAtivo(1);
 
                         RequisicoesServidor rs = new RequisicoesServidor(Registro2Activity.this);
-                        rs.gravaDadosDoUsuario(usuario, new GetRetorno() {
+                        rs.gravaDadosDoUsuario(usuario1, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
                                 Toast.makeText(Registro2Activity.this, object.toString(), Toast.LENGTH_SHORT).show();
