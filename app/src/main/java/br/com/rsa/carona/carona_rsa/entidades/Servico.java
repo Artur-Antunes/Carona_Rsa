@@ -61,6 +61,8 @@ public class Servico extends IntentService {
 
                     int idCaronaSolicitada = md.getCaronaSolicitada();
                     Log.e("testando", "o id doido " + idCaronaSolicitada);
+                    Log.e("idCarona solicitada",idCaronaSolicitada+"");
+                    Log.e("id ult id aceita",md.getUltimoIdCaronaAceita()+">>>");
                     if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
                         Log.e("senhor1", "entrou");
                         verificaSolicitacaoAceita();
@@ -165,12 +167,14 @@ public class Servico extends IntentService {
         Log.e("aiasdasds", "entrou   dsadasdas");
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
+        Log.e("Carona solicitada:",idCaronaSolicitada+"-");
         rs.verificaCaronaSolitada(idCaronaSolicitada, us, new GetRetorno() {
             @Override
             public void concluido(Object object) {
                 Usuario us = (Usuario) object;
                 String titulo, texto;
                 if ((us != null) && (us.getId() != -1)) {
+                    Log.e("vamos porra:","lllllll");
                     md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                     titulo = "Carona Aceita";
                     texto = us.getNome() + " aceitou sua Solicitação de Carona";
@@ -214,11 +218,12 @@ public class Servico extends IntentService {
                 List<Carona> caronas = (List<Carona>) object;
 
                 if (usuarios.size() > 0) {
+                    Log.e("aqui","11");
                     criaBroadcast(usuarios.size(), "novaCarona");
                 }
 
                 if (usuarios.size() > 1) {
-                    Log.e("hum?", "okkkk");
+                    Log.e("aqui","22");
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
                     String texto = "";
@@ -243,6 +248,7 @@ public class Servico extends IntentService {
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 3);//Exibindo a notificaçõa
                     md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
                 } else if (usuarios.size() == 1) {
+                    Log.e("aqui","33");
                     byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";

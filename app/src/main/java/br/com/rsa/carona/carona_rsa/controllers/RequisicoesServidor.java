@@ -1045,7 +1045,7 @@ public class RequisicoesServidor {
 
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getInt("retorno");
-                Log.e("VAMOS VER", "TESTE " + teste);
+                Log.e("VAMOS VER", "TESTE11 " + teste);
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));

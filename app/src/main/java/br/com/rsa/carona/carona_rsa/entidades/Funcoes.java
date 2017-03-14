@@ -87,7 +87,7 @@ public class Funcoes {
     }
 
     public void notificacaoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
-        if(!checkApp(contexto)) {
+        if(checkApp(contexto)) {
             final Intent emptyIntent = new Intent(contexto, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder mBuilder =
