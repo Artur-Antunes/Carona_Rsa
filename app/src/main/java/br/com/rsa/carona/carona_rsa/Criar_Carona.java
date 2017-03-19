@@ -1,6 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -31,7 +33,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 
-public class Criar_Carona extends AppCompatActivity {
+public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnValueChangeListener{
     private Spinner origem;
     private Spinner destino;
     private Spinner tipoVeiculo;
@@ -39,7 +41,7 @@ public class Criar_Carona extends AppCompatActivity {
     //private ImageButton bMais;
     //private ImageButton bMenos;
     private EditText ponto;
-    private EditText vagas;
+    private Spinner vagas;
     private RadioGroup restricoes;
     private Button horario;
     AlertDialog.Builder dialog;
@@ -51,27 +53,17 @@ public class Criar_Carona extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_criar__carona);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.locais, android.R.layout.simple_spinner_dropdown_item);
+        restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
+        horario = (Button) findViewById(R.id.tp_horario);
         origem = (Spinner) findViewById(R.id.sp_origem);
         destino = (Spinner) findViewById(R.id.sp_destino);
-        horario = (Button) findViewById(R.id.tp_horario);
+        origem.setAdapter(adapter);
+        destino.setAdapter(adapter);
+        adapter = ArrayAdapter.createFromResource(this, R.array.tipo_veiculos, android.R.layout.simple_spinner_dropdown_item);
         tipoVeiculo = (Spinner) findViewById(R.id.sp_tipos_veiculo);
+        tipoVeiculo.setAdapter(adapter);
         dialog = new AlertDialog.Builder(Criar_Carona.this);
-        tipoVeiculo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (tipoVeiculo.getSelectedItem().equals("MOTOCICLETA")) {
-                    vagas.setText("1");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         salvar = (Button) findViewById(R.id.b_salvar);
-        //bMais = (ImageButton) findViewById(R.id.b_mais);
-        //bMenos = (ImageButton) findViewById(R.id.b_menos);
         ponto = (EditText) findViewById(R.id.c_ponto);
         ponto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -83,21 +75,30 @@ public class Criar_Carona extends AppCompatActivity {
                 }
             }
         });
-        vagas = (EditText) findViewById(R.id.tv_vagas2);
-        vagas.setFilters(new InputFilter[]{new InputFilterMinMax("1", "5")});
-        vagas.setText("1");
-        restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
-        origem.setAdapter(adapter);
-        destino.setAdapter(adapter);
-        adapter = ArrayAdapter.createFromResource(this, R.array.tipo_veiculos, android.R.layout.simple_spinner_dropdown_item);
-        tipoVeiculo.setAdapter(adapter);
+
+        vagas = (Spinner) findViewById(R.id.tv_vagas2);
+        adapter = ArrayAdapter.createFromResource(this, R.array.quant_vagas, android.R.layout.simple_spinner_dropdown_item);
+        vagas.setAdapter(adapter);
+        vagas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (tipoVeiculo.getSelectedItem().equals("MOTO")) {
+                    vagas.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(new Funcoes().validaHora(horario.getText().toString())) {
-                    if (!vagas.getText().toString().equals("")) {
+                    if (!vagas.getSelectedItem().toString().equals("")) {
                         if (!origem.getSelectedItem().toString().equals(destino.getSelectedItem().toString())) {
-                            if (!(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA") && !vagas.getText().toString().equals("1"))) {
+                            if (!(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA") && !vagas.getSelectedItem().toString().equals("1"))) {
                                 dialog.setTitle(R.string.title_confirmacao)
                                         .setMessage(R.string.alert_criar_carona)
                                         .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
@@ -111,7 +112,7 @@ public class Criar_Carona extends AppCompatActivity {
                                                 String origemValor = origem.getSelectedItem().toString();
                                                 String destinoValor = destino.getSelectedItem().toString();
                                                 String tipoVeiculoValor = tipoVeiculo.getSelectedItem().toString();
-                                                int vagasValor = Integer.parseInt(vagas.getText().toString());
+                                                int vagasValor = Integer.parseInt(vagas.getSelectedItem().toString());
                                                 String pontoValor = ponto.getText().toString();
                                                 RadioButton radioButton = (RadioButton) findViewById(restricoes.getCheckedRadioButtonId());
                                                 String resticaoValor = radioButton.getText().toString();
@@ -154,30 +155,53 @@ public class Criar_Carona extends AppCompatActivity {
         });
 
         /**
-        bMenos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!vagas.getText().toString().equals("")) {
-                    int valor = Integer.parseInt(vagas.getText().toString());
-                    vagas.setText((valor - 1) + "");
-                } else {
-                    vagas.setText(1 + "");
-                }
-            }
+         bMenos.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+        if (!vagas.getText().toString().equals("")) {
+        int valor = Integer.parseInt(vagas.getText().toString());
+        vagas.setText((valor - 1) + "");
+        } else {
+        vagas.setText(1 + "");
+        }
+        }
         });
-        bMais.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!vagas.getText().toString().equals("")) {
-                    int valor = Integer.parseInt(vagas.getText().toString());
-                    vagas.setText((valor + 1) + "");
-                } else {
-                    vagas.setText(1 + "");
-                }
-            }
+         bMais.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+        if (!vagas.getText().toString().equals("")) {
+        int valor = Integer.parseInt(vagas.getText().toString());
+        vagas.setText((valor + 1) + "");
+        } else {
+        vagas.setText(1 + "");
+        }
+        }
         });**/
     }
 
+    /**
+     public void show(View v) {
+     final Dialog d = new Dialog(Criar_Carona.this);
+     d.setTitle("Nº Vagas");
+     d.setContentView(R.layout.testador);
+     Button b1 = (Button) d.findViewById(R.id.button1);
+     final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+     np.setMaxValue(5); // max value 100
+     np.setMinValue(1);   // min value 0
+     np.setWrapSelectorWheel(false);
+     np.setOnValueChangedListener(this);
+     b1.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+    Log.e("valor:",np.getValue()+"");
+    vagas.setText(np.getValue() + ""); //set the value to textview
+    d.dismiss();
+    }
+    });
+     d.show();
+     }
+
+     **/
     public void showTimePickerDialog(View v) {
 
         Calendar mcurrentTime = Calendar.getInstance();
@@ -213,17 +237,22 @@ public class Criar_Carona extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_perfil) {
             startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
+            finish();
             return true;
         }else if(id == R.id.action_home){
             startActivity(new Intent(this, MainActivity.class));
+            finish();
             return true;
         } else if (id == android.R.id.home) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
     }
 }

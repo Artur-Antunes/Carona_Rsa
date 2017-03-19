@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.rsa.carona.carona_rsa" >
+    package="br.com.rsa.carona.carona_rsa">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -10,23 +10,33 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <service
+        android:name=".entidades.Servico"
+        android:exported="true"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+        <receiver android:name=".controllers.StarMeLeva">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,43 +44,34 @@
         </activity>
         <activity
             android:name=".EditarDadosActivity"
-            android:label="@string/title_activity_edicao" >
-        </activity>
+            android:label="@string/title_activity_edicao"></activity>
         <activity android:name=".recuperarSenhaActivity" />
         <activity
             android:name=".Registro2Activity"
-            android:label="@string/title_activity_registro" >
-        </activity>
+            android:label="@string/title_activity_registro"></activity>
         <activity
             android:name=".Criar_Carona"
-            android:label="@string/title_activity_criar__carona" >
-        </activity>
+            android:label="@string/title_activity_criar__carona"></activity>
         <activity
             android:name=".ExibirDadosUsuarioActivity"
-            android:label="@string/action_perfil" >
-        </activity>
+            android:label="@string/action_perfil"></activity>
         <activity
             android:name=".Detalhes_Carona"
-            android:label="@string/title_activity_detalhes__carona" >
-        </activity>
+            android:label="@string/title_activity_detalhes__carona"></activity>
         <activity
             android:name=".Registro1Activity"
-            android:label="@string/title_activity_registro2" >
-        </activity>
+            android:label="@string/title_activity_registro2"></activity>
         <activity
             android:name=".DetalheUsuario"
-            android:label="@string/title_activity_detalhe_usuario" >
-        </activity>
-
+            android:label="@string/title_activity_detalhe_usuario"></activity>
         <service
             android:name=".entidades.Servico"
-            android:exported="true" />
+            android:exported="true"/>
 
         <activity
             android:name=".testador"
             android:label="@string/title_activity_testador" />
-        <activity android:name=".ComentariosActivity" >
-        </activity>
+        <activity android:name=".ComentariosActivity"></activity>
     </application>
 
 </manifest>

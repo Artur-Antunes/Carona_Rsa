@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.EditText;
@@ -103,10 +105,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void logarUsuario(Object object) {    //Usuário existente.
         Usuario usuario = (Usuario) object;
-
         mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
         mDados.setLogado(true);
-
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }
@@ -117,6 +117,31 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(this, Registro1Activity.class));
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id==R.id.action_cadastre_se){
+            startActivity(new Intent(LoginActivity.this,Registro1Activity.class));
+            return true;
+        }else if(id==R.id.action_termos){
+            return true;
+        }else if(id==R.id.action_esqueceu){
+            startActivity(new Intent(LoginActivity.this,recuperarSenhaActivity.class));
+            return true;
+        }
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -86,6 +86,11 @@ public class RequisicoesServidor {
         new gravarComentarioCaronaAsyncTask(idUsuario, IdCarona,texto, retorno).execute();
     }
 
+    public void recuperarSenha(String email, GetRetorno retorno) {
+        progressDialog.show();
+        new recuperarSenhaAsyncTask(email, retorno).execute();
+    }
+
     public void verificaCaronaSolitada(int idCarona, Usuario usuario, GetRetorno retorno) {
         new verificaSolicitacaAsyncTask(idCarona, usuario, retorno).execute();
     }
@@ -823,7 +828,6 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(Object usuarioRetornado) {
-
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(usuarioRetornado);
             super.onPostExecute(usuarioRetornado);
@@ -1279,6 +1283,53 @@ public class RequisicoesServidor {
             progressDialog.dismiss();//encerra o circulo de progresso
             retornoUsuario.concluido(caronas, usuarios);
             super.onPostExecute(objeto);
+        }
+    }
+
+    public class recuperarSenhaAsyncTask extends AsyncTask<Void, Void, Object> {
+
+        String emailUser;
+        GetRetorno retornoUsuario;
+
+        public recuperarSenhaAsyncTask(String email, GetRetorno retorno) {
+            this.emailUser = email;
+            this.retornoUsuario = retorno;
+        }
+
+        @Override //metodo que � execudado em segundo plano para economia de recursos
+        protected Object doInBackground(Void... params) {
+
+            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
+            dadosParaEnvio.add(new BasicNameValuePair("email_user", emailUser + ""));
+
+            HttpParams httpRequestsParametros = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");
+            String teste = "Não foi possível se conectar";
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
+                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
+                HttpEntity entidade = httpResposta.getEntity();
+                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
+
+                JSONObject jObjeto = new JSONObject(resultado);
+                teste = jObjeto.getString("teste");
+
+            } catch (Exception e) {
+                Log.e(TAG, "erro registro " + e);
+                e.printStackTrace();
+            }
+            return teste;
+        }
+
+        @Override //metodo que � executado quando o post for exetutado/enviado
+        protected void onPostExecute(Object resultado) {
+            progressDialog.dismiss();//encerra o circulo de progresso
+            retornoUsuario.concluido(resultado);
+            super.onPostExecute(resultado);
         }
     }
 

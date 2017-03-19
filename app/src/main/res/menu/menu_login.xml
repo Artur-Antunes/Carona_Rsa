@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="br.com.rsa.carona.carona_rsa.LoginActivity">
+    <item
+        android:id="@+id/action_termos"
+        android:orderInCategory="100"
+        android:title="Termos de uso"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_esqueceu"
+        android:orderInCategory="100"
+        android:title="Esqueceu a senha?"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_cadastre_se"
+        android:orderInCategory="100"
+        android:title="Cadastre-se"
+        app:showAsAction="never" />
+</menu>

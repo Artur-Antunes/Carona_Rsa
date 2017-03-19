@@ -74,7 +74,7 @@
                 android:background="@color/color3"
                 android:drawableLeft="@drawable/pass_icon"
                 android:hint=" Senha"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:padding="9dp"
                 android:textColor="#000000"
                 android:textColorHint="#69686b"

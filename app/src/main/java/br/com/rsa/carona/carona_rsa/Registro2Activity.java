@@ -17,6 +17,7 @@ import android.widget.Toast;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
+import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Mask;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -105,7 +106,7 @@ public class Registro2Activity extends AppCompatActivity {
                         String senha = senhaRegistro.getText().toString();
                         boolean cnh = cnhRegistro.isChecked();
                         String sexo = sexoRegistro.getSelectedItem().toString();
-                        Usuario usuario1 = new Usuario(usuario.getNome(), usuario.getSobrenome(), matricula, email, telefone, sexo, cnh);
+                        final Usuario usuario1 = new Usuario(usuario.getNome(), usuario.getSobrenome(), matricula, email, telefone, sexo, cnh);
                         usuario1.setSenha(senha);
                         usuario1.setFoto(usuario.getFoto());
                         usuario1.setExtFoto(usuario.getExtFoto());
@@ -115,8 +116,27 @@ public class Registro2Activity extends AppCompatActivity {
                         rs.gravaDadosDoUsuario(usuario1, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
-                                Toast.makeText(Registro2Activity.this, object.toString(), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Registro2Activity.this, LoginActivity.class));
+                                if(object.toString().equals("1")){
+                                    Toast.makeText(Registro2Activity.this, "Dados Salvos com Sucesso", Toast.LENGTH_SHORT).show();
+                                    RequisicoesServidor rs= new RequisicoesServidor(Registro2Activity.this);
+                                    rs.buscaDadosDoUsuario(usuario1, new GetRetorno() {
+                                        @Override
+                                        public void concluido(Object object) {
+                                            logarUsuario(object);
+                                        }
+
+                                        @Override
+                                        public void concluido(Object object, Object object2) {
+
+                                        }
+                                    });
+                                }else if(object.toString().equals("2")){
+                                    Toast.makeText(Registro2Activity.this, "Email já existe", Toast.LENGTH_SHORT).show();
+                                }else if(object.toString().equals("0")){
+                                    Toast.makeText(Registro2Activity.this, "Matricula já existe", Toast.LENGTH_SHORT).show();
+                                }else if(object.toString().equals("-1")){
+                                    Toast.makeText(Registro2Activity.this, "Erro de comunicação", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                             @Override
@@ -132,6 +152,16 @@ public class Registro2Activity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void logarUsuario(Object object) {    //Usuário existente.
+        ManipulaDados mDados;
+        mDados = new ManipulaDados(Registro2Activity.this);
+        Usuario usuario = (Usuario) object;
+        mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
+        mDados.setCaronaSolicitada(-1);
+        mDados.setLogado(true);
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override

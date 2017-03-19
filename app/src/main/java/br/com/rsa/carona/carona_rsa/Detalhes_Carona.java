@@ -1,6 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +26,7 @@ import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Detalhes_Carona extends AppCompatActivity {
-    private TextView tv_origem, tv_destino, tv_vagas, tv_horario, tv_nome, tv_ponto, tv_tipoVeiculo, tv_status, tv_matricula, tv_telefone, tv_cnh, tv_email,tv_link_mais;
+    private TextView tv_origem, tv_destino, tv_vagas, tv_horario, tv_nome, tv_ponto, tv_tipoVeiculo, tv_status, tv_matricula, tv_telefone, tv_cnh, tv_email, tv_link_mais;
     private Button b_salvar;
     private LinearLayout ll;
     private RelativeLayout rl;
@@ -39,8 +41,6 @@ public class Detalhes_Carona extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final ManipulaDados md = new ManipulaDados(Detalhes_Carona.this);
         setContentView(R.layout.activity_detalhes__carona);
-        ll = (LinearLayout) findViewById(R.id.caixa_participantes);
-        rl = (RelativeLayout) findViewById(R.id.titulo_geral);
         tv_origem = (TextView) findViewById(R.id.tv_origem2);
         tv_destino = (TextView) findViewById(R.id.tv_destino2);
         tv_vagas = (TextView) findViewById(R.id.tv_vagas2);
@@ -86,22 +86,8 @@ public class Detalhes_Carona extends AppCompatActivity {
         } else {
             tv_cnh.setText("CNH:Não");
         }
-        ll.removeAllViews();
+//        ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
-        for (int i = 0; i < carona.getParticipantes().size(); i++) {
-            final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
-            TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
-            TextView status = (TextView) modelo.findViewById(R.id.tv_status);
-            nome.setText(carona.getParticipantes().get(i).getNome());
-            status.setText(carona.getParticipantesStatus().get(i).toString());
-            if (carona.getParticipantesStatus().get(i).toString().equals("Aceito")) {
-                status.setTextColor(getResources().getColor(R.color.verde));
-            } else {
-                status.setTextColor(getResources().getColor(R.color.color1));
-            }
-            ll.addView(modelo, 0);
-        }
-
         b_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,13 +183,34 @@ public class Detalhes_Carona extends AppCompatActivity {
         });
     }
 
-    public void exibirParticipantes(View view) {
-        Log.e("123", "okkk");
-        rl.setVisibility(View.VISIBLE);
-        ll.setVisibility(View.VISIBLE);
-        //tv_link_mais.;
+    public void show(View v) {
+        String usuarios = "";
+        if (carona.getParticipantes().size() > 0) {
+            for (int i = 0; i < carona.getParticipantes().size(); i++) {
+                String nome = carona.getParticipantes().get(i).getNome();
+                String sobrenome =carona.getParticipantes().get(i).getSobrenome();
+                usuarios += nome + " "+sobrenome+"\n";
+            }
+            getParticipantes(usuarios);
+        } else {
+            Toast.makeText(Detalhes_Carona.this, "Nenhum participante", Toast.LENGTH_LONG).show();
+        }
     }
 
+    private void getParticipantes(String usuarios) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+        dialog.setCancelable(false);
+        dialog.setTitle("PARTICIPANTES");
+        dialog.setMessage(usuarios);
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        final AlertDialog alert = dialog.create();
+        alert.show();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -212,9 +219,7 @@ public class Detalhes_Carona extends AppCompatActivity {
             return true;
         }
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
