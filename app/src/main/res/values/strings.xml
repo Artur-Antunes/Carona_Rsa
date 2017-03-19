@@ -2,8 +2,8 @@
     <!--Strings relacionadas ao cabeçalho -->
     <string name="app_name">Me Leva!</string>
     <string name="action_settings">Settings</string>
-    <string name="action_perfil">PERFIL</string>
-    <string name="action_sair">SAIR</string>
+    <string name="action_perfil">Perfil</string>
+    <string name="action_sair">Sair</string>
     <string name="section_format">Olá essa é a sessão: %1$d</string>
     <string name="title_activity_login">Bem-Vindo</string>
     <string name="title_activity_edicao">Edição</string>
@@ -30,13 +30,13 @@
     <string name="homens">HOMENS</string>
     <string name="mulheres">MULHERES</string>
     <string name="todos">TODOS</string>
-    <string name="add">NOVA CARONA</string>
+    <string name="add">Nova Carona</string>
     <string name="confirmacao_exclusao_viagem"> Tem certeza que deseja realizar essa ação ?</string>
     <string name="sim"> SIM </string>
     <string name="nao"> NÃO </string>
     <string name="alert_editar_perfil">Editar Perfil. Deseja realmente continuar ? </string>
     <string name="alert_cancelar_carona">Cancelar Carona. Deseja realmente continuar ? </string>
-    <string name="alert_solicitar_carona">Cancelar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_solicitar_carona">Solicitar Carona. Deseja realmente continuar ? </string>
     <string name="alert_aceitar_user">Aceitar Caroneiro. Deseja realmente continuar ? </string>
     <string name="alert_recusar_user">Recusar Caroneiro. Deseja realmente continuar ? </string>
     <string name="alert_criar_carona">Criar Carona. Deseja realmente continuar ? </string>

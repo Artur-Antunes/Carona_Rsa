@@ -357,8 +357,10 @@ public class RequisicoesServidor {
                     for (int j = 0; j < jObj.getInt("participantes_tamanho"); j++) {
                         int idPart = jObj.getInt("participantes_" + j + "_id");
                         String nomePart = jObj.getString("participantes_" + j + "_nome");
+                        String sobrenomePart = jObj.getString("participantes_" + j + "_sobrenome");
                         String statusSoliciacao = jObj.getString("participantes_" + j + "_status_solicitacao");
                         Usuario participante = new Usuario(idPart, nomePart);
+                        participante.setSobrenome(sobrenomePart);
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }
@@ -1248,8 +1250,11 @@ public class RequisicoesServidor {
                     for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
                         int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
                         String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                        String sobrenomenomePart = jObjeto.getString("participantes_" + i + "_" + j + "_sobrenome");
+                        Log.e("sobrenome_bora:",sobrenomenomePart);
                         String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
                         Usuario participante = new Usuario(idPart, nomePart);
+                        participante.setSobrenome(sobrenomenomePart);
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }

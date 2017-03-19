@@ -1,13 +1,9 @@
 package br.com.rsa.carona.carona_rsa;
-
 import android.content.Context;
 import android.content.Intent;
-
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
-
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -71,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             Usuario usuarioLogado = new Usuario(usuarioInformado, senhaInformada); //Instanciando um objeto do tipo usuario com o nome e a senha !
             autenticar(usuarioLogado);
         } else {
-            Toast.makeText(LoginActivity.this, " Virifique sua conexão", Toast.LENGTH_LONG).show();
+                semCon();
         }
     }
 
@@ -99,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void mostrarMensagemErro() {    //Quando não existir nenhum usuário com o nome e senha repassados.
-
         Toast.makeText(LoginActivity.this, "Usuario não encontrado", Toast.LENGTH_SHORT).show();
     }
 
@@ -114,9 +109,16 @@ public class LoginActivity extends AppCompatActivity {
     public void selecionarOpcao(View view) {
         switch (view.getId()) {
             case R.id.link_cadastro:
-                startActivity(new Intent(this, Registro1Activity.class));
+                if(isOnline()) {
+                    startActivity(new Intent(this, Registro1Activity.class));
+                }else{
+                    semCon();                }
                 break;
         }
+    }
+
+    private void semCon(){
+        Toast.makeText(LoginActivity.this, " Ative sua conexão sem fio", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -129,13 +131,21 @@ public class LoginActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id==R.id.action_cadastre_se){
-            startActivity(new Intent(LoginActivity.this,Registro1Activity.class));
-            return true;
+            if(isOnline()) {
+                startActivity(new Intent(LoginActivity.this, Registro1Activity.class));
+            }else{
+                semCon();
+            }
+                return true;
         }else if(id==R.id.action_termos){
             return true;
         }else if(id==R.id.action_esqueceu){
-            startActivity(new Intent(LoginActivity.this,recuperarSenhaActivity.class));
-            return true;
+            if(isOnline()) {
+                startActivity(new Intent(LoginActivity.this, recuperarSenhaActivity.class));
+            }else{
+                semCon();
+            }
+                return true;
         }
         if (id == android.R.id.home) {
             finish();

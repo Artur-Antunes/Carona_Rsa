@@ -75,7 +75,6 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     public void editarDados(View view) {
         Intent it=new Intent(this, EditarDadosActivity.class);
         startActivity(it);
-        finish();
     }
 
     public void sairDados(View view) {
@@ -84,7 +83,6 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.exibir_dados_usuario, menu);
         return true;
     }
@@ -92,17 +90,15 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.action_home) {
-            startActivity(new Intent(this, MainActivity.class));
+            finish();
             return true;
         }
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            finish();
+            //Intent intent = new Intent(this, MainActivity.class);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

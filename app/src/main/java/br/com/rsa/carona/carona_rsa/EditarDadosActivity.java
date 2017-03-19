@@ -459,9 +459,10 @@ public class EditarDadosActivity extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            finish();
+            //Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

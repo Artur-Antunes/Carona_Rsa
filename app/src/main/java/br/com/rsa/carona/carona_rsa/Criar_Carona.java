@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -124,9 +121,9 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                     @Override
                                                     public void concluido(Object object) {
                                                         Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
+                                                        finish();
                                                         Intent it = new Intent(Criar_Carona.this, MainActivity.class);
                                                         startActivity(it);
-                                                        finish();
                                                     }
 
                                                     @Override
@@ -236,11 +233,10 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_perfil) {
-            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             finish();
+            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             return true;
         }else if(id == R.id.action_home){
-            startActivity(new Intent(this, MainActivity.class));
             finish();
             return true;
         } else if (id == android.R.id.home) {

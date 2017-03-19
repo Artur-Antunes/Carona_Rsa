@@ -5,19 +5,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
@@ -28,8 +23,6 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 public class Detalhes_Carona extends AppCompatActivity {
     private TextView tv_origem, tv_destino, tv_vagas, tv_horario, tv_nome, tv_ponto, tv_tipoVeiculo, tv_status, tv_matricula, tv_telefone, tv_cnh, tv_email, tv_link_mais;
     private Button b_salvar;
-    private LinearLayout ll;
-    private RelativeLayout rl;
     AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
@@ -86,7 +79,7 @@ public class Detalhes_Carona extends AppCompatActivity {
         } else {
             tv_cnh.setText("CNH:Não");
         }
-//        ll.removeAllViews();
+        //ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
         b_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,8 +117,6 @@ public class Detalhes_Carona extends AppCompatActivity {
                         Log.e("usuario:", "caroneiro_cancelando!");
                         RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
                         Usuario userLocal = new Usuario((md.getUsuario().getId()));
-                        Log.e("id-carona", carona.getId() + "");
-                        Log.e("id-usuario", userLocal.getId() + "");
                         rserv.desistirCarona(userLocal, carona, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
@@ -188,6 +179,8 @@ public class Detalhes_Carona extends AppCompatActivity {
         if (carona.getParticipantes().size() > 0) {
             for (int i = 0; i < carona.getParticipantes().size(); i++) {
                 String nome = carona.getParticipantes().get(i).getNome();
+                Log.e("nome1:",carona.getParticipantes().get(i).getNome());
+                Log.e("sobrenome1:",carona.getParticipantes().get(i).getSobrenome());
                 String sobrenome =carona.getParticipantes().get(i).getSobrenome();
                 usuarios += nome + " "+sobrenome+"\n";
             }

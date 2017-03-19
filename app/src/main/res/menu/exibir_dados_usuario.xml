@@ -3,13 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.rsa.carona.carona_rsa.testador">
 
-    <item android:id="@+id/action_settings"
-        android:title="PERFIL"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
 
     <item android:id="@+id/action_home"
-        android:title="HOME"
+        android:title="Home"
         android:orderInCategory="100"
         app:showAsAction="never" />
 
