@@ -3,6 +3,7 @@ package br.com.rsa.carona.carona_rsa;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,7 +38,6 @@ public class Registro2Activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro2);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -116,9 +116,9 @@ public class Registro2Activity extends AppCompatActivity {
                         rs.gravaDadosDoUsuario(usuario1, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
-                                if(object.toString().equals("1")){
+                                if (object.toString().equals("1")) {
                                     Toast.makeText(Registro2Activity.this, "Dados Salvos com Sucesso", Toast.LENGTH_SHORT).show();
-                                    RequisicoesServidor rs= new RequisicoesServidor(Registro2Activity.this);
+                                    RequisicoesServidor rs = new RequisicoesServidor(Registro2Activity.this);
                                     rs.buscaDadosDoUsuario(usuario1, new GetRetorno() {
                                         @Override
                                         public void concluido(Object object) {
@@ -130,11 +130,11 @@ public class Registro2Activity extends AppCompatActivity {
 
                                         }
                                     });
-                                }else if(object.toString().equals("2")){
+                                } else if (object.toString().equals("2")) {
                                     Toast.makeText(Registro2Activity.this, "Email já existe", Toast.LENGTH_SHORT).show();
-                                }else if(object.toString().equals("0")){
+                                } else if (object.toString().equals("0")) {
                                     Toast.makeText(Registro2Activity.this, "Matricula já existe", Toast.LENGTH_SHORT).show();
-                                }else if(object.toString().equals("-1")){
+                                } else if (object.toString().equals("-1")) {
                                     Toast.makeText(Registro2Activity.this, "Erro de comunicação", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -164,13 +164,16 @@ public class Registro2Activity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
+    public void voltar(View view) {
+        startActivity(new Intent(Registro2Activity.this,LoginActivity.class));
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

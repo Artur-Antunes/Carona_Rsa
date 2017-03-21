@@ -35,9 +35,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
-        mDados.limparDados();
+        new Funcoes().apagarNotificacoes(LoginActivity.this);
+
+        //mDados.limparDados();
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
         mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
@@ -104,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         mDados.setLogado(true);
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     public void selecionarOpcao(View view) {

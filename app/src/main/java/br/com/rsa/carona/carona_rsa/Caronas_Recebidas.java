@@ -70,8 +70,9 @@ public class Caronas_Recebidas extends Fragment {
         super.setUserVisibleHint(visible);
         if (visible && isResumed())
         {
-
-
+            if (M.getCaronaSolicitada()!=-1){
+                atualizarCaronasAceitas();
+            }
         }
     }
 

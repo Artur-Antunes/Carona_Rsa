@@ -167,14 +167,12 @@ public class Servico extends IntentService {
         Log.e("aiasdasds", "entrou   dsadasdas");
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
-        Log.e("Carona solicitada:",idCaronaSolicitada+"-");
         rs.verificaCaronaSolitada(idCaronaSolicitada, us, new GetRetorno() {
             @Override
             public void concluido(Object object) {
                 Usuario us = (Usuario) object;
                 String titulo, texto;
                 if ((us != null) && (us.getId() != -1)) {
-                    Log.e("vamos porra:","lllllll");
                     md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                     titulo = "Carona Aceita";
                     texto = us.getNome() + " aceitou sua Solicitação de Carona";
@@ -218,12 +216,10 @@ public class Servico extends IntentService {
                 List<Carona> caronas = (List<Carona>) object;
 
                 if (usuarios.size() > 0) {
-                    Log.e("aqui","11");
                     criaBroadcast(usuarios.size(), "novaCarona");
                 }
 
                 if (usuarios.size() > 1) {
-                    Log.e("aqui","22");
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
                     String texto = "";

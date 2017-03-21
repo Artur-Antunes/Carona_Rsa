@@ -1,7 +1,9 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,12 +11,14 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -24,11 +28,9 @@ import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Registro1Activity extends AppCompatActivity {
-    private EditText nomeRegistro;
-    private EditText sobrenomeRegistro;
+    private EditText nomeRegistro,sobrenomeRegistro;
+    private TextView escolherFoto;
     private Button bSalvar;
-    private Button bCam;
-    private Button bGal;
     ImageView imagem;
     private String foto = null;
     private String extFoto = null;
@@ -39,9 +41,11 @@ public class Registro1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_registro1);
         imagem = (ImageView) findViewById(R.id.c_imagem);
         nomeRegistro = (EditText) findViewById(R.id.tv_nome);
+        escolherFoto = (TextView) findViewById(R.id.escolherFoto);
         nomeRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -54,32 +58,6 @@ public class Registro1Activity extends AppCompatActivity {
         });
         sobrenomeRegistro = (EditText) findViewById(R.id.c_sobrenome);
         bSalvar = (Button) findViewById(R.id.b_salvar);
-        bCam = (Button) findViewById(R.id.b_camera);
-        bGal = (Button) findViewById(R.id.b_galeria);
-
-        bCam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File file = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                startActivityForResult(intent, IMAGEM_CAM);
-            }
-        });
-        bGal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    //Pick Image From Gallery
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_SELECT_IMAGE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
         bSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,35 +144,67 @@ public class Registro1Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_registro2, menu);
-        return true;
+    public void voltar(View v){
+        finish();
     }
+
+    private void fotoGaleria(){
+        try {
+            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, RESULT_SELECT_IMAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fotoCamera(){
+        File file = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        startActivityForResult(intent, IMAGEM_CAM);
+    }
+
+    public void escolherFoto(View v){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(Registro1Activity.this);
+        dialog.setCancelable(true);
+        dialog.setTitle("FOTO PERFIL");
+        dialog.setPositiveButton("GALERIA", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                        Log.e("galeria","ok");
+                        fotoGaleria();
+            }
+        });
+
+        dialog.setNegativeButton("CÂMERA", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                        Log.e("câmera","ok");
+                        fotoCamera();
+            }
+        });
+
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+
+    }
+
 
     private void performCrop(Uri picUri) {
         try {
 
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
             cropIntent.setDataAndType(picUri, "image/*");
-            // set crop properties
             cropIntent.putExtra("crop", "true");
-            // indicate aspect of desired crop
             cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
             cropIntent.putExtra("outputX", 300);
             cropIntent.putExtra("outputY", 300);
-            // retrieve data on return
             cropIntent.putExtra("return-data", true);
-            // start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, PIC_CROP);
         }
-        // respond to users whose devices do not support the crop action
         catch (ActivityNotFoundException anfe) {
-            // display an error message
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
@@ -203,16 +213,11 @@ public class Registro1Activity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == android.R.id.home) {
+            finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

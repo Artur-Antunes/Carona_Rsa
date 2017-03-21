@@ -73,6 +73,7 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
 
 
     public void editarDados(View view) {
+        finish();
         Intent it=new Intent(this, EditarDadosActivity.class);
         startActivity(it);
     }

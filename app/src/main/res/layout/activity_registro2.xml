@@ -313,11 +313,13 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/lin"
+                android:id="@+id/link_voltar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:letterSpacing="0.1"
+                android:clickable="true"
+                android:onClick="voltar"
                 android:text="Já tem uma conta ?"
                 android:textColor="#0d0056" />
         </LinearLayout>

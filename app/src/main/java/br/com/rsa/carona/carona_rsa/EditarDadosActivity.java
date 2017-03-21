@@ -176,6 +176,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                                 .setMessage(R.string.alert_editar_perfil)
                                 .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
+                                        finish();
                                         startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
                                     }
                                 })
@@ -210,6 +211,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                                                 usuarioLocal.setIdCaronaSolicitada(idCaronaAlterar);
 
                                                 mDados.gravarDados(usuarioLocal);
+                                                finish();
                                                 startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
                                             }
 
@@ -460,6 +462,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
+            startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
             //Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
             //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //startActivity(intent);

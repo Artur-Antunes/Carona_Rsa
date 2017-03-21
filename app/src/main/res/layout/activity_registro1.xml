@@ -21,33 +21,12 @@
             android:layout_height="300dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/user" />
-
-        <Button
-            android:id="@+id/b_galeria"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/c_imagem"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/c_imagem"
-            android:layout_marginRight="10dp"
-            android:text="Galeria" />
-
-        <Button
-            android:id="@+id/b_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/c_imagem"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp"
-            android:text="CAMERA" />
-
         <View
             android:id="@+id/viewPrincipal"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/b_camera"
+            android:layout_below="@+id/c_imagem"
             android:layout_marginTop="10dp"
             android:background="@android:color/darker_gray" />
 
@@ -158,10 +137,26 @@
                 android:id="@+id/lin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:gravity="center"
                 android:letterSpacing="0.1"
+                android:onClick="voltar"
                 android:text="Já tem uma conta ?"
                 android:textColor="#0d0056" />
+
         </LinearLayout>
+        <TextView
+            android:id="@+id/escolherFoto"
+            android:layout_width="match_parent"
+            android:layout_marginTop="100dp"
+            android:text="Escolha sua foto"
+            android:textColor="@color/color3"
+            android:textAlignment="center"
+            android:clickable="true"
+            android:onClick="escolherFoto"
+            android:textSize="20dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/meio_transparente" />
     </RelativeLayout>
 </ScrollView>
