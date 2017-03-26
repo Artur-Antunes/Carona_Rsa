@@ -128,6 +128,7 @@ public class Registro1Activity extends AppCompatActivity {
                     foto = new Funcoes().BitMapToString(bitmap);
                     imagem.setImageBitmap(bitmap);
                     imagem.setScaleType(ImageView.ScaleType.FIT_XY);
+                    escolherFoto.setVisibility(View.INVISIBLE);
                 }else if(resultCode==Activity.RESULT_CANCELED){
                     Toast.makeText(Registro1Activity.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }
@@ -171,7 +172,6 @@ public class Registro1Activity extends AppCompatActivity {
         dialog.setPositiveButton("GALERIA", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                        Log.e("galeria","ok");
                         fotoGaleria();
             }
         });
@@ -179,7 +179,6 @@ public class Registro1Activity extends AppCompatActivity {
         dialog.setNegativeButton("CÂMERA", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                        Log.e("câmera","ok");
                         fotoCamera();
             }
         });

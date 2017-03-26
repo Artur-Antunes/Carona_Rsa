@@ -20,6 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:onClick="escolherFoto"
             android:src="@drawable/user" />
         <View
             android:id="@+id/viewPrincipal"

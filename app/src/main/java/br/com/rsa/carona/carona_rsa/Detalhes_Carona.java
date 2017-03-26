@@ -1,18 +1,24 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
@@ -21,23 +27,40 @@ import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Detalhes_Carona extends AppCompatActivity {
-    private TextView tv_origem, tv_destino, tv_vagas, tv_horario, tv_nome, tv_ponto, tv_tipoVeiculo, tv_status, tv_matricula, tv_telefone, tv_cnh, tv_email, tv_link_mais;
+    private TextView tv_origem;
+    private TextView tv_destino;
+    private TextView tv_vagas;
+    private TextView tv_horario;
+    private TextView tv_nome;
+    private TextView tv_ponto;
+    private TextView tv_tipoVeiculo;
+    private TextView tv_status;
+    private TextView tv_matricula;
+    private TextView tv_telefone;
+    private TextView tv_cnh;
+    private TextView tv_email;
     private Button b_salvar;
+    private RelativeLayout rl;
+    private LinearLayout ll;
     AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
-
+    private FloatingActionButton solCar2;
+    private String intencao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detalhes__carona);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final ManipulaDados md = new ManipulaDados(Detalhes_Carona.this);
-        setContentView(R.layout.activity_detalhes__carona);
+        dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+        //solCar2 = (FloatingActionButton) findViewById(R.id.b_solicita2);
+        //ll = (LinearLayout) findViewById(R.id.caixa_participantes);
+        //rl = (RelativeLayout) findViewById(R.id.titulo);
         tv_origem = (TextView) findViewById(R.id.tv_origem2);
         tv_destino = (TextView) findViewById(R.id.tv_destino2);
         tv_vagas = (TextView) findViewById(R.id.tv_vagas2);
-        tv_link_mais = (TextView) findViewById(R.id.link_mais);
         tv_horario = (TextView) findViewById(R.id.tv_horario2);
         tv_ponto = (TextView) findViewById(R.id.tv_ponto);
         tv_tipoVeiculo = (TextView) findViewById(R.id.tv_tipoVeiculo);
@@ -49,11 +72,12 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_nome = (TextView) findViewById(R.id.tv_nome);
         tv_email = (TextView) findViewById(R.id.tv_email);
         b_salvar = (Button) findViewById(R.id.b_solicitar);
-        dialog = new AlertDialog.Builder(Detalhes_Carona.this);
         if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
+            intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
             b_salvar.setTextColor(Color.parseColor("#936c66"));
         } else {
+            intencao = "Me Leva!";
             b_salvar.setBackgroundResource(R.drawable.cor_botao2);
             b_salvar.setTextColor(Color.WHITE);
         }
@@ -65,30 +89,44 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_ponto.setText(carona.getPonto());
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
-            tv_status.setText("Disponível");
+            tv_status.setText("DISPONÍVEL");
         } else {
-            tv_status.setText("Indisponível");
+            tv_status.setText("INDISPONÍVEL");
         }
-
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());
         tv_nome.setText(usuario.getNome());
         tv_email.setText(usuario.getEmail());
         if (usuario.isCnh()) {
-            tv_cnh.setText("CNH:Sim");
+            tv_cnh.setText("POSSUI CNH");
         } else {
-            tv_cnh.setText("CNH:Não");
+            tv_cnh.setText("NÃO POSSUI CNH");
         }
         //ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
+        /**
+        for (int i = 0; i < carona.getParticipantes().size(); i++) {
+            final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
+            TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
+            TextView status = (TextView) modelo.findViewById(R.id.tv_status);
+            nome.setText(carona.getParticipantes().get(i).getNome());
+            status.setText(carona.getParticipantesStatus().get(i).toString());
+            if (carona.getParticipantesStatus().get(i).toString().equals("ACEITO")) {
+                status.setTextColor(getResources().getColor(R.color.verde));
+            } else {
+                status.setTextColor(getResources().getColor(R.color.color1));
+            }
+            ll.addView(modelo, 0);
+        }
+
+         **/
         b_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (b_salvar.getText().toString().equals("CANCELAR")) {
+                if (intencao.equals("CANCELAR")) {
                     if (md.getUsuario().getId() == usuario.getId()) {//O dono vai cancelar sua carona!
                         Log.e("usuario:", "dono_cancela");
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
                         dialog.setTitle(R.string.title_confirmacao)
                                 .setMessage(R.string.alert_cancelar_carona)
                                 .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
@@ -132,7 +170,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                         });
 
                     }
-                } else if (b_salvar.getText().toString().equals(("Me leva !"))) {
+                } else if (intencao.equals(("Me Leva!"))) {
                     if (md.getCaronaSolicitada() == -1) {
                         Log.e("usuario:", "caroneiro_pedindo!");
                         dialog.setTitle(R.string.title_confirmacao)
@@ -172,23 +210,26 @@ public class Detalhes_Carona extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void show(View v) {
         String usuarios = "";
+
         if (carona.getParticipantes().size() > 0) {
             for (int i = 0; i < carona.getParticipantes().size(); i++) {
                 String nome = carona.getParticipantes().get(i).getNome();
-                Log.e("nome1:",carona.getParticipantes().get(i).getNome());
-                Log.e("sobrenome1:",carona.getParticipantes().get(i).getSobrenome());
-                String sobrenome =carona.getParticipantes().get(i).getSobrenome();
-                usuarios += nome + " "+sobrenome+"\n";
+                String sobrenome = carona.getParticipantes().get(i).getSobrenome();
+                usuarios += nome + " " + sobrenome + "\n";
             }
             getParticipantes(usuarios);
         } else {
             Toast.makeText(Detalhes_Carona.this, "Nenhum participante", Toast.LENGTH_LONG).show();
         }
+
+        //exibir();
     }
+
 
     private void getParticipantes(String usuarios) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
@@ -203,6 +244,11 @@ public class Detalhes_Carona extends AppCompatActivity {
         });
         final AlertDialog alert = dialog.create();
         alert.show();
+    }
+
+    private void exibir() {
+        rl.setVisibility(View.VISIBLE);
+        ll.setVisibility(View.VISIBLE);
     }
 
     @Override

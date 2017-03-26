@@ -32,13 +32,18 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button android:id="@+id/btn_recuperar_senha"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btn_recuperar_senha"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Recuperar Senha"
-                android:textStyle="bold" />
+                android:layout_below="@+id/senha_login"
+                android:layout_marginTop="30dp"
+                android:background="#009a9a"
+                android:onClick="logar"
+                android:text="Recuperar senha"
+                android:textColor="#d9e5f3"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
