@@ -1,8 +1,10 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +16,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.sql.Time;
@@ -31,11 +35,13 @@ public class testador extends AppCompatActivity {
     AlertDialog actions;
     private int valor = -1;
     ManipulaDados mDados;
+    private String m_Text = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.testador);
+        ok();
 
     }
 
@@ -86,19 +92,37 @@ public class testador extends AppCompatActivity {
     };
 
     public void ok() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(testador.this);
-        dialog.setTitle(R.string.title_confirmacao)
-                .setMessage("teste")
-                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialoginterface, int i) {
-                        startActivity(new Intent(testador.this, ExibirDadosUsuarioActivity.class));
-                    }
-                })
-                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialoginterface, int i) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Alterar Senha");
 
-                    }
-                }).show();
+        final EditText senhaAtual = new EditText(this);
+        final EditText novaSenha = new EditText(this);
+
+        senhaAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        novaSenha.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        senhaAtual.setHint("Senha");
+        novaSenha.setHint("Nova Senha");
+
+        LinearLayout ll=new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.setPadding(10,10,10,10);
+        ll.addView(senhaAtual);
+        ll.addView(novaSenha);
+        builder.setView(ll);
+
+        builder.setPositiveButton("Alterar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //m_Text = input.getText().toString()+"-"+input2.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
-
 }

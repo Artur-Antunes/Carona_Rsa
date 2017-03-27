@@ -57,8 +57,6 @@ public class RequisicoesServidor {
             return false;
         }
     }
-
-
     public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
@@ -152,7 +150,6 @@ public class RequisicoesServidor {
         //progressDialog.show();// Mostra a barra de dialogo.
         new BuscaUltimaCaronasAsyncTask(usuario, id, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
-
     //classe que armazena dados de usuario no banco de modo  que economiza recursos do celular
     public class armazenaDadosUsuarioAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;

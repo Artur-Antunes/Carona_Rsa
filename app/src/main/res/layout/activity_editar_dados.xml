@@ -283,6 +283,19 @@
                 android:text="Salvar"
                 android:textColor="#d9e5f3"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/alt_contrasenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btn_logar"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:gravity="center"
+                android:letterSpacing="0.1"
+                android:onClick="altSenha"
+                android:text="Alterar Senha"
+                android:textColor="#0d0056" />
         </LinearLayout>
 
         <ImageButton

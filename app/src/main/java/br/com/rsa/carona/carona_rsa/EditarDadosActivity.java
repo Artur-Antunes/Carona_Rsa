@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -269,6 +271,57 @@ public class EditarDadosActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    public void altSenha(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Alterar Senha");
+
+        final EditText senhaAtual = new EditText(this);
+        final EditText novaSenha = new EditText(this);
+
+        senhaAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        novaSenha.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        senhaAtual.setHint("SENHA ATUAL");
+        novaSenha.setHint("NOVA SENHA");
+
+        LinearLayout ll=new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.setPadding(10,10,10,10);
+        ll.addView(senhaAtual);
+        ll.addView(novaSenha);
+        builder.setView(ll);
+
+        builder.setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String enviar= "RUTRA001 "+mDados.getUsuario().getId()+" "+senhaAtual.getText().toString()+" "+novaSenha.getText().toString()+" ";
+                RequisicoesServidor rs = new RequisicoesServidor(EditarDadosActivity.this);
+                rs.recuperarSenha(enviar, new GetRetorno() {
+                    @Override
+                    public void concluido(Object object) {
+                        if(object.toString().equals("1")){
+                            Toast.makeText(EditarDadosActivity.this,"Senha Alterada!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void concluido(Object object, Object object2) {
+
+                    }
+                });
+
+
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public void Camera() {
