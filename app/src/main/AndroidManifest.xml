@@ -45,7 +45,6 @@
         <activity
             android:name=".EditarDadosActivity"
             android:label="@string/title_activity_edicao"></activity>
-        <activity android:name=".recuperarSenhaActivity" />
         <activity
             android:name=".Registro2Activity"
             android:label="@string/title_activity_registro"></activity>

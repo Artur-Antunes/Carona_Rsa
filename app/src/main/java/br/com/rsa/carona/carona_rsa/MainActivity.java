@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
     public int numNovasCaronas = 0;
     public int numNovasSolicitacoes = 0;
+    public int numCarAceita=0;
     MyReceiver receiver;
-    View v1, v3;
+    View v1,v2,v3;
     PagerAdapter adapter;
-    public static BadgeView badge1, badge3;
+    public static BadgeView badge1,badge2,badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +77,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         v1 = tabLayout.getTabAt(0).getCustomView();
+        v2 = tabLayout.getTabAt(1).getCustomView();
         v3 = tabLayout.getTabAt(2).getCustomView();
 
         badge1 = new BadgeView(this, v1);
+        badge2 = new BadgeView(this, v2);
         badge3 = new BadgeView(this, v3);
 
 
@@ -198,6 +201,12 @@ public class MainActivity extends AppCompatActivity {
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();
                 break;
+            case 3:
+                numCarAceita += Integer.parseInt(valor);//campo que é incrementado quando tem novas solicitações.
+                badge.setText(numCarAceita + "");
+                badge.setBadgeBackgroundColor(R.color.color1);
+                badge.show();
+                break;
         }
     }
 
@@ -264,6 +273,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
+                case "solicitacao_aceita":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mostraBadge(valor, badge2, 3);
+                        }
+                    });
+                    break;
+
                 case "sem_conexao":
                     handler.post(new Runnable() {
                         @Override

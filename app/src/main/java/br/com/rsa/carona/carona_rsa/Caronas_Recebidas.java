@@ -16,6 +16,7 @@ import java.util.List;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -24,6 +25,7 @@ public class Caronas_Recebidas extends Fragment {
     LinearLayout ll;
     FragmentActivity activity;
     ManipulaDados M;
+    int ultimoIdCaronaIncluida=-2;//Ultima carona exibida
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class Caronas_Recebidas extends Fragment {
 
     public void atualizarCaronasAceitas() {
         if (M.getUsuario() != null) {
+            ll.removeAllViews();
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
             rs.exibirMinhasSolicitações(usuario, new GetRetorno() {
@@ -49,9 +52,10 @@ public class Caronas_Recebidas extends Fragment {
                             TextView ta_destino = (TextView) modelo.findViewById(R.id.minha_carona_DESTINO);
                             TextView ta_horario = (TextView) modelo.findViewById(R.id.minha_carona_SAIDA);
                             ta_destino.setText(caronas.get(i).getDestino());
-                            ta_horario.setText(caronas.get(i).getHorario());
+                            ta_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
                             modelo.setId(i);
                             ll.addView(modelo, 0);
+                            ultimoIdCaronaIncluida=caronas.get(i).getId();
                         }
                     }
                 }
@@ -70,7 +74,7 @@ public class Caronas_Recebidas extends Fragment {
         super.setUserVisibleHint(visible);
         if (visible && isResumed())
         {
-            if (M.getCaronaSolicitada()!=-1){
+            if (M.getCaronaSolicitada()!=-1 && M.getCaronaSolicitada()!=ultimoIdCaronaIncluida){
                 atualizarCaronasAceitas();
             }
         }

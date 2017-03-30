@@ -218,7 +218,7 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                 horario.setText(selectedHour + ":" + selectMinuteFinal);
             }
         }, hour, minute, true);
-        mTimePicker.setTitle("HORÁRIO SÍDA");
+        mTimePicker.setTitle("HORÁRIO SAÍDA");
         mTimePicker.show();
     }
 

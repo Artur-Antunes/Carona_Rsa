@@ -64,6 +64,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:text="ACEITO"
+            android:textColor="@color/verde"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </RelativeLayout>

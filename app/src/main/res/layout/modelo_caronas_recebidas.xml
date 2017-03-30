@@ -1,112 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutR"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/linearLayoutR"
     android:layout_centerHorizontal="true"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:orientation="horizontal"
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@color/color3"
-        android:layout_margin="5dp"
+        android:id="@+id/relativeLayoutR1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayoutR1">
+        android:layout_margin="5dp"
+        android:background="@color/color3">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="MINHA CARONA"
             android:id="@+id/tv_legenda"
-            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:background="@color/meio_transparente"
+            android:text="Carona Solicitada"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/color3" />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
             android:id="@+id/imageViewR"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/icon_destino"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Local de Destino"
-            android:textSize="18dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/tv_destinoR"
-            android:layout_above="@+id/imageViewRelogio"
-            android:layout_toEndOf="@+id/imageViewR"
-            android:layout_marginLeft="10dp"
-             />
-
-        <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:id="@+id/imageViewRelogio"
-            android:src="@drawable/icon_relogio"
-            android:layout_below="@+id/imageViewR"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp" />
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/icon_destino" />
 
         <TextView
+            android:id="@+id/tv_destinoR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/imageViewRelogio"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/imageViewR"
+            android:text="Local de Destino"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/tv_horario_r"
-            android:textSize="18dp"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_alignTop="@+id/imageViewRelogio"
-            android:layout_alignStart="@+id/tv_destinoR"
-             />
+            android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/imageViewRelogio"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageViewR"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/icon_relogio" />
 
         <TextView
+            android:id="@+id/tv_horario_r"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="STATUS"
+            android:layout_alignStart="@+id/tv_destinoR"
+            android:layout_alignTop="@+id/imageViewRelogio"
+            android:text="00:00"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp" />
+
+        <TextView
             android:id="@+id/textView5R"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tv_destinoR"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp" />
+            android:layout_marginRight="20dp"
+            android:text="STATUS"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
+            android:id="@+id/tv_status_aguarda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="aguardando"
-            android:textSize="18dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/tv_status_aguarda"
-            android:layout_below="@id/textView5R"
             android:layout_alignParentEnd="true"
+            android:layout_below="@id/textView5R"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:text="aguardando"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp" />
+
+        <View
+            android:id="@+id/view13"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:layout_below="@id/imageViewRelogio"
+            android:layout_marginTop="2dp"
+            android:background="@color/color1" />
 
         <Button
+            android:id="@+id/b_desistencia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CANCELAR"
-            android:textStyle="bold"
-            android:textColor="@color/btnCancelar"
-            android:id="@+id/b_desistencia"
-            android:background="@color/color3"
-            android:layout_below="@+id/imageViewRelogio"
+            android:layout_below="@+id/view13"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp" />
+            android:background="@color/color3"
+            android:text="CANCELAR"
+            android:textColor="@color/btnCancelar"
+            android:textStyle="bold" />
 
 
-
-</RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

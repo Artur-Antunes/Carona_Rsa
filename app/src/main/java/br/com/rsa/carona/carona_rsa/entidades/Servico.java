@@ -61,8 +61,8 @@ public class Servico extends IntentService {
 
                     int idCaronaSolicitada = md.getCaronaSolicitada();
                     Log.e("testando", "o id doido " + idCaronaSolicitada);
-                    Log.e("idCarona solicitada",idCaronaSolicitada+"");
-                    Log.e("id ult id aceita",md.getUltimoIdCaronaAceita()+">>>");
+                    Log.e("idCarona solicitada", idCaronaSolicitada + "");
+                    Log.e("id ult id aceita", md.getUltimoIdCaronaAceita() + ">>>");
                     if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
                         Log.e("senhor1", "entrou");
                         verificaSolicitacaoAceita();
@@ -102,7 +102,7 @@ public class Servico extends IntentService {
         rs.verificaSolicitacoes(status, us, new GetRetorno() {
             @Override
             public void concluido(Object object) {
-                if(object!=null) {
+                if (object != null) {
                     List<Usuario> usuarios = (List<Usuario>) object;
                     String tipoP = "";
                     if (status.equals("AGUARDANDO")) {
@@ -179,6 +179,7 @@ public class Servico extends IntentService {
                     byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 2);
+                    criaBroadcast(1, "solicitacao_aceita");
                 } else if ((us != null) && (us.getId() == -1)) {
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     md.setCaronaSolicitada(-1);
@@ -244,7 +245,7 @@ public class Servico extends IntentService {
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 3);//Exibindo a notificaçõa
                     md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
                 } else if (usuarios.size() == 1) {
-                    Log.e("aqui","33");
+                    Log.e("aqui", "33");
                     byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";

@@ -302,6 +302,8 @@ public class EditarDadosActivity extends AppCompatActivity {
                     public void concluido(Object object) {
                         if(object.toString().equals("1")){
                             Toast.makeText(EditarDadosActivity.this,"Senha Alterada!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(EditarDadosActivity.this,"Houve um erro!", Toast.LENGTH_SHORT).show();
                         }
                     }
 

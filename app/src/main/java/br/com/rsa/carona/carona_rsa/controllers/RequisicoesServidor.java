@@ -528,10 +528,11 @@ public class RequisicoesServidor {
                     String nome = jObjeto.getString("nome_" + i);
                     String foto = jObjeto.getString("foto_" + i);
                     String texto = jObjeto.getString("texto_" + i);
-
+                    String hora = jObjeto.getString("hora_" + i);
                     Usuario user = new Usuario(id);
                     user.setNome(nome);
                     user.setFoto(foto);
+                    user.setDataRegistro(hora);
 
                     usuarios.add(user);
                     textos.add(texto);
@@ -1124,22 +1125,19 @@ public class RequisicoesServidor {
                         String origem = jObj.getString("origem_" + i);
                         String destino = jObj.getString("destino_" + i);
                         String tipoVeiculo = jObj.getString("tipoVeiculo_" + i);
-                        int vagas = jObj.getInt("vagas_" + i);
                         String restricao = jObj.getString("restricao_" + i);
                         String horario = jObj.getString("horario_" + i);
                         int status = jObj.getInt("status_" + i);
                         int ativo = jObj.getInt("ativo_" + i);
+                        int id = jObj.getInt("id_" + i);
                         String ponto = jObj.getString("ponto_" + i);
-                        String dataCriacao = jObj.getString("datacriacao_" + i);
 
                         Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, ponto);
-                        car.setVagas(vagas);
-                        car.setDataCriacao(dataCriacao);
                         car.setStatus(status);
                         car.setAtivo(ativo);
+                        car.setId(id);
 
                         caronas.add(car);
-
                     }
                 }
 

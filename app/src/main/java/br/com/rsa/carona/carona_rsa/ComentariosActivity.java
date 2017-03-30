@@ -11,6 +11,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,8 @@ import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
+import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
@@ -37,11 +40,11 @@ public class ComentariosActivity extends AppCompatActivity {
     ImageButton btComentar;
     EditText comentario;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comentarios);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         md = new ManipulaDados(ComentariosActivity.this);
         linf = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         linf = LayoutInflater.from(ComentariosActivity.this);
@@ -96,11 +99,13 @@ public class ComentariosActivity extends AppCompatActivity {
                     TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome3);
                     ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto3);
                     TextView tv_msg = (TextView) modelo.findViewById(R.id.tv_mensagem3);
+                    TextView tv_hora = (TextView) modelo.findViewById(R.id.tv_horario3);
                     //Button btcomentar = (Button) modelo.findViewById(R.id.b_commentar);
 
 
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_msg.setText(textos.get(i));
+                    tv_hora.setText(new Funcoes().horaSimples(usuarios.get(i).getDataRegistro()));
 
                     byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -115,5 +120,22 @@ public class ComentariosActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onStop();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // A activity está prestes a ser destruída (removida da memória)
+    }
+
 
 }
