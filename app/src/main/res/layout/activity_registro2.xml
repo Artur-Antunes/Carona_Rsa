@@ -36,6 +36,7 @@
             android:gravity="center"
             android:text="NOME"
             android:textSize="20dp"
+            android:textColor="@color/primary_text"
             android:textStyle="bold" />
 
         <View
@@ -78,7 +79,7 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -108,8 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:hint="CNH"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
                     android:textOff="NÃO"
                     android:textOn="SIM" />
             </LinearLayout>
@@ -143,7 +143,11 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="14"
-                    android:textColor="#000000"
+
+
+                    android:textColor="@color/primary_text"
+
+
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -176,7 +180,7 @@
                     android:hint="E-mail"
                     android:inputType="text"
                     android:letterSpacing="0.1"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -208,7 +212,7 @@
                     android:background="#00000000"
                     android:letterSpacing="0.1"
                     android:prompt="@string/sexo_usuario"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp"></Spinner>
             </LinearLayout>
@@ -243,7 +247,7 @@
                     android:hint="Senha"
                     android:inputType="textPassword"
                     android:letterSpacing="0.1"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -277,7 +281,7 @@
                     android:hint="Confirmar senha"
                     android:inputType="textPassword"
                     android:letterSpacing="0.1"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -301,14 +305,13 @@
 
             <Button
                 android:id="@+id/b_cadastrar"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="8dp"
-                android:background="#009a9a"
-                android:gravity="center"
-                android:letterSpacing="0.2"
-                android:text="Salvar"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Cadastrar"
+                android:layout_gravity="center"
                 android:textColor="#d9e5f3"
                 android:textStyle="bold" />
 

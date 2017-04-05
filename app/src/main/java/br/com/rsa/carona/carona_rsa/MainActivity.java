@@ -44,11 +44,13 @@ public class MainActivity extends AppCompatActivity {
     public static BadgeView badge1,badge2,badge3;
     TabLayout tabLayout;
     IntentFilter filter = new IntentFilter();
+    ManipulaDados md;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       // md=new ManipulaDados(MainActivity.this);
 
         Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
         startService(it);
@@ -174,9 +176,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            ManipulaDados mDados;
-            mDados = new ManipulaDados(MainActivity.this);
-            mDados.limparDados();
+            new ManipulaDados(MainActivity.this).limparDados();
             LimparBadge(badge1, 1);
             new Funcoes().apagarNotificacoes(getApplicationContext());
             startActivity(new Intent(this, LoginActivity.class));
@@ -214,8 +214,10 @@ public class MainActivity extends AppCompatActivity {
         badge.hide();
         if (valor == 1) {
             numNovasCaronas = 0;
-        } else {
+        } else if(valor==2){
             numNovasSolicitacoes = 0;
+        }else {
+            numCarAceita=0;
         }
     }
 
@@ -278,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mostraBadge(valor, badge2, 3);
+                            //md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                         }
                     });
                     break;

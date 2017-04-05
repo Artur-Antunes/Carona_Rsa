@@ -101,6 +101,7 @@ public class Home extends Fragment {
                     atualizarEspera();
                 }
                 atualizaCaronas();
+                new Funcoes().apagarNotificacaoEspecifica(getActivity(),5);
             }
         });
         recarrega.setOnClickListener(new View.OnClickListener() {
@@ -240,11 +241,11 @@ public class Home extends Fragment {
                     Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
                     Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
 
-                    if (M.getUsuario().getId() != usuarios.get(i).getId()) {
-                        btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
-                    } else {
+                    if (M.getUsuario().getId() == usuarios.get(i).getId()) {
                         btnSolicitar.setText("Cancelar");
                         btnSolicitar.setTextColor(Color.parseColor("#936c66"));
+                    } else {
+
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
@@ -305,6 +306,7 @@ public class Home extends Fragment {
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona solicitada!");
+                                                                new Funcoes().apagarNotificacaoEspecifica(activity, 1);
                                                             } else if (object.toString().trim().equals("2")) {
                                                                 exibirMsg("Carona expirou");
                                                                 ll.removeView(modelo);
@@ -416,11 +418,13 @@ public class Home extends Fragment {
                     TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
                     Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
                     Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
-                    if (M.getUsuario().getId() != usuarios.get(i).getId()) {
-                        btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
-                    } else {
+                    if (M.getUsuario().getId() == usuarios.get(i).getId()) {
                         btnSolicitar.setText("Cancelar");
                         btnSolicitar.setTextColor(Color.parseColor("#936c66"));
+                        //btnSolicitar.setBackgroundResource(R.drawable.cor_botao);
+                    } else {
+                        //btnSolicitar.setText("Cancelar");
+                        //btnSolicitar.setTextColor(Color.parseColor("#936c66"));
                     }
                     tv_nome.setText(usuarios.get(i).getNome());
                     tv_telefone.setText(usuarios.get(i).getTelefone());
@@ -481,6 +485,7 @@ public class Home extends Fragment {
                                                                 atualizarEspera();
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona solicitada!");
+                                                                new Funcoes().apagarNotificacaoEspecifica(activity,1);
                                                             } else if (object.toString().trim().equals("2")) {
                                                                 ll.removeView(modelo);
                                                                 exibirMsg("Carona expirou!");

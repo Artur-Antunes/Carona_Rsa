@@ -77,6 +77,14 @@ public class Caronas_Recebidas extends Fragment {
             if (M.getCaronaSolicitada()!=-1 && M.getCaronaSolicitada()!=ultimoIdCaronaIncluida){
                 atualizarCaronasAceitas();
             }
+            limparBadge();
+        }
+    }
+
+    private void limparBadge(){
+        if (((MainActivity) activity).numCarAceita > 0) {
+            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge2, 3);
+            new Funcoes().apagarNotificacaoEspecifica(getActivity(),2);
         }
     }
 

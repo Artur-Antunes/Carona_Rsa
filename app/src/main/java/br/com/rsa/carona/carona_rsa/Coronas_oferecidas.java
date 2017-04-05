@@ -102,19 +102,19 @@ public class Coronas_oferecidas extends Fragment {
                     final List<Usuario> participantes = caronas.get(i).getParticipantes();
                     final List statusSolicitacao = caronas.get(i).getParticipantesStatus();
 
-                    final int idCarona=caronas.get(i).getId();
-                    final int idUsuario=M.getUsuario().getId();
+                    final int idCarona = caronas.get(i).getId();
+                    final int idUsuario = M.getUsuario().getId();
                     btnClose.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RequisicoesServidor rs3 = new RequisicoesServidor(activity);
-                            rs3.fecharCaronaOferecida(idCarona,idUsuario, new GetRetorno() {
+                            rs3.fecharCaronaOferecida(idCarona, idUsuario, new GetRetorno() {
                                 @Override
                                 public void concluido(Object object) {
-                                    if(object.toString().equals("1")){
+                                    if (object.toString().equals("1")) {
                                         Toast.makeText(activity, "Removido!", Toast.LENGTH_SHORT).show();
                                         lloferecidas.removeView(modelo);
-                                    }else if(object.toString().equals("0")){
+                                    } else if (object.toString().equals("0")) {
                                         Toast.makeText(activity, "Carona ativa !", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -127,7 +127,6 @@ public class Coronas_oferecidas extends Fragment {
 
                         }
                     });
-
 
 
                     for (int j = 0; j < participantes.size(); j++) {
@@ -171,12 +170,11 @@ public class Coronas_oferecidas extends Fragment {
                                             .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialoginterface, int i) {
                                                     RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                    rs2.aceitarRecusarCaronas(userAtual,"ACEITO", new GetRetorno() {
+                                                    rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
                                                         @Override
                                                         public void concluido(Object object) {
                                                             Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
                                                             if (object.equals("Usuario Aceito!")) {
-                                                                ((MainActivity) activity).decrementarBadge(((MainActivity) activity).badge3, 2);
                                                                 ll.removeView(modelo2);
                                                                 RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                                                                 TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
@@ -194,6 +192,7 @@ public class Coronas_oferecidas extends Fragment {
                                                                 ll.addView(m, 0);
                                                             }
                                                         }
+
                                                         @Override
                                                         public void concluido(Object object, Object object2) {
 
@@ -221,7 +220,7 @@ public class Coronas_oferecidas extends Fragment {
                                                 public void onClick(DialogInterface dialoginterface, int i) {
 
                                                     RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                    rs2.aceitarRecusarCaronas(userAtual,"RECUSADO", new GetRetorno() {
+                                                    rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
                                                         @Override
                                                         public void concluido(Object object) {
                                                             Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
@@ -293,18 +292,20 @@ public class Coronas_oferecidas extends Fragment {
     public void onStart() {
         super.onStart();
 
-            if (((MainActivity) activity).numNovasSolicitacoes > 0) {
-                ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
-            }
+        if (((MainActivity) activity).numNovasSolicitacoes > 0) {
+            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
+        }
 
     }
-
     public void setUserVisibleHint(boolean visible)
     {
         super.setUserVisibleHint(visible);
         if (visible && isResumed())
         {
-
+            if (((MainActivity) activity).numNovasSolicitacoes > 0) {
+                ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
+                new Funcoes().apagarNotificacaoEspecifica(getActivity(),3);
+            }
 
         }
     }

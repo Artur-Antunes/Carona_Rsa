@@ -45,12 +45,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
-        new Funcoes().apagarNotificacoes(LoginActivity.this);
+        //new Funcoes().apagarNotificacoes(LoginActivity.this);
 
         //mDados.limparDados();
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+            //finish();
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
         mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario

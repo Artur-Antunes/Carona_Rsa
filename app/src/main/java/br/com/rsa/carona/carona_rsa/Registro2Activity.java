@@ -35,11 +35,13 @@ public class Registro2Activity extends AppCompatActivity {
     private Button btnCadastrar;
     private ImageView fotoRg;
     private TextView nomeSobrenome;
+    private boolean verificaCamposInvalidos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro2);
+        verificaCamposInvalidos=true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario, android.R.layout.simple_spinner_dropdown_item);
         sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
@@ -55,6 +57,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (matriculaRegistro.length() <= 7) {
                         matriculaRegistro.setError(" Digite todos os números !");
+                        verificaCamposInvalidos=false;
+                    }else{
+                        verificaCamposInvalidos=true;
                     }
                 }
             }
@@ -67,6 +72,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (telefoneRegistro.length() < 13) {
                         telefoneRegistro.setError(" Digite todos os números !");
+                        verificaCamposInvalidos=false;
+                    }else{
+                        verificaCamposInvalidos=true;
                     }
                 }
             }
@@ -78,6 +86,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (!new Funcoes().isEmailValid(emailRegistro.getText().toString())) {
                         emailRegistro.setError(" Formato inválido !");
+                        verificaCamposInvalidos=false;
+                    }else{
+                        verificaCamposInvalidos=true;
                     }
                 }
             }
@@ -97,7 +108,7 @@ public class Registro2Activity extends AppCompatActivity {
                         !telefoneRegistro.getText().toString().trim().equals("") &&
                         !emailRegistro.getText().toString().trim().equals("") &&
                         !senhaRegistro.getText().toString().trim().equals("") &&
-                        !senha2Registro.getText().toString().trim().equals("")
+                        !senha2Registro.getText().toString().trim().equals("") && verificaCamposInvalidos
                         ) {
                     if (senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
                         String matricula = matriculaRegistro.getText().toString();

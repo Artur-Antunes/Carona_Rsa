@@ -2,7 +2,7 @@
     android:id="@+id/scrollView3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/fundo">
+    android:background="@color/icons">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -36,6 +36,7 @@
             android:gravity="center"
             android:text="NOME"
             android:textSize="20dp"
+            android:textColor="@color/primary_text"
             android:textStyle="bold" />
 
         <View
@@ -52,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/viewPrincipal"
-            android:background="@color/fundo"
+            android:background="@color/icons"
             android:orientation="vertical">
 
             <LinearLayout
@@ -78,7 +79,7 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
+                    android:textColor="@color/primary_text"
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -87,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+                android:background="@color/divider" />
 
             <LinearLayout
                 android:id="@+id/ly2"
@@ -112,8 +113,7 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -121,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+                android:background="@color/divider" />
 
             <LinearLayout
                 android:id="@+id/ly3"
@@ -146,8 +146,7 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="14"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -155,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+                android:background="@color/divider" />
 
             <LinearLayout
                 android:id="@+id/ly4"
@@ -178,8 +177,7 @@
                     android:background="#00000000"
                     android:hint="E-mail"
                     android:letterSpacing="0.1"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -187,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+                android:background="@color/divider" />
 
             <LinearLayout
                 android:id="@+id/ly5"
@@ -210,8 +208,7 @@
                     android:background="#00000000"
                     android:letterSpacing="0.1"
                     android:hint="sexo"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -221,7 +218,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+                android:background="@color/divider" />
         </LinearLayout>
 
         <LinearLayout
@@ -240,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:layout_marginTop="8dp"
-                android:background="#009a9a"
+                android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:letterSpacing="0.2"
                 android:onClick="editarDados"

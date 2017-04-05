@@ -22,7 +22,7 @@
             android:drawablePadding="4dp"
             android:text="Origem:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -33,6 +33,7 @@
             android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView8"
             android:text="aqui"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -46,7 +47,7 @@
             android:drawablePadding="4dp"
             android:text="Destino:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -56,6 +57,7 @@
             android:layout_alignStart="@+id/tv_origem2"
             android:layout_alignTop="@+id/textView16"
             android:text="aqui"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
@@ -76,9 +78,9 @@
             android:layout_marginTop="15dp"
             android:drawableLeft="@drawable/saida_icon"
             android:drawablePadding="4dp"
+            android:textColor="@color/primary_text"
             android:text="Saída:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -87,6 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView17"
             android:layout_toEndOf="@+id/textView8"
+            android:textColor="@color/secondary_text"
             android:text="00"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -96,12 +99,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/tv_horario2"
             android:layout_marginLeft="15dp"
+            android:textColor="@color/primary_text"
             android:layout_toEndOf="@+id/tv_horario2"
             android:drawableLeft="@drawable/vagas_icon"
             android:drawablePadding="4dp"
             android:text="Vagas:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -110,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView19"
             android:layout_marginLeft="2dp"
+            android:textColor="@color/secondary_text"
             android:layout_toEndOf="@+id/textView19"
             android:text="0/0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -129,12 +133,12 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView17"
             android:layout_below="@+id/view2.1"
+            android:textColor="@color/primary_text"
             android:layout_marginTop="12dp"
             android:drawableLeft="@drawable/encontro_icon"
             android:drawablePadding="4dp"
             android:text="Encontro:"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -143,6 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView22"
             android:layout_marginLeft="2dp"
+            android:textColor="@color/secondary_text"
             android:layout_toEndOf="@+id/textView22"
             android:text="aqui"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -157,8 +162,8 @@
             android:drawableLeft="@drawable/veiculo_icon"
             android:drawablePadding="4dp"
             android:text="Veículo:"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -167,6 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView21"
             android:layout_marginLeft="2dp"
+            android:textColor="@color/secondary_text"
             android:layout_toEndOf="@+id/textView21"
             android:text="aqui"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -181,8 +187,8 @@
             android:drawableLeft="@drawable/status_icon"
             android:drawablePadding="4dp"
             android:text="Status:"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -193,6 +199,7 @@
             android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView23"
             android:text="aqui"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
@@ -214,8 +221,8 @@
             android:drawableLeft="@drawable/prop_icon"
             android:drawablePadding="4dp"
             android:text="Dono:"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -226,6 +233,7 @@
             android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView27"
             android:text="aqui"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -235,6 +243,7 @@
             android:layout_alignStart="@+id/tv_nome"
             android:layout_below="@+id/tv_nome"
             android:text="aqui"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="15dp" />
 
@@ -248,8 +257,8 @@
             android:drawableLeft="@drawable/matri_icon"
             android:drawablePadding="4dp"
             android:text="Matrícula:"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -260,6 +269,7 @@
             android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView25"
             android:text="000"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -271,8 +281,8 @@
             android:layout_marginTop="8dp"
             android:drawableLeft="@drawable/ct_icon"
             android:text="Possui CNH"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -284,8 +294,8 @@
             android:layout_marginTop="8dp"
             android:drawableLeft="@drawable/phone_icon"
             android:text="Fone:"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18dp" />
 
         <TextView
@@ -296,6 +306,7 @@
             android:layout_marginLeft="2dp"
             android:layout_toEndOf="@+id/textView31"
             android:text="0899"
+            android:textColor="@color/secondary_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
@@ -311,12 +322,13 @@
             android:id="@+id/link_mais"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/view2.5"
+            android:layout_below="@+id/b_solicitar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/btnConfirmar"
             android:clickable="true"
             android:onClick="show"
-            android:text="Participantes" />
+            android:text="PARTICIPANTES" />
 
 <!--
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -366,11 +378,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/link_mais"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/view2.5"
+            android:layout_marginTop="20dp"
             android:text="Me Leva!"
             android:layout_centerHorizontal="true"
-            android:background="#009a9a"
+            android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:textColor="#d9e5f3"
             android:textStyle="bold"/>

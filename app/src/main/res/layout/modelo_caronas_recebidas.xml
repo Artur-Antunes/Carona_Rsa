@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@color/color3">
+        android:background="@drawable/arredondado">
 
         <TextView
             android:id="@+id/tv_legenda"
@@ -36,7 +36,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            android:src="@drawable/icon_destino" />
+            android:src="@drawable/icon_destino2" />
 
         <TextView
             android:id="@+id/tv_destinoR"
@@ -47,7 +47,7 @@
             android:layout_toEndOf="@+id/imageViewR"
             android:text="Local de Destino"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <ImageView
@@ -58,7 +58,7 @@
             android:layout_below="@+id/imageViewR"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_relogio" />
+            android:src="@drawable/icon_hora2" />
 
         <TextView
             android:id="@+id/tv_horario_r"
@@ -68,7 +68,7 @@
             android:layout_alignTop="@+id/imageViewRelogio"
             android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:layout_marginTop="5dp"
             android:text="aguardando"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <View

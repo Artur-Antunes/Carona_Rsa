@@ -56,12 +56,11 @@
         android:id="@+id/b_atualiza"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="bottom|right"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:background="@color/primary_text"
+        android:layout_marginRight="10dp"
         android:fillViewport="true"
-        android:src="@drawable/icon_load"
-        app:layout_anchorGravity="bottom|right|end" />
+        android:src="@drawable/icon_atualizar2"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

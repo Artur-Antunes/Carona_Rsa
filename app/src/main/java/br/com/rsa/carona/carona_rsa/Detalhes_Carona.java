@@ -75,11 +75,9 @@ public class Detalhes_Carona extends AppCompatActivity {
         if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
-            b_salvar.setTextColor(Color.parseColor("#936c66"));
         } else {
             intencao = "Me Leva!";
             b_salvar.setBackgroundResource(R.drawable.cor_botao2);
-            b_salvar.setTextColor(Color.WHITE);
         }
 
         tv_origem.setText(carona.getOrigem());
@@ -98,9 +96,9 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_nome.setText(usuario.getNome());
         tv_email.setText(usuario.getEmail());
         if (usuario.isCnh()) {
-            tv_cnh.setText("POSSUI CNH");
+            tv_cnh.setText("Possui CNH");
         } else {
-            tv_cnh.setText("NÃO POSSUI CNH");
+            tv_cnh.setText("Não Possui CNH");
         }
         //ll.removeAllViews();
         Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");

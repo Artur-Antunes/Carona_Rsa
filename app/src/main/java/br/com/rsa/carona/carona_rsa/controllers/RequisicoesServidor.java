@@ -876,25 +876,23 @@ public class RequisicoesServidor {
                     //Senão,se o tamanho de jObj for diferente de zero.
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
                         String nome = jObj.getString("nome_" + i);
+                        Log.e("nomeJesus:",nome);
                         String foto = jObj.getString("foto_" + i);
                         Integer id = jObj.getInt("id_" + i);
-                        Log.e("HHHHHHHHHHHH id  ", foto + "");
                         Usuario usuario = new Usuario(id, nome);    //Novo obj de usuário.
                         usuario.setFoto(foto);
                         usuarios.add(usuario);
+                        Log.e("tamanho:",usuarios.size()+"vv");
                     }
                 }
             } catch (Exception e) {
-                return null;
+                e.getMessage();// se não der certo:mensagem de erro
             }
             return usuarios;    //Retorno para o método 'onPostExecute'.
         }//Fim método.
 
         @Override
         protected void onPostExecute(List<Usuario> usuariosRetornado) {
-            if (usuariosRetornado == null) {
-                Log.e("Problema conexão!", "HEHE111!");
-            }
             retornoUsuario.concluido(usuariosRetornado);
             super.onPostExecute(usuariosRetornado);
         }//Fim método.
@@ -1048,14 +1046,13 @@ public class RequisicoesServidor {
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getInt("retorno");
                 Log.e("VAMOS VER", "TESTE11 " + teste);
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));
-                } else if (teste == -1) {
+                } else  {
                     usuario = new Usuario(teste);
                 }
 

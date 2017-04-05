@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/fundo_carona">
+        android:background="@drawable/arredondado">
 
         <TextView
             android:id="@+id/tv_origem2"
@@ -23,7 +23,7 @@
             android:layout_alignStart="@+id/tv_destino2"
             android:text="origem"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_toEndOf="@+id/imageView"
             android:text="Destino"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_alignTop="@+id/imageView3"
             android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -55,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tv_origem2"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp"
-            android:text="VAGAS"
+            android:layout_marginRight="25dp"
+            android:drawableStart="@drawable/icon_passageiros2"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_marginTop="5dp"
             android:text="0/0"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/secondary_text"
             android:textSize="28dp" />
 
         <View
@@ -80,16 +80,18 @@
             android:layout_below="@+id/tv_telefone"
             android:layout_marginLeft="60dp"
             android:layout_marginTop="4dp"
-            android:background="@color/color1" />
+            android:background="@color/divider" />
 
         <TextView
             android:id="@+id/tv_nome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="4dp"
             android:layout_marginLeft="10dp"
             android:layout_toEndOf="@+id/c_foto"
             android:text="Nome"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="25dp" />
 
@@ -111,7 +113,7 @@
             android:layout_below="@+id/imageView2"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_destino" />
+            android:src="@drawable/icon_destino2" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -121,7 +123,7 @@
             android:layout_below="@+id/view2"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_origem" />
+            android:src="@drawable/icon_local2" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -131,7 +133,7 @@
             android:layout_below="@+id/imageView"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_relogio" />
+            android:src="@drawable/icon_hora2" />
 
         <View
             android:id="@+id/view3"
@@ -139,13 +141,14 @@
             android:layout_height="0.3dp"
             android:layout_below="@id/tv_horario2"
             android:layout_marginTop="8dp"
-            android:background="@color/color1" />
+            android:background="@color/divider" />
 
         <ImageView
             android:id="@+id/c_foto"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
             android:src="@drawable/user" />
 
         <LinearLayout
@@ -159,18 +162,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/cor_botao"
+                android:background="@drawable/arredondado"
                 android:text="Comentários"
                 android:textColor="@color/btnConfirmar"
                 android:textStyle="bold" />
+
+
 
             <Button
                 android:id="@+id/b_solicitar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cor_botao"
+                android:background="@drawable/arredondado"
                 android:text="Me leva !"
+                android:layout_weight="1"
                 android:textColor="@color/btnConfirmar"
                 android:textStyle="bold" />
 

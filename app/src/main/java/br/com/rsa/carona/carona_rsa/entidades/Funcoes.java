@@ -138,6 +138,13 @@ public class Funcoes {
         notifManager.cancelAll();
     }
 
+    public void apagarNotificacaoEspecifica(Context contexto, int id){
+        NotificationManager notifManager= (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancel(id);
+    }
+
+
+
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){
         List nomes=new LinkedList();
         List<Usuario> users=new LinkedList<Usuario>();
