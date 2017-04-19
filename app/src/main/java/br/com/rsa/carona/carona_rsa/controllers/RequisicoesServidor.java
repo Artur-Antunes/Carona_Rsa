@@ -92,7 +92,7 @@ public class RequisicoesServidor {
         new recuperarSenhaAsyncTask(email, retorno).execute();
     }
 
-    public void verificaCaronaSolitada(int idCarona, Usuario usuario, GetRetorno retorno) {
+    public void verificaCarona_SolitadaOuOfertada(int idCarona, Usuario usuario, GetRetorno retorno) {
         new verificaSolicitacaAsyncTask(idCarona, usuario, retorno).execute();
     }
 
@@ -106,9 +106,9 @@ public class RequisicoesServidor {
         new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
-    public void fecharCaronaOferecida(int idCarona, int idUsuario, GetRetorno retorno) {
+    public void fecharCaronaOferecida(int idCarona, int idUsuario,int tipo, GetRetorno retorno) {
         progressDialog.show();
-        new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario, retorno).execute();
+        new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario,tipo, retorno).execute();
     }
 
     public void exibirMinhasSolicitações(Usuario usuario, GetRetorno retorno) {
@@ -553,11 +553,13 @@ public class RequisicoesServidor {
         //Campos da classe.
         int idCarona;
         int idUsuario;
+        int tipo;
         GetRetorno retornoUsuario;
 
-        public fecharCaronaOferecidaAsyncTask(int idCarona, int status, GetRetorno retorno) {
+        public fecharCaronaOferecidaAsyncTask(int idCarona, int idUser,int tipo, GetRetorno retorno) {
             this.idCarona = idCarona;
-            this.idUsuario = status; //O campo usuário recebe o parâmetro de usuário.
+            this.idUsuario = idUser; //O campo usuário recebe o parâmetro de usuário.
+            this.tipo=tipo;
             this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
         }
 
@@ -567,7 +569,7 @@ public class RequisicoesServidor {
             ArrayList<NameValuePair> dados = new ArrayList();
             dados.add(new BasicNameValuePair("id_user_close", this.idUsuario + ""));
             dados.add(new BasicNameValuePair("id_carona_close", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-
+            dados.add(new BasicNameValuePair("tipo", this.tipo + ""));
 
             HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
             HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
@@ -577,18 +579,15 @@ public class RequisicoesServidor {
             HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService.
             //Página de registro
-            String mensagem = "Houve Um Erro ao se conectar ao Banco";    //Variável que irá receber os dados do usuário.
+            String mensagem = "Verifique sua conexão!";    //Variável que irá receber os dados do usuário.
 
             try {
 
 
                 post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
                 HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-
-                // Recebendo a resposta do servidor após a execução do HTTP POST.
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);
-                //
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
                 mensagem = jObj.getString("mensagem");
 
@@ -809,6 +808,9 @@ public class RequisicoesServidor {
                     Integer cnh = jObj.getInt("cnh");
                     Integer id = jObj.getInt("id");
                     Integer id_carona = jObj.getInt("id_carona");
+
+                    Log.e("id->carona",id_carona+"eitaaaa");
+
                     boolean cnh1 = false;
                     if (cnh == 1) {
                         cnh1 = true;
@@ -1039,7 +1041,7 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");
-            int teste = -1;
+            int teste = -100;
             Usuario usuario = null;
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
@@ -1052,6 +1054,10 @@ public class RequisicoesServidor {
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));
+                    usuario.setEmail(jObjeto.getString("res_solicitacao"));
+                    Log.e("id:", jObjeto.getInt("id") + "");
+                    Log.e("nome:", jObjeto.getString("nome"));
+                    Log.e("resposta:", jObjeto.getString("res_solicitacao"));
                 } else  {
                     usuario = new Usuario(teste);
                 }
@@ -1059,7 +1065,6 @@ public class RequisicoesServidor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return usuario;
         }
 
@@ -1476,7 +1481,7 @@ public class RequisicoesServidor {
             String arquivoServ = "UltimasCaronas.php";
 
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + arquivoServ);
-            String teste = "não";
+            String teste = "Erro de conexão";
             JSONObject jObjeto = null;
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
@@ -1597,7 +1602,7 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
-            String teste = "não";
+            String teste = "Erro 404";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados

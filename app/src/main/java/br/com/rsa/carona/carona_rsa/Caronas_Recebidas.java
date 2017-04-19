@@ -1,15 +1,23 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -25,14 +33,28 @@ public class Caronas_Recebidas extends Fragment {
     LinearLayout ll;
     FragmentActivity activity;
     ManipulaDados M;
+    MyReceiver receiver;
+    SwipeRefreshLayout swipeLayout;
     int ultimoIdCaronaIncluida=-2;//Ultima carona exibida
+    IntentFilter filter = new IntentFilter();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
         view = inflater.inflate(R.layout.fragment_caronas__recebidas, container, false);
         ll = (LinearLayout) view.findViewById(R.id.caixa_aceito);
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container2);
+        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                atualizarCaronasAceitas();
+                swipeLayout.setRefreshing(false);
+            }
+        });
         M = new ManipulaDados(getActivity());
+        receiver = new MyReceiver(new Handler());
         atualizarCaronasAceitas();
         return view;
     }
@@ -53,9 +75,41 @@ public class Caronas_Recebidas extends Fragment {
                             TextView ta_horario = (TextView) modelo.findViewById(R.id.minha_carona_SAIDA);
                             ta_destino.setText(caronas.get(i).getDestino());
                             ta_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            modelo.setId(i);
+                            ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_recebida);
+
+                            modelo.setId(caronas.get(i).getId());
                             ll.addView(modelo, 0);
-                            ultimoIdCaronaIncluida=caronas.get(i).getId();
+
+                            final int idCarona = caronas.get(i).getId();
+                            final int idUsuario = M.getUsuario().getId();
+
+                            btnClose.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(M.getCaronaSolicitada()!=idCarona) {
+                                        RequisicoesServidor rs3 = new RequisicoesServidor(activity);
+                                        rs3.fecharCaronaOferecida(idCarona, idUsuario, 2, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                if (object.toString().equals("1")) {
+                                                    Toast.makeText(activity, "Removido!", Toast.LENGTH_SHORT).show();
+                                                    ll.removeView(modelo);
+                                                } else if (object.toString().equals("0")) {
+                                                    Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+                                        });
+                                    }else{
+                                        Toast.makeText(activity, "Está carona ainda está ativa!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            ultimoIdCaronaIncluida=(ll.getChildCount()>0)?ll.getChildAt(0).getId():-2;
                         }
                     }
                 }
@@ -74,9 +128,6 @@ public class Caronas_Recebidas extends Fragment {
         super.setUserVisibleHint(visible);
         if (visible && isResumed())
         {
-            if (M.getCaronaSolicitada()!=-1 && M.getCaronaSolicitada()!=ultimoIdCaronaIncluida){
-                atualizarCaronasAceitas();
-            }
             limparBadge();
         }
     }
@@ -85,6 +136,54 @@ public class Caronas_Recebidas extends Fragment {
         if (((MainActivity) activity).numCarAceita > 0) {
             ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge2, 3);
             new Funcoes().apagarNotificacaoEspecifica(getActivity(),2);
+        }
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler; // Handler used to execute code on the UI thread
+
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            String mensagem = intent.getStringExtra("mensagem");
+            final String valor = intent.getStringExtra("valor");
+            switch (mensagem) {
+                case "solicitacao_aceita":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(M.getUltimoIdCaronaAceita()!=ultimoIdCaronaIncluida) {
+                                atualizarCaronasAceitas();
+                            }
+                        }
+                    });
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        filter.addAction("abc");
+        getActivity().registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            getActivity().unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("Receiver not registered")) {
+                // Ignore this exception. This is exactly what is desired
+                Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
+            } else {
+                // unexpected, re-throw
+                throw e;
+            }
         }
     }
 

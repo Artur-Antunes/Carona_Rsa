@@ -159,13 +159,9 @@ public class Usuario {
         return this.editado;
     }
 
-
     public int getId() {
         return id;
     }
-
-
-
 
     public void setId(int id) {
         this.id = id;

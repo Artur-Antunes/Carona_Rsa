@@ -2,6 +2,7 @@ package br.com.rsa.carona.carona_rsa;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,9 +61,11 @@ public class ComentariosActivity extends AppCompatActivity {
                 rs3.gravarComentarioCarona(idCarona, md.getUsuario().getId(), comentario.getText().toString(), new GetRetorno() {
                     @Override
                     public void concluido(Object object) {
-                        Toast.makeText(ComentariosActivity.this, object.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("->",object.toString());
                         if (object.toString().equals("1")) {
+                            Toast.makeText(ComentariosActivity.this,"Postado!", Toast.LENGTH_SHORT).show();
                             buscarComentarios();
+                            comentario.setText("");
                         } else {
 
                         }
@@ -125,7 +129,7 @@ public class ComentariosActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            onStop();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -108,7 +108,7 @@ public class Coronas_oferecidas extends Fragment {
                         @Override
                         public void onClick(View v) {
                             RequisicoesServidor rs3 = new RequisicoesServidor(activity);
-                            rs3.fecharCaronaOferecida(idCarona, idUsuario, new GetRetorno() {
+                            rs3.fecharCaronaOferecida(idCarona, idUsuario,1, new GetRetorno() {
                                 @Override
                                 public void concluido(Object object) {
                                     if (object.toString().equals("1")) {
@@ -116,6 +116,8 @@ public class Coronas_oferecidas extends Fragment {
                                         lloferecidas.removeView(modelo);
                                     } else if (object.toString().equals("0")) {
                                         Toast.makeText(activity, "Carona ativa !", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(activity, object.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
 

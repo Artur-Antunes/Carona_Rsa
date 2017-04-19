@@ -66,8 +66,8 @@
                 android:textSize="18dp"
                 android:id="@+id/tv15"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
                 android:layout_above="@+id/exibirSexoValor"
+                android:layout_marginRight="10dp"
                 android:layout_alignEnd="@+id/textView26"
                 android:layout_alignParentEnd="true" />
 
@@ -79,6 +79,7 @@
                 android:textSize="15dp"
                 android:id="@+id/exibirSexoValor"
                 android:layout_above="@+id/textView15"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentEnd="true" />
 
             <TextView
@@ -116,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="E-MAIL"
+                android:text="E-Mail"
                 android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView20"
@@ -147,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="TELEFONE"
+                android:text="Telefone"
                 android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/textView18"
@@ -176,7 +177,7 @@
                 android:id="@+id/textView26"
                 android:layout_gravity="center_vertical"
                 android:layout_alignTop="@+id/textView18"
-                android:layout_alignStart="@+id/exibirCnhValor"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentEnd="true" />
 
             <TextView
@@ -185,9 +186,9 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="SIM"
                 android:id="@+id/exibirCnhValor"
-                android:layout_marginLeft="20dp"
                 android:textSize="15dp"
                 android:layout_alignParentBottom="true"
+                android:layout_marginRight="10dp"
                 android:layout_alignEnd="@+id/exibirSexoValor"
                 android:layout_alignParentEnd="true" />
 

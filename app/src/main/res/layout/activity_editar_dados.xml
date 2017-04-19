@@ -22,7 +22,7 @@
             <ImageView
                 android:id="@+id/editar_foto"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="250dp"
                 android:src="@drawable/user" />
 
         </LinearLayout>

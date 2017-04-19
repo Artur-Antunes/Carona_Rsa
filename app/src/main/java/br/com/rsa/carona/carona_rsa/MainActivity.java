@@ -1,10 +1,12 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -26,6 +28,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
+import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
@@ -50,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       // md=new ManipulaDados(MainActivity.this);
+        md=new ManipulaDados(MainActivity.this);
 
         Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
         startService(it);
+
         receiver = new MyReceiver(new Handler());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -164,23 +169,40 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.add) {
-            startActivity(new Intent(this, Criar_Carona.class));
+            if(md.getUsuario().getIdCaronaSolicitada()==-1 && Home.userCarOferecida==-1) {
+                startActivity(new Intent(this, Criar_Carona.class));
+            }else if(md.getUsuario().getIdCaronaSolicitada()!=-1){
+                Toast.makeText(MainActivity.this,"Você tem 1 carona solicitada!",Toast.LENGTH_LONG).show();
+            }else if(Home.userCarOferecida!=-1){
+                Log.e("vamos ver outro:",Home.userCarOferecida+"ooo");
+                Toast.makeText(MainActivity.this,"Você já ofereceu uma carona!",Toast.LENGTH_LONG).show();
+            }
             return true;
         } else if (id == R.id.action_perfil) {
             startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
             return true;
         } else if (id == R.id.action_sair) {
-            Servico.ativo = false;
-            try {
-                Thread.sleep(1100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(Home.userCarOferecida==-1 || Home.userCarOferecida!=-1) {
+                Servico.ativo = false;
+                try {
+                    Thread.sleep(1100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                md.limparDados();
+                LimparBadge(badge1, 1);
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            }else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle("Atenção!")
+                        .setMessage("A ação não pode ser concluída! Para deslogar do sistema cancele a carona que você ofertou e tente novamente.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialoginterface, int i) {
+
+                            }
+                        }).show();
             }
-            new ManipulaDados(MainActivity.this).limparDados();
-            LimparBadge(badge1, 1);
-            new Funcoes().apagarNotificacoes(getApplicationContext());
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
             return true;
         }
 
@@ -263,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mostraBadge(valor, badge1, 1);
-                            Home.load.setVisibility(View.VISIBLE);
+                            //Home.load.setVisibility(View.VISIBLE);
                         }
                     });
                     break;
@@ -271,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            Log.e("aqui_será","sim");
                             Home.load.setVisibility(View.VISIBLE);
                         }
                     });
@@ -280,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mostraBadge(valor, badge2, 3);
-                            //md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                         }
                     });
                     break;

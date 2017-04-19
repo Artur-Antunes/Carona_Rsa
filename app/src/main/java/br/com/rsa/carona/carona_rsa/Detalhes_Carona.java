@@ -45,7 +45,6 @@ public class Detalhes_Carona extends AppCompatActivity {
     AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
-    private FloatingActionButton solCar2;
     private String intencao;
 
     @Override
@@ -138,6 +137,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                         rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
+                                                Home.userCarOferecida=-1;
                                                 Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
                                             }
@@ -213,7 +213,6 @@ public class Detalhes_Carona extends AppCompatActivity {
 
     public void show(View v) {
         String usuarios = "";
-
         if (carona.getParticipantes().size() > 0) {
             for (int i = 0; i < carona.getParticipantes().size(); i++) {
                 String nome = carona.getParticipantes().get(i).getNome();

@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/c_imagem"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_centerHorizontal="true"
             android:clickable="true"
             android:onClick="escolherFoto"
@@ -32,18 +32,14 @@
             android:layout_marginTop="10dp"
             android:background="@android:color/darker_gray" />
 
-        <LinearLayout
-            android:id="@+id/lyPrincipal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/viewPrincipal"
-            android:background="@color/color3"
-            android:orientation="vertical">
+
 
             <LinearLayout
                 android:id="@+id/ly12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/icons"
+                android:layout_below="@id/viewPrincipal"
                 android:orientation="horizontal"
                 android:padding="16dp">
 
@@ -68,18 +64,15 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_nome"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/darker_gray" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_below="@+id/ly12"
+                android:id="@+id/ly13"
+                android:background="@color/icons"
                 android:layout_marginTop="10dp"
                 android:padding="16dp">
 
@@ -104,21 +97,12 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/c_sobrenome"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/darker_gray" />
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/lyPrincipal"
             android:layout_marginBottom="20dp"
             android:gravity="bottom"
+            android:layout_below="@+id/ly13"
             android:orientation="vertical"
             android:paddingLeft="60dp"
             android:paddingRight="60dp">

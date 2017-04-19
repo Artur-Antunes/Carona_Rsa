@@ -13,6 +13,7 @@
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="3dp"
         android:background="@drawable/arredondado">
 
 
@@ -59,13 +60,23 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="14dp" />
 
+        <ImageButton
+            android:id="@+id/b_close_recebida"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/arredondado"
+            android:src="@drawable/icon_close2" />
+
         <TextView
             android:id="@+id/minha_carona_STATUS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="40dp"
             android:text="ACEITO"
             android:textColor="@color/verde"
             android:textAppearance="?android:attr/textAppearanceMedium" />

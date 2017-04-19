@@ -88,6 +88,7 @@
                 android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:onClick="logar"
+                android:focusableInTouchMode="true"
                 android:text="Login"
                 android:textColor="#d9e5f3"
                 android:textStyle="bold" />

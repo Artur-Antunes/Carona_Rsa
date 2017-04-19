@@ -39,29 +39,16 @@
             android:textColor="@color/primary_text"
             android:textStyle="bold" />
 
-        <View
-            android:id="@+id/viewPrincipal"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/nome_sobrenome_rg"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:id="@+id/linearLayoutPrincipal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/viewPrincipal"
-            android:background="@color/color3"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:id="@+id/ly11"
                 android:layout_width="match_parent"
+                android:layout_below="@+id/nome_sobrenome_rg"
+                android:background="@color/color3"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -84,18 +71,15 @@
                     android:textSize="16dp" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-
             <LinearLayout
                 android:id="@+id/ly2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:layout_marginBottom="8dp"
+                android:background="@color/icons"
+                android:layout_below="@+id/ly11"
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -114,18 +98,15 @@
                     android:textOn="SIM" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-
             <LinearLayout
                 android:id="@+id/ly3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:layout_marginBottom="8dp"
+                android:background="@color/icons"
+                android:layout_below="@+id/ly2"
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -143,27 +124,20 @@
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="14"
-
-
                     android:textColor="@color/primary_text"
-
-
                     android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-
             <LinearLayout
                 android:id="@+id/ly4"
+                android:layout_below="@+id/ly3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@color/icons"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -185,18 +159,15 @@
                     android:textSize="16dp" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-
             <LinearLayout
                 android:id="@+id/ly5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/ly4"
+                android:background="@color/icons"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="5dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -217,20 +188,15 @@
                     android:textSize="16dp"></Spinner>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-
-
             <LinearLayout
                 android:id="@+id/ly16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/ly5"
+                android:background="@color/icons"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -252,19 +218,17 @@
                     android:textSize="16dp" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
+
 
             <LinearLayout
                 android:id="@+id/ly1"
+                android:layout_below="@+id/ly16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="@color/icons"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -286,20 +250,15 @@
                     android:textSize="16dp" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/linha" />
-        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/linearLayoutPrincipal"
             android:layout_marginBottom="20dp"
             android:gravity="bottom"
             android:orientation="vertical"
+            android:layout_below="@+id/ly1"
             android:paddingLeft="60dp"
             android:paddingRight="60dp">
 
@@ -312,6 +271,7 @@
                 android:background="@color/colorPrimaryDark"
                 android:text="Cadastrar"
                 android:layout_gravity="center"
+                android:focusableInTouchMode="true"
                 android:textColor="#d9e5f3"
                 android:textStyle="bold" />
 

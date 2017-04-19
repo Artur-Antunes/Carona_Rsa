@@ -59,7 +59,7 @@ public class EditarDadosActivity extends AppCompatActivity {
     public static final int PIC_CROP = 3;
     AlertDialog actions;
     private Button salvarAteracoes;
-
+    private boolean vCampos[]={true,true,true,true,true};
     boolean imagemEditada = false;
 
     @Override
@@ -77,20 +77,40 @@ public class EditarDadosActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (nomeEditar.length() <= 0) {
-                        nomeEditar.setError(" Campo obrigatório !");
+                    if (nomeEditar.length() <= 1) {
+                        nomeEditar.setError("Campo obrigatório!");
+                        vCampos[0]=false;
+                    }else{
+                        vCampos[0]=true;
                     }
                 }
             }
         });
         sobrenomeEditar = (EditText) findViewById(R.id.editarSobrenomeValor);
+        sobrenomeEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus){
+                        if(sobrenomeEditar.length()<=1){
+                            sobrenomeEditar.setError("Campo obrigatório!");
+                            vCampos[4]=false;
+                        }else{
+                            vCampos[4]=true;
+                        }
+                    }
+            }
+        });
+
         matriculaEditar = (EditText) findViewById(R.id.editarMatriculaValor);
         matriculaEditar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (matriculaEditar.length() <= 7) {
-                        matriculaEditar.setError(" Digite todos os números !");
+                        matriculaEditar.setError(" Digite todos os números!");
+                        vCampos[1]=false;
+                    }else{
+                        vCampos[1]=true;
                     }
                 }
             }
@@ -101,7 +121,10 @@ public class EditarDadosActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (telefoneEditar.length() <= 13) {
-                        telefoneEditar.setError(" Digite todos os números !");
+                        telefoneEditar.setError(" Digite todos os números!");
+                        vCampos[2]=false;
+                    }else{
+                        vCampos[2]=true;
                     }
                 }
             }
@@ -113,7 +136,10 @@ public class EditarDadosActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (!new Funcoes().isEmailValid(emailEditar.getText().toString())) {
-                        emailEditar.setError(" Formato inválido !");
+                        emailEditar.setError(" Formato inválido!");
+                        vCampos[3]=false;
+                    }else{
+                        vCampos[3]=true;
                     }
                 }
             }
@@ -168,11 +194,19 @@ public class EditarDadosActivity extends AppCompatActivity {
                 final boolean cnh = cnhEditar.isChecked();
                 String sexo = sexoEditar.getSelectedItem().toString();
                 sexo = new Funcoes().retornaSimbolo(sexo);
+                emailEditar.requestFocus();
 
                 final Usuario usuarioEditado = verificaCamposAlterados(matricula, nome, sobrenome, telefone, email, sexo, cnh);
 
                 if (usuarioEditado != null) {
-                    if (!nome.equals("") && !sobrenome.equals("") && !matricula.equals("") && !email.equals("")) {
+
+                    Log.e("vCampos[0]",vCampos[0]+"");
+                    Log.e("vCampos[1]",vCampos[1]+"");
+                    Log.e("vCampos[2]",vCampos[2]+"");
+                    Log.e("vCampos[3]",vCampos[3]+"");
+                    Log.e("vCampos[4]",vCampos[4]+"");
+
+                    if (vCampos[0] && vCampos[4] && vCampos[1] && vCampos[2] && vCampos[3]) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(EditarDadosActivity.this);
                         dialog.setTitle(R.string.title_confirmacao)
                                 .setMessage(R.string.alert_editar_perfil)
@@ -213,6 +247,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                                                 usuarioLocal.setIdCaronaSolicitada(idCaronaAlterar);
 
                                                 mDados.gravarDados(usuarioLocal);
+                                                Toast.makeText(EditarDadosActivity.this,"Dados salvos com sucesso!",Toast.LENGTH_LONG).show();
                                                 finish();
                                                 startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
                                             }
@@ -226,11 +261,11 @@ public class EditarDadosActivity extends AppCompatActivity {
                                     }
                                 }).show();
                     } else {
-                        Toast.makeText(EditarDadosActivity.this, "CAMPOS EM BRANCO!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditarDadosActivity.this, "Verifique os campos!", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(EditarDadosActivity.this, "NENHUM CAMPO ALTERADO!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditarDadosActivity.this, "Nenhum campo alterado!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
                 }
             }

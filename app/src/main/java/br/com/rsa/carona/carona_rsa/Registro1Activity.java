@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 
 
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
@@ -37,6 +38,7 @@ public class Registro1Activity extends AppCompatActivity {
     public static final int IMAGEM_CAM = 2;
     public static final int PIC_CROP = 3;
     public static final int RESULT_SELECT_IMAGE = 5;
+    Uri selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +94,9 @@ public class Registro1Activity extends AppCompatActivity {
             case RESULT_SELECT_IMAGE:
                 if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
                     try {
-                        Uri selectedImage = data.getData();
+                        selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = getContentResolver().query(selectedImage,
-                                filePathColumn, null, null, null);
+                        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         String picturePath = cursor.getString(columnIndex);
@@ -103,12 +104,15 @@ public class Registro1Activity extends AppCompatActivity {
                         arquivo = new File(picturePath);
                         extFoto = new Funcoes().getExtencaoImagem(arquivo.getPath());
                         performCrop(Uri.fromFile(arquivo));
-                   /*
+
+                        /**
                         //return Image Path to the Main Activity
                         Intent returnFromGalleryIntent = new Intent();
                         returnFromGalleryIntent.putExtra("picturePath",picturePath);
                         setResult(RESULT_OK,returnFromGalleryIntent);
-                        finish();*/
+                        finish();
+                         */
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         Intent returnFromGalleryIntent = new Intent();
@@ -118,17 +122,29 @@ public class Registro1Activity extends AppCompatActivity {
                 }else {
                     Intent returnFromGalleryIntent = new Intent();
                     setResult(RESULT_CANCELED, returnFromGalleryIntent);
-                    finish();
                 }
                 break;
             case PIC_CROP:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
-                    Bitmap bitmap = extras.getParcelable("data");
-                    foto = new Funcoes().BitMapToString(bitmap);
-                    imagem.setImageBitmap(bitmap);
-                    imagem.setScaleType(ImageView.ScaleType.FIT_XY);
-                    escolherFoto.setVisibility(View.INVISIBLE);
+                    if (extras != null) {
+                        Bitmap bitmap = extras.getParcelable("data");
+                        foto = new Funcoes().BitMapToString(bitmap);
+                        imagem.setImageBitmap(bitmap);
+                        imagem.setScaleType(ImageView.ScaleType.FIT_XY);
+                        escolherFoto.setVisibility(View.INVISIBLE);
+                    }else{
+                        try {
+                            Bitmap profilePic = MediaStore.Images.Media.getBitmap(Registro1Activity.this.getContentResolver(), selectedImage);
+                            foto = new Funcoes().BitMapToString(profilePic);
+                            imagem.setImageBitmap(profilePic);
+                            imagem.setScaleType(ImageView.ScaleType.FIT_XY);
+                            escolherFoto.setVisibility(View.INVISIBLE);
+                        } catch (IOException e) {
+                            Toast.makeText(Registro1Activity.this, "Erro ao selecionar foto",Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    }
                 }else if(resultCode==Activity.RESULT_CANCELED){
                     Toast.makeText(Registro1Activity.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }
@@ -154,15 +170,19 @@ public class Registro1Activity extends AppCompatActivity {
             Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, RESULT_SELECT_IMAGE);
         } catch (Exception e) {
+            Log.e("aquiiii","teste");
             e.printStackTrace();
         }
     }
 
     private void fotoCamera(){
+
         File file = new File(android.os.Environment.getExternalStorageDirectory(), "img.png");
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(intent, IMAGEM_CAM);
+
+
     }
 
     public void escolherFoto(View v){

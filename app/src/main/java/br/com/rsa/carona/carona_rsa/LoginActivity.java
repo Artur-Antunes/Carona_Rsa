@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mSenhaView;
     private EditText mMatriculaView;
+    private Button btnLogar;
     ManipulaDados mDados;
 
     @Override
@@ -45,7 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
-        //new Funcoes().apagarNotificacoes(LoginActivity.this);
+        new Funcoes().apagarNotificacoes(LoginActivity.this);
+        btnLogar=(Button)findViewById(R.id.btn_logar);
+        btnLogar.requestFocus();
 
         //mDados.limparDados();
         if (mDados.getUsuario() != null) {

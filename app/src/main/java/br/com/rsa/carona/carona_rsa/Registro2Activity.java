@@ -35,13 +35,12 @@ public class Registro2Activity extends AppCompatActivity {
     private Button btnCadastrar;
     private ImageView fotoRg;
     private TextView nomeSobrenome;
-    private boolean verificaCamposInvalidos;
+    private boolean vCampos[]={false,false,false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro2);
-        verificaCamposInvalidos=true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexo_usuario, android.R.layout.simple_spinner_dropdown_item);
         sexoRegistro = (Spinner) findViewById(R.id.sexo_registro);
@@ -57,9 +56,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (matriculaRegistro.length() <= 7) {
                         matriculaRegistro.setError(" Digite todos os números !");
-                        verificaCamposInvalidos=false;
+                        vCampos[0]=false;
                     }else{
-                        verificaCamposInvalidos=true;
+                        vCampos[0]=true;
                     }
                 }
             }
@@ -72,9 +71,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (telefoneRegistro.length() < 13) {
                         telefoneRegistro.setError(" Digite todos os números !");
-                        verificaCamposInvalidos=false;
+                        vCampos[1]=false;
                     }else{
-                        verificaCamposInvalidos=true;
+                        vCampos[1]=true;
                     }
                 }
             }
@@ -86,9 +85,9 @@ public class Registro2Activity extends AppCompatActivity {
                 if (!hasFocus) {
                     if (!new Funcoes().isEmailValid(emailRegistro.getText().toString())) {
                         emailRegistro.setError(" Formato inválido !");
-                        verificaCamposInvalidos=false;
+                        vCampos[2]=false;
                     }else{
-                        verificaCamposInvalidos=true;
+                        vCampos[2]=true;
                     }
                 }
             }
@@ -98,17 +97,14 @@ public class Registro2Activity extends AppCompatActivity {
         btnCadastrar = (Button) findViewById(R.id.b_cadastrar);
         cnhRegistro = (Switch) findViewById(R.id.cnh_registro);
         cnhRegistro.setChecked(true);
-        //PEGAR VALORES APÓS CLICAR NO BOTÃO CADASTRAR E SALVAR NO BANCO.
         btnCadastrar.setOnClickListener(new View.OnClickListener()
-
         {
             @Override
             public void onClick(View v) {
-                if (!matriculaRegistro.getText().toString().trim().equals("") &&
-                        !telefoneRegistro.getText().toString().trim().equals("") &&
-                        !emailRegistro.getText().toString().trim().equals("") &&
+                senha2Registro.requestFocus();
+                if (vCampos[0] && vCampos[1] && vCampos[2] &&
                         !senhaRegistro.getText().toString().trim().equals("") &&
-                        !senha2Registro.getText().toString().trim().equals("") && verificaCamposInvalidos
+                        !senha2Registro.getText().toString().trim().equals("")
                         ) {
                     if (senha2Registro.getText().toString().trim().equals(senhaRegistro.getText().toString().trim())) {
                         String matricula = matriculaRegistro.getText().toString();
@@ -145,7 +141,7 @@ public class Registro2Activity extends AppCompatActivity {
                                     Toast.makeText(Registro2Activity.this, "Email já existe", Toast.LENGTH_SHORT).show();
                                 } else if (object.toString().equals("0")) {
                                     Toast.makeText(Registro2Activity.this, "Matricula já existe", Toast.LENGTH_SHORT).show();
-                                } else if (object.toString().equals("-1")) {
+                                } else  {
                                     Toast.makeText(Registro2Activity.this, "Erro de comunicação", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -159,7 +155,7 @@ public class Registro2Activity extends AppCompatActivity {
                         Toast.makeText(Registro2Activity.this, "As senhas não conferem", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Registro2Activity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registro2Activity.this, "Preencha  os campos corretamente", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -173,6 +169,7 @@ public class Registro2Activity extends AppCompatActivity {
         mDados.setCaronaSolicitada(-1);
         mDados.setLogado(true);
         startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     public void voltar(View view) {
