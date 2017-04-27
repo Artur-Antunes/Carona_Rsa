@@ -23,6 +23,7 @@
                 android:id="@+id/editar_foto"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:focusableInTouchMode="true"
                 android:src="@drawable/user" />
 
         </LinearLayout>
@@ -285,16 +286,18 @@
 
             <Button
                 android:id="@+id/b_salvar_alteracoes"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
-                android:background="@color/colorPrimaryDark"
                 android:gravity="center"
-                android:letterSpacing="0.2"
                 android:text="Salvar"
-                android:textColor="#d9e5f3"
-                android:textStyle="bold" />
+                android:textSize="18dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:id="@+id/alt_contrasenha"

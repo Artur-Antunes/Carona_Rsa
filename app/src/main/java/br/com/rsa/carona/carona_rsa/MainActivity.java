@@ -1,9 +1,7 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -22,17 +20,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
-import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
-import br.com.rsa.carona.carona_rsa.entidades.Carona;
-import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
 
@@ -75,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         TextView txt2 = (TextView) tab2.getCustomView().findViewById(R.id.text1);
         TextView txt3 = (TextView) tab3.getCustomView().findViewById(R.id.text1);
         txt1.setText("HOME");
+        txt1.setTypeface(null,Typeface.BOLD);
         txt2.setText("RECEBIDAS");
         txt3.setText("OFERECIDAS");
 
@@ -101,10 +93,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+
+                TextView text = (TextView) tab.getCustomView();
+                text.setTypeface(null, Typeface.BOLD);
+
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                TextView text = (TextView) tab.getCustomView();
+                text.setTypeface(null, Typeface.NORMAL);
 
             }
 
@@ -113,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -164,28 +163,30 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.add) {
-            if(md.getUsuario().getIdCaronaSolicitada()==-1 && Home.userCarOferecida==-1) {
-                startActivity(new Intent(this, Criar_Carona.class));
-            }else if(md.getUsuario().getIdCaronaSolicitada()!=-1){
-                Toast.makeText(MainActivity.this,"Você tem 1 carona solicitada!",Toast.LENGTH_LONG).show();
-            }else if(Home.userCarOferecida!=-1){
-                Log.e("vamos ver outro:",Home.userCarOferecida+"ooo");
-                Toast.makeText(MainActivity.this,"Você já ofereceu uma carona!",Toast.LENGTH_LONG).show();
+            if(Home.load.getVisibility()==View.INVISIBLE) {
+                if (md.getUsuario().getIdCaronaSolicitada() == -1 && Home.userCarOferecida == -1) {
+                    startActivity(new Intent(this, Criar_Carona.class));
+                } else if (md.getUsuario().getIdCaronaSolicitada() != -1) {
+                    Toast.makeText(MainActivity.this, R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+                } else if (Home.userCarOferecida != -1) {
+                    Toast.makeText(MainActivity.this, R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
+                }
+            }else {
+                Toast.makeText(MainActivity.this, R.string.alert_sem_conexao, Toast.LENGTH_LONG).show();
             }
             return true;
         } else if (id == R.id.action_perfil) {
-            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
+            startActivity(new Intent(this, UsuarioDetalhesActivity.class));
             return true;
         } else if (id == R.id.action_sair) {
             if(Home.userCarOferecida==-1 || Home.userCarOferecida!=-1) {
                 Servico.ativo = false;
                 try {
-                    Thread.sleep(1100);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -312,8 +313,17 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Home.load.setVisibility(View.VISIBLE);
+                            Home.newCarona.setVisibility(View.INVISIBLE);
                             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.no_con_icon);
                             Home.load.setImageBitmap(bm);
+                        }
+                    });
+                    break;
+                case "conexao_ok":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                               Home.load.setVisibility(View.INVISIBLE);
                         }
                     });
                     break;

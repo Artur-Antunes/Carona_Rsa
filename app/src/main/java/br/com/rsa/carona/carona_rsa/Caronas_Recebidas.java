@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -70,12 +72,20 @@ public class Caronas_Recebidas extends Fragment {
                     final List<Carona> caronas = (List<Carona>) object;
                     if (caronas != null) {
                         for (int i = 0; i < caronas.size(); i++) {
-                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_minhas_caronas, null);
-                            TextView ta_destino = (TextView) modelo.findViewById(R.id.minha_carona_DESTINO);
-                            TextView ta_horario = (TextView) modelo.findViewById(R.id.minha_carona_SAIDA);
+                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
+                            TextView ta_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
+                            TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+                            TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
+                            TextView ta_aceito = (TextView) modelo.findViewById(R.id.tv_vagas3);
+                            TextView img5 = (TextView) modelo.findViewById(R.id.textV5);
+                            ta_origem.setText(caronas.get(i).getOrigem());
                             ta_destino.setText(caronas.get(i).getDestino());
+                            img5.setVisibility(View.INVISIBLE);
+                            ta_aceito.setText("ACEITO");
+                            int color = getResources().getColor(R.color.colorPrimaryDark);
+                            ta_aceito.setTextColor(color);
                             ta_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_recebida);
+                            ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
 
                             modelo.setId(caronas.get(i).getId());
                             ll.addView(modelo, 0);
@@ -92,7 +102,7 @@ public class Caronas_Recebidas extends Fragment {
                                             @Override
                                             public void concluido(Object object) {
                                                 if (object.toString().equals("1")) {
-                                                    Toast.makeText(activity, "Removido!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity,R.string.alert_removido, Toast.LENGTH_SHORT).show();
                                                     ll.removeView(modelo);
                                                 } else if (object.toString().equals("0")) {
                                                     Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
@@ -105,7 +115,7 @@ public class Caronas_Recebidas extends Fragment {
                                             }
                                         });
                                     }else{
-                                        Toast.makeText(activity, "Está carona ainda está ativa!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(activity,R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

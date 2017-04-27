@@ -88,7 +88,7 @@ public class Coronas_oferecidas extends Fragment {
                     TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
                     TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
                     TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                    final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+                    final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas3);
                     ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
 
 
@@ -112,10 +112,10 @@ public class Coronas_oferecidas extends Fragment {
                                 @Override
                                 public void concluido(Object object) {
                                     if (object.toString().equals("1")) {
-                                        Toast.makeText(activity, "Removido!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
                                         lloferecidas.removeView(modelo);
                                     } else if (object.toString().equals("0")) {
-                                        Toast.makeText(activity, "Carona ativa !", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
                                     }else{
                                         Toast.makeText(activity, object.toString(), Toast.LENGTH_SHORT).show();
                                     }
@@ -144,7 +144,6 @@ public class Coronas_oferecidas extends Fragment {
                             btnRecusar.setBackgroundResource(R.drawable.animacao);
                             nomeSolicitante.setText(participantes.get(j).getNome());
                             telefoneSolicitante.setText(participantes.get(j).getTelefone());
-                            Log.e("foto", "concluido " + participantes.get(j).getFoto());
                             byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
                             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             Resources res = resource;
@@ -327,7 +326,7 @@ public class Coronas_oferecidas extends Fragment {
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
                 // Ignore this exception. This is exactly what is desired
-                Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
+                Log.w("OK!", "Tried to unregister the reciver when it's not registered");
             } else {
                 // unexpected, re-throw
                 throw e;

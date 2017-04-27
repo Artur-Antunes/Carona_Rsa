@@ -42,6 +42,8 @@ public class Servico extends IntentService {
         return Service.START_STICKY;
     }
 
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
         final ManipulaDados md = new ManipulaDados(Servico.this);
@@ -49,13 +51,6 @@ public class Servico extends IntentService {
         if (md.getUsuario() != null) {
             while (ativo) {
                 if (rs.isConnectedToServer("http://10.0.2.2/Caronas", 10000)) {
-                    Log.e("CONEXÃO:", "ATIVA");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
 
                     verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
                     verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
@@ -83,10 +78,15 @@ public class Servico extends IntentService {
                     Log.e("CONEXÃO:", "DESATIVADA");
                     criaBroadcast(0, "sem_conexao");
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(8000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
             //ativo = true;
@@ -168,7 +168,6 @@ public class Servico extends IntentService {
                         String texto = usuarios.get(0).getNome() + " está " + tipoP + " carona:";
                         f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), idNotificacao);
                     }
-                    //termina aqui!
                 }
             }
 
@@ -191,14 +190,14 @@ public class Servico extends IntentService {
             public void concluido(Object object) {
                 Usuario us = (Usuario) object;
                 String titulo, texto;
-                if((us != null) && (us.getId() == -4)){
+                if ((us != null) && (us.getId() == -4)) {
                     Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                     titulo = "Obrigado!";
                     texto = "Esperamos que volte a ofertar caronas!";
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
                     criaBroadcastHome("removeCaronaOferecida");
-                }else{
-                    Log.e("Corrija","ERRO!");
+                } else {
+                    Log.e("Corrija", "ERRO!");
                 }
             }
 
@@ -227,20 +226,22 @@ public class Servico extends IntentService {
                             texto = us.getNome();
                             if (us.getEmail().toString().equals("ACEITO")) {
                                 titulo += "aceita";
-                                texto += " aceitou";
+                                texto += " aceitou sua solicitação de Carona";
                                 criaBroadcast(1, "solicitacao_aceita");
                                 criaBroadcastHome("atSolicitacao");
                                 md.gravarUltimaCaronaAceita(idCaronaSolicitada);
+                                byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
                             } else if (us.getEmail().toString().equals("RECUSADO")) {
                                 titulo += "recusada";
-                                texto += " recusou";
+                                texto += " recusou sua solicitação de carona";
                                 md.setCaronaSolicitada(-1);
                                 criaBroadcastHome("atSolicitacao");
+                                byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                f.notificacaoAbertoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
                             }
-                            texto += " sua solicitação de Carona";
-                            byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), 2);
                         } else if ((us != null) && (us.getId() == -1)) {
                             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                             titulo = "Solicitação expirou";
@@ -276,8 +277,8 @@ public class Servico extends IntentService {
 
                 }
             });
-
     }
+
 
     public void verificaNovasCaronas() {
         final ManipulaDados md = new ManipulaDados(this);
@@ -325,7 +326,7 @@ public class Servico extends IntentService {
                                     }
                                 }
                             }
-                            f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 1);//Exibindo a notificaçõa
+                            f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 1);
                             md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
                             Log.e("CONFERE ID:", caronas.get(caronas.size() - 1).getId() + "");
                             Log.e("CONFERE ID2:",caronas.get(0).getId()+"");
@@ -336,13 +337,12 @@ public class Servico extends IntentService {
                             String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";
                             String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
                             Funcoes f = new Funcoes();
-                            f.notificacaoAbertoFechado(bitmap, titulo, texto, getApplicationContext(), 5);
+                            f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 5);
                             Log.e("CONFERE ID3:", caronas.get(0).getId() + "");
                             md.gravarUltimaCarona(caronas.get(0).getId());
                         }
                     }
                 }
             });
-
     }
 }

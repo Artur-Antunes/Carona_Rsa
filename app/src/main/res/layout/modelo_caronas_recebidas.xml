@@ -23,7 +23,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="5dp"
-            android:background="@color/meio_transparente"
+            android:background="@color/verde"
             android:text="Carona Solicitada"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/color3" />
@@ -36,7 +36,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            android:src="@drawable/icon_destino2" />
+            android:src="@drawable/icon_destino" />
 
         <TextView
             android:id="@+id/tv_destinoR"
@@ -47,7 +47,7 @@
             android:layout_toEndOf="@+id/imageViewR"
             android:text="Local de Destino"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <ImageView
@@ -58,7 +58,7 @@
             android:layout_below="@+id/imageViewR"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_hora2" />
+            android:src="@drawable/icon_relogio" />
 
         <TextView
             android:id="@+id/tv_horario_r"
@@ -68,7 +68,7 @@
             android:layout_alignTop="@+id/imageViewRelogio"
             android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -79,6 +79,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp"
             android:text="STATUS"
+            android:textColor="@color/primary_text"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -99,20 +100,49 @@
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:layout_below="@id/imageViewRelogio"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="5dp"
             android:background="@color/color1" />
 
-        <Button
-            android:id="@+id/b_desistencia"
-            android:layout_width="match_parent"
+        <TableLayout
+            android:id="@+id/LinearLayout02"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/view13"
-            android:layout_centerHorizontal="true"
-            android:background="@color/color3"
-            android:text="CANCELAR"
-            android:textColor="@color/btnCancelar"
-            android:textStyle="bold" />
+            android:stretchColumns="0,1"
+            android:layout_below="@+id/view13">
+        <TableRow>
 
+            <Button
+                android:id="@+id/b_comentar_car2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="@color/btnGeral"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:drawablePadding="4dp"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/icon_cmt"
+                android:text="Comentários"
+                />
 
+            <Button
+                android:id="@+id/b_desistencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:textColor="@color/btnGeral"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:drawableLeft="@drawable/icon_cancel_car"
+                android:drawablePadding="4dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_gravity="center_horizontal"
+                android:text=" Cancelar"
+                />
+        </TableRow>
+        </TableLayout>
     </RelativeLayout>
 </RelativeLayout>

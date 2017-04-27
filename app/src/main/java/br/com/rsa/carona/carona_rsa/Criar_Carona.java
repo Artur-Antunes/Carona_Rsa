@@ -1,7 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
-import br.com.rsa.carona.carona_rsa.controllers.InputFilterMinMax;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
@@ -122,10 +120,8 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                     public void concluido(Object object) {
                                                         Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
                                                         finish();
-                                                        Intent it = new Intent(Criar_Carona.this, MainActivity.class);
-                                                        startActivity(it);
+                                                        criaBroadcastHome("nova(s)Carona(s)");
                                                     }
-
                                                     @Override
                                                     public void concluido(Object object, Object object2) {
 
@@ -229,12 +225,19 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
         return true;
     }
 
+    public void criaBroadcastHome(String tipo) {//Enviar dados para MainActivity
+        Intent dialogIntent = new Intent();
+        dialogIntent.setAction("abcHome");
+        dialogIntent.putExtra("mensagem", tipo);
+        sendBroadcast(dialogIntent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_perfil) {
             finish();
-            startActivity(new Intent(this, ExibirDadosUsuarioActivity.class));
+            startActivity(new Intent(this, UsuarioDetalhesActivity.class));
             return true;
         }else if(id == R.id.action_home){
             finish();

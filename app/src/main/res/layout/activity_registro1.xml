@@ -38,7 +38,7 @@
                 android:id="@+id/ly12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/icons"
+                android:background="@drawable/arredondado"
                 android:layout_below="@id/viewPrincipal"
                 android:orientation="horizontal"
                 android:padding="16dp">
@@ -72,7 +72,7 @@
                 android:orientation="horizontal"
                 android:layout_below="@+id/ly12"
                 android:id="@+id/ly13"
-                android:background="@color/icons"
+                android:background="@drawable/arredondado"
                 android:layout_marginTop="10dp"
                 android:padding="16dp">
 
@@ -113,10 +113,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="@color/colorPrimaryDark"
                 android:text="continuar"
+                android:textSize="18dp"
                 android:layout_gravity="center"
-                android:textColor="#d9e5f3"
                 android:textStyle="bold" />
 
             <TextView

@@ -23,7 +23,7 @@
                 android:id="@+id/foto"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/icon" />
+                android:src="@drawable/user" />
 
         </LinearLayout>
 
@@ -233,17 +233,16 @@
 
             <Button
                 android:id="@+id/b_editarDados"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:letterSpacing="0.2"
+                android:layout_marginTop="10dp"
                 android:onClick="editarDados"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="@color/colorPrimaryDark"
                 android:text="Editar"
-                android:textColor="#d9e5f3"
-                android:textStyle="bold" />
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
     </RelativeLayout>

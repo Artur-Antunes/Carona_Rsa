@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -30,7 +29,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
@@ -213,7 +211,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                                 .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
                                         finish();
-                                        startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                                        startActivity(new Intent(EditarDadosActivity.this, UsuarioDetalhesActivity.class));
                                     }
                                 })
                                 .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
@@ -249,7 +247,7 @@ public class EditarDadosActivity extends AppCompatActivity {
                                                 mDados.gravarDados(usuarioLocal);
                                                 Toast.makeText(EditarDadosActivity.this,"Dados salvos com sucesso!",Toast.LENGTH_LONG).show();
                                                 finish();
-                                                startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                                                startActivity(new Intent(EditarDadosActivity.this, UsuarioDetalhesActivity.class));
                                             }
 
                                             @Override
@@ -266,7 +264,7 @@ public class EditarDadosActivity extends AppCompatActivity {
 
                 } else {
                     Toast.makeText(EditarDadosActivity.this, "Nenhum campo alterado!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
+                    startActivity(new Intent(EditarDadosActivity.this, UsuarioDetalhesActivity.class));
                 }
             }
 
@@ -552,8 +550,8 @@ public class EditarDadosActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
-            startActivity(new Intent(EditarDadosActivity.this, ExibirDadosUsuarioActivity.class));
-            //Intent intent = new Intent(this, ExibirDadosUsuarioActivity.class);
+            startActivity(new Intent(EditarDadosActivity.this, UsuarioDetalhesActivity.class));
+            //Intent intent = new Intent(this, UsuarioDetalhesActivity.class);
             //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //startActivity(intent);
             return true;

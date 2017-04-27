@@ -49,6 +49,7 @@ public class Registro2Activity extends AppCompatActivity {
         nomeSobrenome = (TextView) findViewById(R.id.nome_sobrenome_rg);
         nomeSobrenome.setText(usuario.getNome().toString() + " " + usuario.getSobrenome().toString());
         fotoRg = (ImageView) findViewById(R.id.foto_rg);
+        btnCadastrar = (Button) findViewById(R.id.b_cadastrar);
         fotoRg.setImageDrawable(new Funcoes().imagemArredondada(usuario.getFoto(), getResources()));
         matriculaRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -94,7 +95,6 @@ public class Registro2Activity extends AppCompatActivity {
         });
         senhaRegistro = (EditText) findViewById(R.id.senha_registro);
         senha2Registro = (EditText) findViewById(R.id.senha2_registro);
-        btnCadastrar = (Button) findViewById(R.id.b_cadastrar);
         cnhRegistro = (Switch) findViewById(R.id.cnh_registro);
         cnhRegistro.setChecked(true);
         btnCadastrar.setOnClickListener(new View.OnClickListener()

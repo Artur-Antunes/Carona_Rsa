@@ -989,7 +989,7 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
-            String teste = "não";
+            String teste = "Erro:Verifique sua conexão!";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
@@ -1180,6 +1180,11 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("idUser", usuario.getId() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("ultimoValor", ultimoValor + ""));
             dadosParaEnvio.add(new BasicNameValuePair("totalViews", totalViews + ""));
+
+            Log.e("sexo_User:", usuario.getSexo());
+            Log.e("id_User:",usuario.getId() + "");
+            Log.e("ultimoValor:",ultimoValor + "");
+            Log.e("totalView:",totalViews+"");
 
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados

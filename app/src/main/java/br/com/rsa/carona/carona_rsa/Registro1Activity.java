@@ -48,6 +48,7 @@ public class Registro1Activity extends AppCompatActivity {
         imagem = (ImageView) findViewById(R.id.c_imagem);
         nomeRegistro = (EditText) findViewById(R.id.tv_nome);
         escolherFoto = (TextView) findViewById(R.id.escolherFoto);
+        bSalvar = (Button) findViewById(R.id.b_salvar);
         nomeRegistro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -59,7 +60,6 @@ public class Registro1Activity extends AppCompatActivity {
             }
         });
         sobrenomeRegistro = (EditText) findViewById(R.id.c_sobrenome);
-        bSalvar = (Button) findViewById(R.id.b_salvar);
         bSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

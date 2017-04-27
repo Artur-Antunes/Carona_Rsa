@@ -1,29 +1,19 @@
 package br.com.rsa.carona.carona_rsa;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class ExibirDadosUsuarioActivity extends AppCompatActivity {
+public class UsuarioDetalhesActivity extends AppCompatActivity {
 
     ManipulaDados mDados;
     Usuario usuarioEditar;
@@ -37,7 +27,7 @@ public class ExibirDadosUsuarioActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_exibir_dados_usuario);
 
-        mDados = new ManipulaDados(ExibirDadosUsuarioActivity.this);
+        mDados = new ManipulaDados(UsuarioDetalhesActivity.this);
         usuarioEditar = mDados.getUsuario();
 
         nomeExibir = (TextView) findViewById(R.id.exibirNomeValor);

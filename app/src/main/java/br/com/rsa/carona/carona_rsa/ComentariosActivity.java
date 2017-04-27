@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -34,12 +35,12 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class ComentariosActivity extends AppCompatActivity {
 
-    View view;
     public static int idCarona;
     LayoutInflater linf;
     LinearLayout llComentario;
     ManipulaDados md;
     ImageButton btComentar;
+    SwipeRefreshLayout swipeLayout;
     EditText comentario;
 
     @Override
@@ -48,6 +49,16 @@ public class ComentariosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comentarios);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         md = new ManipulaDados(ComentariosActivity.this);
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container3);
+        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                buscarComentarios();
+                Toast.makeText(ComentariosActivity.this,"Comentários atualizados!", Toast.LENGTH_SHORT).show();
+                swipeLayout.setRefreshing(false);
+            }
+        });
         linf = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         linf = LayoutInflater.from(ComentariosActivity.this);
         llComentario = (LinearLayout) findViewById(R.id.caixa_comentario);
@@ -61,13 +72,12 @@ public class ComentariosActivity extends AppCompatActivity {
                 rs3.gravarComentarioCarona(idCarona, md.getUsuario().getId(), comentario.getText().toString(), new GetRetorno() {
                     @Override
                     public void concluido(Object object) {
-                        Log.e("->",object.toString());
                         if (object.toString().equals("1")) {
-                            Toast.makeText(ComentariosActivity.this,"Postado!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ComentariosActivity.this,"OK", Toast.LENGTH_SHORT).show();
                             buscarComentarios();
                             comentario.setText("");
                         } else {
-
+                            Toast.makeText(ComentariosActivity.this,object.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
 

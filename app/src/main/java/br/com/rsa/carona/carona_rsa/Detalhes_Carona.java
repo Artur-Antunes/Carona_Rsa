@@ -74,6 +74,7 @@ public class Detalhes_Carona extends AppCompatActivity {
         if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
+            b_salvar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_cancel_car), null, null, null);
         } else {
             intencao = "Me Leva!";
             b_salvar.setBackgroundResource(R.drawable.cor_botao2);
@@ -128,7 +129,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                 .setMessage(R.string.alert_cancelar_carona)
                                 .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
-                                        // startActivity(new Intent(Detalhes_Carona.this, ExibirDadosUsuarioActivity.class));
+                                        // startActivity(new Intent(Detalhes_Carona.this, UsuarioDetalhesActivity.class));
                                     }
                                 })
                                 .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {

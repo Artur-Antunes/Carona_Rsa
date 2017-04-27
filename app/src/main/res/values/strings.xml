@@ -39,6 +39,11 @@
     <string name="alert_aceitar_user">Aceitar Caroneiro. Deseja realmente continuar ? </string>
     <string name="alert_recusar_user">Recusar Caroneiro. Deseja realmente continuar ? </string>
     <string name="alert_criar_carona">Criar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_car_solicitada">Você tem 1 carona solicitada!</string>
+    <string name="alert_car_oferecida">Você já ofereceu uma carona!</string>
+    <string name="alert_sem_conexao">Tente se conectar novamente!</string>
+    <string name="alert_car_ativa">A carona ainda está ativa!</string>
+    <string name="alert_removido">Removido!</string>
 
 
 

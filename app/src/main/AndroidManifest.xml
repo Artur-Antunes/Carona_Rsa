@@ -34,9 +34,11 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,21 +47,25 @@
         </activity>
         <activity
             android:name=".EditarDadosActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_edicao"></activity>
         <activity
             android:name=".Registro2Activity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_registro"></activity>
         <activity
             android:name=".Criar_Carona"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_criar__carona"></activity>
         <activity
-            android:name=".ExibirDadosUsuarioActivity"
+            android:name=".UsuarioDetalhesActivity"
             android:label="@string/action_perfil"></activity>
         <activity
             android:name=".Detalhes_Carona"
             android:label="@string/title_activity_detalhes__carona"></activity>
         <activity
             android:name=".Registro1Activity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_registro"></activity>
         <activity
             android:name=".DetalheUsuario"

@@ -23,7 +23,7 @@
             android:layout_alignStart="@+id/tv_destino2"
             android:text="origem"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_toEndOf="@+id/imageView"
             android:text="Destino"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
@@ -46,17 +46,18 @@
             android:layout_alignTop="@+id/imageView3"
             android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tv_origem2"
+            android:layout_alignBottom="@+id/tv_destino2"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="25dp"
-            android:drawableStart="@drawable/icon_passageiros2"
+            android:layout_marginTop="10dp"
+            android:drawableStart="@drawable/icon_passageiros"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -65,12 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/textView5"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="17dp"
             android:layout_marginTop="5dp"
             android:text="0/0"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/secondary_text"
-            android:textSize="28dp" />
+            android:textColor="@color/primary_text"
+            android:textSize="25dp" />
 
         <View
             android:id="@+id/view2"
@@ -113,7 +114,7 @@
             android:layout_below="@+id/imageView2"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_destino2" />
+            android:src="@drawable/icon_destino" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -123,7 +124,7 @@
             android:layout_below="@+id/view2"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_local2" />
+            android:src="@drawable/icon_origem" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -133,7 +134,7 @@
             android:layout_below="@+id/imageView"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon_hora2" />
+            android:src="@drawable/icon_relogio" />
 
         <View
             android:id="@+id/view3"
@@ -151,34 +152,47 @@
             android:layout_marginTop="4dp"
             android:src="@drawable/user" />
 
-        <LinearLayout
+        <TableLayout
             android:id="@+id/LinearLayout02"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:stretchColumns="0,1"
             android:layout_below="@+id/view3">
+            <TableRow>
 
             <Button
                 android:id="@+id/b_comentar_car"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/arredondado"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="@color/btnGeral"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:drawablePadding="4dp"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/icon_cmt"
                 android:text="Comentários"
-                android:textColor="@color/btnConfirmar"
-                android:textStyle="bold" />
-
-
+                />
 
             <Button
                 android:id="@+id/b_solicitar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arredondado"
-                android:text="Me leva !"
-                android:layout_weight="1"
-                android:textColor="@color/btnConfirmar"
-                android:textStyle="bold" />
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:textColor="@color/btnGeral"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:drawableLeft="@drawable/icon_carona"
+                android:drawablePadding="4dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_gravity="center_horizontal"
+                android:text=" Me Leva ! "
+               />
+        </TableRow>
 
-        </LinearLayout>
+        </TableLayout>
     </RelativeLayout>
 </RelativeLayout>

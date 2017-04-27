@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,11 +24,12 @@ public class DetalheUsuario extends AppCompatActivity {
     private TextView sexoExibir;
     private TextView cnhExibir;
     private ImageView imFoto;
+    private Button editarDados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalhe_usuario);
+        setContentView(R.layout.activity_exibir_dados_usuario);
         nomeExibir = (TextView) findViewById(R.id.exibirNomeValor);
         imFoto = (ImageView) findViewById(R.id.foto);
         matriculaExibir = (TextView) findViewById(R.id.exibirMatriculaValor);
@@ -34,7 +37,9 @@ public class DetalheUsuario extends AppCompatActivity {
         emailExibir = (TextView) findViewById(R.id.exibirEmailValor);
         sexoExibir = (TextView) findViewById(R.id.exibirSexoValor);
         cnhExibir = (TextView) findViewById(R.id.exibirCnhValor);
-
+        editarDados=(Button) findViewById(R.id.b_editarDados);
+        editarDados.setVisibility(View.INVISIBLE);
+        editarDados.setClickable(false);
         nomeExibir.setText(usuarioEditar.getNome() + " " + usuarioEditar.getSobrenome());
         emailExibir.setText(usuarioEditar.getEmail());
         matriculaExibir.setText(usuarioEditar.getMatricula());
@@ -61,19 +66,13 @@ public class DetalheUsuario extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detalhe_usuario, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

@@ -1,6 +1,7 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -89,7 +90,7 @@ public class Funcoes {
     }
 
     public void notificacaoFechado(Bitmap imagem, String titulo, String texto, Context contexto, int numero){
-        if(checkApp(contexto)) {
+        if(!checkApp(contexto)) {
             final Intent emptyIntent = new Intent(contexto, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder mBuilder =
@@ -98,10 +99,11 @@ public class Funcoes {
                             .setContentTitle(titulo)
                             .setContentText(texto)
                             .setLargeIcon(imagem)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
 
             mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
             NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(numero, mBuilder.build());
         }else{
@@ -125,12 +127,14 @@ public class Funcoes {
                             .setContentTitle(titulo)
                             .setContentText(texto)
                             .setLargeIcon(imagem)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
 
-            mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-            NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(numero, mBuilder.build());
-
+        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(numero, mBuilder.build());
+        //mBuilder.build().flags |= Notification.FLAG_AUTO_CANCEL;
     }
 
     public void apagarNotificacoes(Context contexto){
@@ -142,8 +146,6 @@ public class Funcoes {
         NotificationManager notifManager= (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.cancel(id);
     }
-
-
 
     public List<Usuario> removeUsuarioRepitidos(List<Usuario>lista){
         List nomes=new LinkedList();
@@ -216,10 +218,7 @@ public class Funcoes {
 
     public boolean checkApp(Context context){
         ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
-
-        // get the info from the currently running task
         List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-
         ComponentName componentInfo = taskInfo.get(0).topActivity;
         if (componentInfo.getPackageName().equalsIgnoreCase("br.com.rsa.carona.carona_rsa")) {
             Log.e("ooooooooo", "aberto ");

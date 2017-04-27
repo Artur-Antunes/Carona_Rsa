@@ -20,19 +20,20 @@
         android:layout_marginTop="8dp"
         android:layout_marginLeft="10dp"
         android:textSize="18dp"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/primary_text"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="ACEITO"
         android:textSize="18dp"
         android:id="@+id/tv_status"
+        android:textColor="@color/secondary_text"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="10dp" />
 </RelativeLayout>

@@ -1,26 +1,22 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/scrollView4" >
-    <LinearLayout
-        style="?android:attr/buttonBarButtonStyle"
+    android:layout_gravity="center_horizontal|center"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button
+        android:id="@+id/allow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal" >
-        <ImageView
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:background="#0000"
-            android:src="@drawable/icon_comments"/>
-        <TextView
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:background="#0000"
-            android:text="Done" />
-    </LinearLayout>
-</ScrollView>
+        android:layout_gravity="center_horizontal"
+        android:drawableLeft="@drawable/icon_comments"
+        android:text="Allow"/>
+    <Button
+        android:id="@+id/deny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/allow"
+        android:layout_gravity="center_horizontal"
+        android:drawableLeft="@drawable/icon_comments"
+        android:text="Deny"/>
+</LinearLayout>
