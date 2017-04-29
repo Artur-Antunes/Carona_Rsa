@@ -3,6 +3,21 @@
     android:layout_height="fill_parent"
     android:background="@color/fundo"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/label3Vazio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="Nenhuma carona oferecida!"
+        android:textColor="@color/secondary_text"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipe_container"
@@ -36,6 +51,24 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@color/fundo"
                     android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/fundo"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/b_recarrega3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@color/meio_transparente"
+                        android:src="@drawable/icon_down_b"
+                        android:text="MAIS"
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void salvarDadosExtras(Usuario user){//não utilizado
         RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
-        rs.exibirMinhasSolicitações(user, new GetRetorno() {
+        rs.exibirMinhasSolicitações(0,6,user, new GetRetorno() {
             @Override
             public void concluido(Object object) {
                 final List<Carona> caronas = (List<Carona>) object;
@@ -208,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void semCon() {
-        Toast.makeText(LoginActivity.this, " Internet não disponível", Toast.LENGTH_LONG).show();
+        Toast.makeText(LoginActivity.this, R.string.alert_sem_conexao, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -228,6 +228,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             return true;
         } else if (id == R.id.action_termos) {
+            Toast.makeText(LoginActivity.this, R.string.alert_versao, Toast.LENGTH_LONG).show();
             return true;
         } else if (id == R.id.action_esqueceu) {
             if (isOnline()) {

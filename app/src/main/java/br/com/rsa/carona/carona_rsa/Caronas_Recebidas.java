@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,8 +37,10 @@ public class Caronas_Recebidas extends Fragment {
     FragmentActivity activity;
     ManipulaDados M;
     MyReceiver receiver;
+    ImageButton recarrega;
+    TextView labelRecebidas;
     SwipeRefreshLayout swipeLayout;
-    int ultimoIdCaronaIncluida=-2;//Ultima carona exibida
+    int ultimoIdCaronaIncluida = -2;//Ultima carona exibida
     IntentFilter filter = new IntentFilter();
 
 
@@ -46,27 +49,38 @@ public class Caronas_Recebidas extends Fragment {
         activity = getActivity();
         view = inflater.inflate(R.layout.fragment_caronas__recebidas, container, false);
         ll = (LinearLayout) view.findViewById(R.id.caixa_aceito);
+        recarrega = (ImageButton) view.findViewById(R.id.b_recarrega2);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container2);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        labelRecebidas = (TextView) view.findViewById(R.id.label2Vazio);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                atualizarCaronasAceitas();
+                atualizarCaronasAceitas(0, 6, true);
                 swipeLayout.setRefreshing(false);
+            }
+        });
+        recarrega.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                atualizarCaronasAceitas(ll.getChildCount(), 1, false);
             }
         });
         M = new ManipulaDados(getActivity());
         receiver = new MyReceiver(new Handler());
-        atualizarCaronasAceitas();
+        atualizarCaronasAceitas(0, 6, true);
+        getInflate();
         return view;
     }
 
-    public void atualizarCaronasAceitas() {
+    public void atualizarCaronasAceitas(int totalviewsAtual, int totalBuscar, final boolean remover) {
         if (M.getUsuario() != null) {
-            ll.removeAllViews();
+            if (remover) {
+                ll.removeAllViews();
+            }
             final Usuario usuario = new Usuario(M.getUsuario().getId());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-            rs.exibirMinhasSolicitações(usuario, new GetRetorno() {
+            rs.exibirMinhasSolicitações(totalviewsAtual, totalBuscar, usuario, new GetRetorno() {
                 @Override
                 public void concluido(Object object) {
                     final List<Carona> caronas = (List<Carona>) object;
@@ -82,27 +96,25 @@ public class Caronas_Recebidas extends Fragment {
                             ta_destino.setText(caronas.get(i).getDestino());
                             img5.setVisibility(View.INVISIBLE);
                             ta_aceito.setText("ACEITO");
-                            int color = getResources().getColor(R.color.colorPrimaryDark);
+                            int color = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
                             ta_aceito.setTextColor(color);
                             ta_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
                             ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
-
                             modelo.setId(caronas.get(i).getId());
-                            ll.addView(modelo, 0);
-
+                            ll.addView(modelo);
                             final int idCarona = caronas.get(i).getId();
                             final int idUsuario = M.getUsuario().getId();
 
                             btnClose.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if(M.getCaronaSolicitada()!=idCarona) {
+                                    if (M.getCaronaSolicitada() != idCarona) {
                                         RequisicoesServidor rs3 = new RequisicoesServidor(activity);
                                         rs3.fecharCaronaOferecida(idCarona, idUsuario, 2, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
                                                 if (object.toString().equals("1")) {
-                                                    Toast.makeText(activity,R.string.alert_removido, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
                                                     ll.removeView(modelo);
                                                 } else if (object.toString().equals("0")) {
                                                     Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
@@ -114,14 +126,17 @@ public class Caronas_Recebidas extends Fragment {
 
                                             }
                                         });
-                                    }else{
-                                        Toast.makeText(activity,R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                            ultimoIdCaronaIncluida=(ll.getChildCount()>0)?ll.getChildAt(0).getId():-2;
+                            ultimoIdCaronaIncluida = (ll.getChildCount() > 0) ? ll.getChildAt(0).getId() : -2;
                         }
-                    }
+                    }else
+                        if(caronas==null && remover==false)
+                        Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override
@@ -130,22 +145,36 @@ public class Caronas_Recebidas extends Fragment {
                 }
             });
         }
+        getInflate();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean visible)
-    {
-        super.setUserVisibleHint(visible);
-        if (visible && isResumed())
-        {
-            limparBadge();
+
+    public void getInflate() {
+        if (ll.getChildCount() >= 6) {
+            recarrega.setVisibility(View.VISIBLE);
+        }else{
+            recarrega.setVisibility(View.INVISIBLE);
+        }
+        if (ll.getChildCount() == 0) {
+            labelRecebidas.setVisibility(View.VISIBLE);
+        } else {
+            labelRecebidas.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void limparBadge(){
+    @Override
+    public void setUserVisibleHint(boolean visible) {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed()) {
+            limparBadge();
+            getInflate();
+        }
+    }
+
+    private void limparBadge() {
         if (((MainActivity) activity).numCarAceita > 0) {
             ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge2, 3);
-            new Funcoes().apagarNotificacaoEspecifica(getActivity(),2);
+            new Funcoes().apagarNotificacaoEspecifica(getActivity(), 2);
         }
     }
 
@@ -165,8 +194,8 @@ public class Caronas_Recebidas extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if(M.getUltimoIdCaronaAceita()!=ultimoIdCaronaIncluida) {
-                                atualizarCaronasAceitas();
+                            if (M.getUltimoIdCaronaAceita() != ultimoIdCaronaIncluida) {
+                                atualizarCaronasAceitas(0, 6, true);
                             }
                         }
                     });

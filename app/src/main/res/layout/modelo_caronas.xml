@@ -80,12 +80,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/textV5"
-            android:layout_marginRight="17dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
             android:text="0/0"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/primary_text"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="20dp"

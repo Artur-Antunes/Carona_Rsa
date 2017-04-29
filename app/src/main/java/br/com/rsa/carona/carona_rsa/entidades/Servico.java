@@ -58,18 +58,14 @@ public class Servico extends IntentService {
                     verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
 
                     if(Home.userCarOferecida!=-1){
-                        Log.e("Home_adquiriu_11:",Home.userCarOferecida+"");
                         verificaCaronaOferecida();
                     }
 
 
                     int idCaronaSolicitada = md.getCaronaSolicitada();
-                    Log.e("idCaronaSolicitadaaaa", idCaronaSolicitada + "");
                     if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
-                        Log.e("entrou 1", "ok->" + idCaronaSolicitada);
                         verificaSolicitacaoAceita();
                     } else if ((idCaronaSolicitada == md.getUltimoIdCaronaAceita()) && idCaronaSolicitada != -1) {
-                        Log.e("entrou 2", "ok");
                         verificaSolicitacaoAceita();
                     }
                     cont++;

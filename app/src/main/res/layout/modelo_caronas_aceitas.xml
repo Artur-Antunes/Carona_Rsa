@@ -24,9 +24,9 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/c_foto"
-            android:text="nome"
+            android:text="Nome"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary_text"
             android:textSize="18dp" />
 
         <ImageView
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tv_destino_ACEITO2"
             android:layout_below="@+id/tv_destino_ACEITO2"
-            android:text="89981106513"
+            android:text="89981"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="15dp" />
 

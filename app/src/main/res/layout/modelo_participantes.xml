@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="NOME DO PARTICIPANTE"
+        android:text="NOME"
         android:id="@+id/tv_nome"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"

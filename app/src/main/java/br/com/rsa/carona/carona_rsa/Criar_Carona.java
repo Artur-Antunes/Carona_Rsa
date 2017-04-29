@@ -121,6 +121,7 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                         Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
                                                         finish();
                                                         criaBroadcastHome("nova(s)Carona(s)");
+                                                        criaBroadcast(0,"myCarona");
                                                     }
                                                     @Override
                                                     public void concluido(Object object, Object object2) {
@@ -229,6 +230,14 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
         Intent dialogIntent = new Intent();
         dialogIntent.setAction("abcHome");
         dialogIntent.putExtra("mensagem", tipo);
+        sendBroadcast(dialogIntent);
+    }
+
+    public void criaBroadcast(int valor, String tipo) {//Enviar dados para MainActivity
+        Intent dialogIntent = new Intent();
+        dialogIntent.setAction("abc");
+        dialogIntent.putExtra("mensagem", tipo);
+        dialogIntent.putExtra("valor", valor + "");
         sendBroadcast(dialogIntent);
     }
 

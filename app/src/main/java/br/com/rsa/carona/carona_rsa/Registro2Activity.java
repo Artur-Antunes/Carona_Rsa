@@ -124,7 +124,7 @@ public class Registro2Activity extends AppCompatActivity {
                             @Override
                             public void concluido(Object object) {
                                 if (object.toString().equals("1")) {
-                                    Toast.makeText(Registro2Activity.this, "Dados Salvos com Sucesso", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Registro2Activity.this, "Dados salvos com sucesso", Toast.LENGTH_SHORT).show();
                                     RequisicoesServidor rs = new RequisicoesServidor(Registro2Activity.this);
                                     rs.buscaDadosDoUsuario(usuario1, new GetRetorno() {
                                         @Override
@@ -169,6 +169,7 @@ public class Registro2Activity extends AppCompatActivity {
         mDados.setCaronaSolicitada(-1);
         mDados.setLogado(true);
         startActivity(new Intent(this, MainActivity.class));
+        Toast.makeText(Registro2Activity.this, R.string.alert_versao, Toast.LENGTH_LONG).show();
         finish();
     }
 

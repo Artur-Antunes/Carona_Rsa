@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.RequestConnControl;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,9 +68,9 @@ public class RequisicoesServidor {
         new BuscaDadosUsuarioAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void buscasSolicitacoesCaronas(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+    public void buscasSolicitacoesCaronas(int ttViewsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaSolicitacaoAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaSolicitacaoAsyncTask(ttViewsAtuais,ttBuscar,usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     public void buscarComentariosCarona(int idCarona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
@@ -111,9 +112,9 @@ public class RequisicoesServidor {
         new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario,tipo, retorno).execute();
     }
 
-    public void exibirMinhasSolicitações(Usuario usuario, GetRetorno retorno) {
+    public void exibirMinhasSolicitações(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
-        new exibirMinhasSolicitaçõesAsyncTask(usuario, retorno).execute();
+        new exibirMinhasSolicitaçõesAsyncTask(ttVsAtuais,ttBuscar,usuario, retorno).execute();
     }
 
     public void exibirSolicitacoesCaronas(Usuario usuario, GetRetorno retorno) {
@@ -257,6 +258,9 @@ public class RequisicoesServidor {
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+
+
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
@@ -428,7 +432,6 @@ public class RequisicoesServidor {
             dados.add(new BasicNameValuePair("id_carona3", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
 
             HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-
             HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
             HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
 
@@ -781,9 +784,7 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscaDadosUsuario.php");    //Fazer uma requisição tipo Post no WebService.
-            //Página de registro
             Usuario usuarioRetornado = null;    //Variável que irá receber os dados do usuário.
-
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
@@ -808,9 +809,6 @@ public class RequisicoesServidor {
                     Integer cnh = jObj.getInt("cnh");
                     Integer id = jObj.getInt("id");
                     Integer id_carona = jObj.getInt("id_carona");
-
-                    Log.e("id->carona",id_carona+"eitaaaa");
-
                     boolean cnh1 = false;
                     if (cnh == 1) {
                         cnh1 = true;
@@ -878,13 +876,11 @@ public class RequisicoesServidor {
                     //Senão,se o tamanho de jObj for diferente de zero.
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
                         String nome = jObj.getString("nome_" + i);
-                        Log.e("nomeJesus:",nome);
                         String foto = jObj.getString("foto_" + i);
                         Integer id = jObj.getInt("id_" + i);
                         Usuario usuario = new Usuario(id, nome);    //Novo obj de usuário.
                         usuario.setFoto(foto);
                         usuarios.add(usuario);
-                        Log.e("tamanho:",usuarios.size()+"vv");
                     }
                 }
             } catch (Exception e) {
@@ -918,19 +914,17 @@ public class RequisicoesServidor {
         @Override //metodo que � execudado em segundo plano para economia de recursos
         protected Object doInBackground(Void... params) {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            //adicionado dados no arraylist para ser enviado
 
             dadosParaEnvio.add(new BasicNameValuePair("id_carona", carona.getId() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
 
-            //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "cancelarCarona.php");
-            String teste = "não";
+            String teste = "Sem conexão!";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
@@ -981,15 +975,13 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("restricao", carona.getRestricao()));
             dadosParaEnvio.add(new BasicNameValuePair("vagas", carona.getVagas() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
-            Log.e(TAG, "origem pppppp " + carona.getOrigem());
-            //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
-            String teste = "Erro:Verifique sua conexão!";
+            String teste = "Erro: Verifique sua conexão!";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
@@ -1003,7 +995,6 @@ public class RequisicoesServidor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return teste;
         }
 
@@ -1050,14 +1041,10 @@ public class RequisicoesServidor {
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getInt("retorno");
-                Log.e("VAMOS VER", "TESTE11 " + teste);
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));
                     usuario.setEmail(jObjeto.getString("res_solicitacao"));
-                    Log.e("id:", jObjeto.getInt("id") + "");
-                    Log.e("nome:", jObjeto.getString("nome"));
-                    Log.e("resposta:", jObjeto.getString("res_solicitacao"));
                 } else  {
                     usuario = new Usuario(teste);
                 }
@@ -1080,8 +1067,11 @@ public class RequisicoesServidor {
 
         Usuario usuario;
         GetRetorno retornoUsuario;
+        int ttVsAtuais,ttBuscar;
 
-        public exibirMinhasSolicitaçõesAsyncTask(Usuario usuario, GetRetorno retorno) {
+        public exibirMinhasSolicitaçõesAsyncTask(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
+            this.ttVsAtuais=ttVsAtuais;
+            this.ttBuscar=ttBuscar;
             this.usuario = usuario;
             this.retornoUsuario = retorno;
         }
@@ -1091,14 +1081,11 @@ public class RequisicoesServidor {
 
             ArrayList<NameValuePair> dados = new ArrayList();
             dados.add(new BasicNameValuePair("id", this.usuario.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
+            dados.add(new BasicNameValuePair("ttVsAtuais", this.ttVsAtuais + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
+            dados.add(new BasicNameValuePair("ttBuscar", this.ttBuscar + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
 
-/**
- * HppParams:interface que representa um conjunto de valores imutáveis ​​
- * que define um comportamento de tempo de execução de um componente.
- */
 
             HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-
             HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
             HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
 
@@ -1107,7 +1094,6 @@ public class RequisicoesServidor {
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "caronasAceitas.php");    //Fazer uma requisição tipo Post no WebService.
             //Página de registro
             List<Carona> caronas = new LinkedList<Carona>();    //Variável que irá receber os dados do usuário.
-
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
@@ -1118,10 +1104,9 @@ public class RequisicoesServidor {
                 //
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
 
-                if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
+                if (jObj.length() == 0 || jObj.getInt("tamanho")==0) {    //Se o tamanho de jObj for igual a zero.
                     caronas = null;
                 } else {
-                    //Senão,se o tamanho de jObj for diferente de zero.
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
 
                         String origem = jObj.getString("origem_" + i);
@@ -1194,7 +1179,7 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Listas.php");
-            String teste = "não";
+            String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
@@ -1344,13 +1329,15 @@ public class RequisicoesServidor {
 
     public class BuscaSolicitacaoAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
+        int ttViewsAtuais,ttBuscar;
         GetRetorno retornoUsuario;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public BuscaSolicitacaoAsyncTask(Usuario usuario, GetRetorno retorno) {
+        public BuscaSolicitacaoAsyncTask(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
             this.usuario = usuario;
             this.retornoUsuario = retorno;
-
+            this.ttViewsAtuais=ttVsAtuais;
+            this.ttBuscar=ttBuscar;
         }
 
         @Override //metodo que � execudado em segundo plano para economia de recursos
@@ -1358,7 +1345,8 @@ public class RequisicoesServidor {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
             //adicionado dados no arraylist para ser enviado
             dadosParaEnvio.add(new BasicNameValuePair("id_user", usuario.getId() + ""));
-
+            dadosParaEnvio.add(new BasicNameValuePair("ttViewsAtuais", ttViewsAtuais + ""));
+            dadosParaEnvio.add(new BasicNameValuePair("ttBuscar", ttBuscar + ""));
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados
             HttpParams httpRequestsParametros = new BasicHttpParams();
@@ -1367,21 +1355,22 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscaSolicitacoes.php");
-            String teste = "não";
+            String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
-
                 jObjeto = new JSONObject(resultado);
 
+                if(jObjeto==null || jObjeto.getInt("tamanho")==-1){
+                    jObjeto = null;
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return jObjeto;
         }
 
@@ -1390,7 +1379,6 @@ public class RequisicoesServidor {
             JSONObject jObjeto = (JSONObject) objeto;
             List<Carona> caronas = new LinkedList<Carona>();
             try {
-
                 for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
                     String origem = jObjeto.getString("origem_" + i);
                     String destino = jObjeto.getString("destino_" + i);
@@ -1438,7 +1426,6 @@ public class RequisicoesServidor {
                             participante.setChn(false);
                         }
                         participante.setSexo(sexo);
-                        Log.e(TAG, "nomr participante " + participante.getNome());
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }

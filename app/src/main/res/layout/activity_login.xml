@@ -25,8 +25,8 @@
 
             <ImageView
                 android:id="@+id/iVImg"
-                android:layout_width="132dp"
-                android:layout_height="132dp"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/icon" />
 
@@ -72,10 +72,11 @@
                 android:layout_below="@+id/senha_login"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="40dp"
-                android:background="@drawable/arredondado"
+                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:onClick="logar"
                 android:text="Login"
+                android:textSize="18dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold" />
 
