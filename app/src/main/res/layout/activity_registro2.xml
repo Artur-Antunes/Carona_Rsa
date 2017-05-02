@@ -61,13 +61,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="Matricula"
+                    android:maxLength="8"
+                    android:hint="MATRÍCULA"
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
-                    android:maxLength="8"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -93,7 +93,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:hint="CNH"
-                    android:textColor="@color/primary_text"                    android:textColorHint="#69686b"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:textOff="NÃO"
                     android:textOn="SIM" />
             </LinearLayout>
@@ -118,14 +119,14 @@
                     android:id="@+id/telefone_registro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Telefone"
+                    android:hint="TELEFONE"
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="14"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -151,11 +152,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="E-mail"
+                    android:hint="E-MAIL"
                     android:inputType="text"
-                    android:letterSpacing="0.1"
                     android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
+                    android:textColorHint="@color/secondary_text"
+                    android:letterSpacing="0.1"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -209,12 +210,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:maxLength="16"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="Senha"
+                    android:hint="SENHA"
                     android:inputType="textPassword"
                     android:letterSpacing="0.1"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -241,12 +243,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:textColor="@color/primary_text"
+                    android:maxLength="16"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="Confirmar senha"
+                    android:hint="CONFIRMA SENHA"
                     android:inputType="textPassword"
                     android:letterSpacing="0.1"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 

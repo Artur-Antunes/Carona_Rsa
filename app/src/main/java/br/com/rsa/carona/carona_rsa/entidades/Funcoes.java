@@ -221,10 +221,8 @@ public class Funcoes {
         List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
         ComponentName componentInfo = taskInfo.get(0).topActivity;
         if (componentInfo.getPackageName().equalsIgnoreCase("br.com.rsa.carona.carona_rsa")) {
-            Log.e("ooooooooo", "aberto ");
             return true;
         } else {
-            Log.e("ooooooooo", "fechado ");
             return false;
         }
     }

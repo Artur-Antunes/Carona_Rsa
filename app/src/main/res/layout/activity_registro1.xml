@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/arredondado"
             android:clickable="true"
             android:onClick="escolherFoto"
             android:src="@drawable/user" />
@@ -55,11 +56,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Nome"
+                    android:hint="NOME"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:inputType="text"
                     android:letterSpacing="0.1"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
 
             </LinearLayout>
@@ -88,11 +89,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Sobrenome"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
+                    android:hint="SOBRENOME"
                     android:inputType="text"
                     android:letterSpacing="0.1"
-                    android:textColor="@color/primary_text"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
 
             </LinearLayout>

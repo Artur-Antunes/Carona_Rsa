@@ -19,6 +19,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -73,7 +74,6 @@ public class Home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         this.container = container;
         userCarOferecida = -1;//NENHUMA CARONA OFERECIDA
-        Log.e("Home_adquiriu_1:", userCarOferecida + "");
         activity = getActivity();
         resource = getResources();
         labelHome = (TextView) view.findViewById(R.id.label1Vazio);
@@ -95,7 +95,6 @@ public class Home extends Fragment {
             @Override
             public void onRefresh() {
                 userCarOferecida = -1;
-                Log.e("Home_adquiriu_2:", userCarOferecida + "");
                 atualizarEspera();
                 atualizaCaronas(0, 6, true);
                 swipeLayout.setRefreshing(false);
@@ -105,7 +104,6 @@ public class Home extends Fragment {
             @Override
             public void onClick(View v) {
                 userCarOferecida = -1;
-                Log.e("Home_adquiriu_3:", userCarOferecida + "");
                 atualizarEspera();
                 atualizaCaronas(0, 6, true);
                 new Funcoes().apagarNotificacaoEspecifica(getActivity(), 5);
@@ -142,6 +140,7 @@ public class Home extends Fragment {
 
 
     public void atualizarEspera() {
+        load.setVisibility(View.INVISIBLE);
         if (m.getCaronaSolicitada() != -1) {
             Carona carona = new Carona(m.getCaronaSolicitada());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
@@ -164,12 +163,17 @@ public class Home extends Fragment {
                         ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
                         modelo.setId(carona.getId());
 
+                        final String vagasCarona = organizaVagas(carona.getVagasOcupadas(),carona.getVagas());
+
                         if (verificaModeloAdd(modelo) != -1) {
                             ll.removeViewAt(verificaModeloAdd(modelo));
                             ll.addView(modelo, 0);
                         } else {
                             ll.addView(modelo, 0);
                         }
+                        getRecarrega();
+                        getActivity();
+                        exibirBtnAdd();
 
                         btnComentar.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -181,7 +185,7 @@ public class Home extends Fragment {
                         modelo.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                detalhesCarona(user, carona);
+                                detalhesCarona(user, carona, vagasCarona);
                             }
                         });
 
@@ -220,19 +224,19 @@ public class Home extends Fragment {
             if (ll.getChildAt(0) != null) {
                 if (userCarOferecida == -1) {
                     ll.removeViewAt(0);//REMOVENDO MODELO POSIÇÃO 0
-                    Log.e("Home_adquiriu_5:", userCarOferecida + "");
                 }
 
             }
         }
-        getContInflater();
+        getRecarrega();
+        getLabel();
+        exibirBtnAdd();
     }
 
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
-            getContInflater();
         }
     }
 
@@ -249,12 +253,17 @@ public class Home extends Fragment {
     }
 
 
-    private void getContInflater() {
+    private void getRecarrega() {
+        Log.e("TOTAL DE ELEMENTOS 0:", ll.getChildCount() + "");
         if (ll.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
         } else {
             recarrega.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void getLabel() {
+        Log.e("TOTAL DE ELEMENTOS 1:", ll.getChildCount() + "");
         if (ll.getChildCount() == 0) {
             labelHome.setVisibility(View.VISIBLE);
         } else {
@@ -279,10 +288,11 @@ public class Home extends Fragment {
         startActivity(it);
     }
 
-    private void detalhesCarona(Usuario user, Carona car) {
+    private void detalhesCarona(Usuario user, Carona car, String vagas) {
         Intent it = new Intent(getActivity(), Detalhes_Carona.class);
         Detalhes_Carona.usuario = user;
         Detalhes_Carona.carona = car;
+        it.putExtra("vagas", vagas);
         startActivity(it);
     }
 
@@ -300,9 +310,10 @@ public class Home extends Fragment {
                 ll.removeViewAt(j);
             }
         }
-        getContInflater();
+        getRecarrega();
+        getActivity();
+        exibirBtnAdd();
     }
-
 
     public void atualizaCaronas(int ultNum, int ttViews, final boolean removerAntigas) {
         load.setVisibility(View.INVISIBLE);
@@ -332,7 +343,7 @@ public class Home extends Fragment {
                             final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
                             TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
                             TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                            TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+                            final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
                             TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
                             TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
                             ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
@@ -351,7 +362,9 @@ public class Home extends Fragment {
                             tv_destino.setText(caronas.get(i).getDestino());
                             tv_origem.setText(caronas.get(i).getOrigem());
                             tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas() + "");
+                            //final int vagasCarna = caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas();
+                            tv_vagas.setText(organizaVagas(caronas.get(i).getVagasOcupadas(), caronas.get(i).getVagas()));
+                            //tv_vagas.setText((vagasCarna) + "/" + caronas.get(i).getVagas() + "");
                             modelo.setId(caronas.get(i).getId());
 
                             if (M.getUsuario().getId() == usuarios.get(i).getId()) {
@@ -359,8 +372,8 @@ public class Home extends Fragment {
                                 Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
                                 img.setBounds(0, 0, 35, 35);
                                 btnSolicitar.setCompoundDrawables(img, null, null, null);
+                                modelo.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary_light));
                                 userCarOferecida = modelo.getId();
-                                Log.e("Home_adquiriu_8.1:", userCarOferecida + "");
                                 if (verificaModeloAdd(modelo) != -1) {
                                     ll.removeViewAt(verificaModeloAdd(modelo));
                                     ll.addView(modelo, 0);
@@ -376,7 +389,9 @@ public class Home extends Fragment {
                                 }
                             }
 
-
+                            getRecarrega();
+                            getActivity();
+                            exibirBtnAdd();
                             final int id_carona = caronas.get(i).getId();
                             final int j = i;
 
@@ -396,7 +411,6 @@ public class Home extends Fragment {
                                     final ManipulaDados md = new ManipulaDados(getActivity());
                                     if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                         if (userCarOferecida == -1) {
-                                            Log.e("Home_adquiriu_9.1:", userCarOferecida + "");
                                             if (md.getCaronaSolicitada() == -1) {
                                                 dialog.setTitle(R.string.title_confirmacao)
                                                         .setMessage(R.string.alert_solicitar_carona)
@@ -415,19 +429,28 @@ public class Home extends Fragment {
 
                                                                     @Override
                                                                     public void concluido(Object object) {
-                                                                        if (object.toString().trim().equals("1")) {
+                                                                        String[] res = (String[]) object;
+                                                                        if (res[0].trim().equals("1")) {
                                                                             md.setCaronaSolicitada(id_carona);
+                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
                                                                             atualizarEspera();
                                                                             ll.removeView(modelo);
                                                                             exibirMsg("Carona solicitada!");
                                                                             new Funcoes().apagarNotificacaoEspecifica(activity, 1);
-                                                                        } else if (object.toString().trim().equals("2")) {
+                                                                        } else if (res[0].trim().equals("2")) {
                                                                             ll.removeView(modelo);
                                                                             exibirMsg("Essa carona não está mais disponível!");
                                                                             new Funcoes().apagarNotificacaoEspecifica(activity, 1);
+                                                                        } else if (res[0].trim().equals("-3")) {
+                                                                            exibirMsg(" Sem vagas!");
+                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
+                                                                        } else if (res[0].trim().equals("-2")) {
+                                                                            exibirMsg("Solicitação Recusada!");
+                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
                                                                         } else {
-                                                                            exibirMsg(object.toString());
+                                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:"+res[0]);
                                                                         }
+
                                                                     }
 
                                                                     @Override
@@ -460,11 +483,9 @@ public class Home extends Fragment {
                                                         rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
                                                             @Override
                                                             public void concluido(Object object) {
-                                                                userCarOferecida = -1;
-                                                                Log.e("Home_adquiriu_9.2:", userCarOferecida + "");
                                                                 exibirMsg((String) object);
                                                                 ll.removeView(modelo);
-                                                                exibirBtnAdd();
+                                                                userCarOferecida = -1;
                                                             }
 
                                                             @Override
@@ -480,7 +501,8 @@ public class Home extends Fragment {
                             modelo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    detalhesCarona(usuarios.get(j), caronas.get(j));
+                                    final String vagas = organizaVagas(caronas.get(j).getVagasOcupadas(), caronas.get(j).getVagas());
+                                    detalhesCarona(usuarios.get(j), caronas.get(j), vagas);
                                 }
                             });
                         }
@@ -491,7 +513,8 @@ public class Home extends Fragment {
                 }
             });
         }
-        getContInflater();
+        getRecarrega();
+        getLabel();
         exibirBtnAdd();
     }
 
@@ -513,6 +536,12 @@ public class Home extends Fragment {
         }
     }
 
+    private String organizaVagas(int vagasOculpadas,int vagasTotal){
+        int vagasDisponiveis=vagasTotal-vagasOculpadas;
+        String res=vagasDisponiveis+"/"+vagasTotal;
+        return res;
+    }
+
 
     @Override
     public void onStart() {
@@ -522,7 +551,6 @@ public class Home extends Fragment {
             Intent i = new Intent(getActivity(), LoginActivity.class);
             startActivity(i);
         } else {
-            Log.e("JJJJJJJJJJ", "FFFFOOOOOOIIIII ATIVADO");
             if (((MainActivity) getActivity()).numNovasCaronas > 0) {
                 ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
             }
@@ -534,6 +562,7 @@ public class Home extends Fragment {
     public void onResume() {
         super.onResume();
         filter.addAction("abcHome");
+        exibirBtnAdd();getRecarrega();getLabel();
         getActivity().registerReceiver(receiver, filter);
     }
 
@@ -554,7 +583,7 @@ public class Home extends Fragment {
     }
 
     private void exibirBtnAdd() {
-        if (userCarOferecida != -1 || m.getCaronaSolicitada() != -1 || load.getVisibility() == View.VISIBLE) {
+        if ((userCarOferecida != -1) || (m.getCaronaSolicitada() != -1) || (load.getVisibility() == View.VISIBLE)) {
             newCarona.setVisibility(View.INVISIBLE);
         } else {
             newCarona.setVisibility(View.VISIBLE);
@@ -588,7 +617,6 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.e("atSolicitacao", "ATIVADO");
                             atualizarEspera();
                             exibirBtnAdd();
                         }
@@ -599,7 +627,6 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.e("atNovo", "ATIVADO");
                             atualizaCaronas(0, 6, true);
                             exibirBtnAdd();
                         }
@@ -614,12 +641,12 @@ public class Home extends Fragment {
                                     ll.removeViewAt(0);
                                     userCarOferecida = -1;
                                     exibirBtnAdd();
-                                    Log.e("Home_adquiriu_10:", userCarOferecida + "");
                                 }
                             }
                         }
                     });
                     break;
+
             }
         }
     }

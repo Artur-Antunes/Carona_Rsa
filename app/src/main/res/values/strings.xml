@@ -46,6 +46,8 @@
     <string name="alert_removido">Removido!</string>
     <string name="alert_versao">Ainda estamos na versão Beta!</string>
     <string name="alert_0_caronas">Nenhuma carona encontrada!</string>
+    <string name="campos_branco">Campo(s) em branco</string>
+
 
 
 
@@ -86,7 +88,7 @@
         <item>Buriti Grande</item>
     </string-array>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Tente mais tarde!</string>
     <string name="title_confirmacao">Confirmar</string>
     <string name="hello_world">Hello world!</string>
 

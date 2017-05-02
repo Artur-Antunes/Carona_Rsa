@@ -69,7 +69,6 @@ public class Caronas_Recebidas extends Fragment {
         M = new ManipulaDados(getActivity());
         receiver = new MyReceiver(new Handler());
         atualizarCaronasAceitas(0, 6, true);
-        getInflate();
         return view;
     }
 
@@ -116,6 +115,7 @@ public class Caronas_Recebidas extends Fragment {
                                                 if (object.toString().equals("1")) {
                                                     Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
                                                     ll.removeView(modelo);
+                                                    getRecarrega();getRecebidas();
                                                 } else if (object.toString().equals("0")) {
                                                     Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
                                                 }
@@ -145,16 +145,18 @@ public class Caronas_Recebidas extends Fragment {
                 }
             });
         }
-        getInflate();
+        getRecarrega();getRecebidas();
     }
 
-
-    public void getInflate() {
+    private void getRecarrega(){
         if (ll.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
         }else{
             recarrega.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void getRecebidas(){
         if (ll.getChildCount() == 0) {
             labelRecebidas.setVisibility(View.VISIBLE);
         } else {
@@ -162,12 +164,14 @@ public class Caronas_Recebidas extends Fragment {
         }
     }
 
+
+
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
             limparBadge();
-            getInflate();
+            getRecarrega();getRecebidas();
         }
     }
 
@@ -217,10 +221,8 @@ public class Caronas_Recebidas extends Fragment {
             getActivity().unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
-                // Ignore this exception. This is exactly what is desired
                 Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
             } else {
-                // unexpected, re-throw
                 throw e;
             }
         }

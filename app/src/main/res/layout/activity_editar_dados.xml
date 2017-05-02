@@ -64,12 +64,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Matricula"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
+                    android:hint="MATRÍCULA"
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -96,13 +96,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="Nome"
+                    android:hint="NOME"
                     android:inputType="text"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -130,12 +130,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Sobrenome"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
+                    android:hint="SOBRENOME"
                     android:inputType="text"
                     android:letterSpacing="0.1"
                     android:maxLength="8"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -193,13 +193,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="Telefone"
+                    android:hint="TELEFONE"
                     android:inputType="numberSigned"
                     android:letterSpacing="0.1"
                     android:maxLength="14"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -226,12 +226,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:background="#00000000"
-                    android:hint="E-mail"
+                    android:hint="E-MAIL"
                     android:inputType="text"
                     android:letterSpacing="0.1"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp" />
             </LinearLayout>
 
@@ -258,12 +258,12 @@
                     android:id="@+id/etSexoUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text"
+                    android:textColorHint="@color/secondary_text"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
                     android:letterSpacing="0.1"
                     android:prompt="@string/sexo_usuario"
-                    android:textColor="#000000"
-                    android:textColorHint="#69686b"
                     android:textSize="16dp"></Spinner>
             </LinearLayout>
 

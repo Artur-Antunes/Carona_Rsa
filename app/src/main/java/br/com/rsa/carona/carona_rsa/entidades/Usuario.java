@@ -2,10 +2,12 @@ package br.com.rsa.carona.carona_rsa.entidades;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by josehelder on 20/10/2016.
  */
-public class Usuario {
+public class Usuario implements Serializable{
     private String nome;
     private String sobrenome;
     private String matricula;

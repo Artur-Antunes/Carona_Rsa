@@ -24,6 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="5dp"
             android:background="@color/verde"
+            android:padding="2dp"
             android:text="Carona Solicitada"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/color3" />

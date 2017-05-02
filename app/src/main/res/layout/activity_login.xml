@@ -38,14 +38,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iVImg"
                 android:layout_marginTop="20dp"
+                android:maxLength="8"
                 android:background="@drawable/arredondado"
                 android:drawableLeft="@drawable/matri_icon"
-                android:hint=" Matrícula"
+                android:hint=" MATRÍCULA"
                 android:inputType="numberSigned"
-                android:maxLength="8"
                 android:padding="9dp"
-                android:textColor="#000000"
-                android:textColorHint="#69686b"
+                android:textColor="@color/primary_text"
+                android:textColorHint="@color/secondary_text"
                 android:textSize="16dp" />
 
 
@@ -57,12 +57,12 @@
                 android:layout_below="@+id/matricula_login"
                 android:background="@drawable/arredondado"
                 android:drawableLeft="@drawable/pass_icon"
-                android:hint=" Senha"
+                android:hint=" SENHA"
                 android:inputType="textPassword"
                 android:layout_marginTop="10dp"
                 android:padding="9dp"
-                android:textColor="#000000"
-                android:textColorHint="#69686b"
+                android:textColor="@color/primary_text"
+                android:textColorHint="@color/secondary_text"
                 android:textSize="16dp" />
 
             <Button

@@ -74,22 +74,24 @@ public class Detalhes_Carona extends AppCompatActivity {
         if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
-            b_salvar.setCompoundDrawables(getResources().getDrawable(R.drawable.icon_cancel_car), null, null, null);
         } else {
             intencao = "Me Leva!";
-            b_salvar.setBackgroundResource(R.drawable.cor_botao2);
+            //b_salvar.setBackgroundResource(R.drawable.cor_botao2);
         }
 
         tv_origem.setText(carona.getOrigem());
         tv_destino.setText(carona.getDestino());
-        tv_vagas.setText(carona.getVagas() + "");
+
+        Bundle b= getIntent().getExtras();
+        tv_vagas.setText(b.get("vagas")+"");
+
         tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
         tv_ponto.setText(carona.getPonto());
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
-            tv_status.setText("DISPONÍVEL");
+            tv_status.setText("Ativa");
         } else {
-            tv_status.setText("INDISPONÍVEL");
+            tv_status.setText("Inativa");
         }
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());

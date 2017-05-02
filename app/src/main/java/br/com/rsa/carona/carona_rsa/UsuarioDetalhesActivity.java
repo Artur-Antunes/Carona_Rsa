@@ -3,11 +3,13 @@ package br.com.rsa.carona.carona_rsa;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
@@ -63,15 +65,15 @@ public class UsuarioDetalhesActivity extends AppCompatActivity {
 
 
     public void editarDados(View view) {
-        finish();
-        Intent it=new Intent(this, EditarDadosActivity.class);
-        startActivity(it);
+        if(mDados.getCaronaSolicitada()==-1 && Home.userCarOferecida==-1){
+            Intent it = new Intent(this, EditarDadosActivity.class);
+            startActivity(it);
+            finish();
+        }else{
+            Toast.makeText(UsuarioDetalhesActivity.this,R.string.hello_blank_fragment,Toast.LENGTH_LONG).show();
+        }
     }
 
-    public void sairDados(View view) {
-        mDados.limparDados();
-        startActivity(new Intent(this, LoginActivity.class));
-    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.exibir_dados_usuario, menu);

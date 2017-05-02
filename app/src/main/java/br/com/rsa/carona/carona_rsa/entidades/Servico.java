@@ -9,22 +9,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import br.com.rsa.carona.carona_rsa.ComentariosActivity;
 import br.com.rsa.carona.carona_rsa.Home;
 import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 
-public class Servico extends IntentService {
+public class Servico extends IntentService implements Serializable{
     public static final String ACTION_MyIntentService = "br.com.rsa.carona.carona_rsa.entidades.RESPONSE";
-
     final Funcoes f = new Funcoes();
     private int cont;
     public static volatile boolean ativo;
@@ -43,22 +46,25 @@ public class Servico extends IntentService {
     }
 
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
         final ManipulaDados md = new ManipulaDados(Servico.this);
         RequisicoesServidor rs = new RequisicoesServidor(Servico.this);
         if (md.getUsuario() != null) {
             while (ativo) {
-                if (rs.isConnectedToServer("http://10.0.2.2/Caronas", 10000)) {
+                if (rs.isConnectedToServer("http://10.0.2.2/Caronas/", 10000)) {
 
                     verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
                     verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
 
                     verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
 
-                    if(Home.userCarOferecida!=-1){
+                    if (Home.userCarOferecida != -1) {
                         verificaCaronaOferecida();
+                    }
+
+                    if (ComentariosActivity.active > -1) {
+                        buscarComentarios(ComentariosActivity.active, ComentariosActivity.idCarona);
                     }
 
 
@@ -80,7 +86,7 @@ public class Servico extends IntentService {
                     }
                 }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -97,6 +103,17 @@ public class Servico extends IntentService {
         dialogIntent.setAction("abc");
         dialogIntent.putExtra("mensagem", tipo);
         dialogIntent.putExtra("valor", valor + "");
+        sendBroadcast(dialogIntent);
+    }
+
+
+    public void criaBroadcastComents(String tipo,List<Usuario> usuarios,List<String> textos) {//Enviar dados para MainActivity
+        Intent dialogIntent = new Intent();
+        dialogIntent.setAction("abcComents");
+        dialogIntent.putExtra("mensagem", tipo);
+        dialogIntent.putExtra("users", (Serializable) usuarios);
+        dialogIntent.putExtra("textos", (Serializable) textos);
+        Log.e("USUARIOS", usuarios.size() + "");
         sendBroadcast(dialogIntent);
     }
 
@@ -175,9 +192,8 @@ public class Servico extends IntentService {
     }
 
 
-    public void verificaCaronaOferecida(){
+    public void verificaCaronaOferecida() {
         final int idCarona = Home.userCarOferecida;
-        Log.e("Home_adquiriu_12:",Home.userCarOferecida+"");
         RequisicoesServidor rs = new RequisicoesServidor(this);
         final ManipulaDados md = new ManipulaDados(this);
         Usuario usLoc = md.getUsuario();
@@ -205,74 +221,91 @@ public class Servico extends IntentService {
     }
 
 
-
     public void verificaSolicitacaoAceita() {
         final ManipulaDados md = new ManipulaDados(this);
         final int idCaronaSolicitada = md.getCaronaSolicitada();
         Usuario usLoc = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
-            rs.verificaCarona_SolitadaOuOfertada(idCaronaSolicitada, usLoc, new GetRetorno() {
-                @Override
-                public void concluido(Object object) {
-                    if (md.getUsuario() != null) {
-                        Usuario us = (Usuario) object;
-                        String titulo, texto;
-                        if ((us != null) && (us.getId() >= 1) && (md.getCaronaSolicitada() != md.getUltimoIdCaronaAceita())) {
-                            titulo = "Carona ";
-                            texto = us.getNome();
-                            if (us.getEmail().toString().equals("ACEITO")) {
-                                titulo += "aceita";
-                                texto += " aceitou sua solicitação de Carona";
-                                criaBroadcast(1, "solicitacao_aceita");
-                                criaBroadcastHome("atSolicitacao");
-                                md.gravarUltimaCaronaAceita(idCaronaSolicitada);
-                                byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
-                            } else if (us.getEmail().toString().equals("RECUSADO")) {
-                                titulo += "recusada";
-                                texto += " recusou sua solicitação de carona";
-                                md.setCaronaSolicitada(-1);
-                                criaBroadcastHome("atSolicitacao");
-                                byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                f.notificacaoAbertoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
-                            }
-                        } else if ((us != null) && (us.getId() == -1)) {
-                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                            titulo = "Solicitação expirou";
-                            texto = "Sua solicitação de carona expirou !";
-                            f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                            md.setCaronaSolicitada(-1);
-                            //criaBroadcast(-1, "solicitacao_expirou");
+        rs.verificaCarona_SolitadaOuOfertada(idCaronaSolicitada, usLoc, new GetRetorno() {
+            @Override
+            public void concluido(Object object) {
+                if (md.getUsuario() != null) {
+                    Usuario us = (Usuario) object;
+                    String titulo, texto;
+                    if ((us != null) && (us.getId() >= 1) && (md.getCaronaSolicitada() != md.getUltimoIdCaronaAceita())) {
+                        titulo = "Carona ";
+                        texto = us.getNome();
+                        if (us.getEmail().toString().equals("ACEITO")) {
+                            titulo += "aceita";
+                            texto += " aceitou sua solicitação de Carona";
+                            criaBroadcast(1, "solicitacao_aceita");
                             criaBroadcastHome("atSolicitacao");
-
-                        } else if ((us != null) && (us.getId() == -2)) {
-                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                            titulo = "Boa Viagem!";
-                            texto = "Aproveite a carona !";
-                            f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                            //criaBroadcast(-1, "solicitacao_expirou");
+                            md.gravarUltimaCaronaAceita(idCaronaSolicitada);
+                            byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
+                        } else if (us.getEmail().toString().equals("RECUSADO")) {
+                            titulo += "recusada";
+                            texto += " recusou sua solicitação de carona";
                             md.setCaronaSolicitada(-1);
                             criaBroadcastHome("atSolicitacao");
-                        } else if ((us != null) && (us.getId() == -3)) {
-                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                            titulo = "Cancelamento";
-                            texto = "A carona solicitada foi cancelada";
-                            f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                            //criaBroadcast(-1, "solicitacao_expirou");
-                            criaBroadcastHome("atSolicitacao");
-                            md.setCaronaSolicitada(-1);
+                            byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            f.notificacaoAbertoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
                         }
+                    } else if ((us != null) && (us.getId() == -1)) {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                        titulo = "Solicitação expirou";
+                        texto = "Sua solicitação de carona expirou !";
+                        f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
+                        md.setCaronaSolicitada(-1);
+                        //criaBroadcast(-1, "solicitacao_expirou");
+                        criaBroadcastHome("atSolicitacao");
+
+                    } else if ((us != null) && (us.getId() == -2)) {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                        titulo = "Boa Viagem!";
+                        texto = "Aproveite a carona !";
+                        f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
+                        //criaBroadcast(-1, "solicitacao_expirou");
+                        md.setCaronaSolicitada(-1);
+                        criaBroadcastHome("atSolicitacao");
+                    } else if ((us != null) && (us.getId() == -3)) {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                        titulo = "Cancelamento";
+                        texto = "A carona solicitada foi cancelada";
+                        f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
+                        //criaBroadcast(-1, "solicitacao_expirou");
+                        criaBroadcastHome("atSolicitacao");
+                        md.setCaronaSolicitada(-1);
                     }
-
                 }
 
-                @Override
-                public void concluido(Object object, Object object2) {
+            }
 
-                }
-            });
+            @Override
+            public void concluido(Object object, Object object2) {
+
+            }
+        });
+    }
+
+    public void buscarComentarios(int total, int idCarona) {
+        RequisicoesServidor rs = new RequisicoesServidor(this);
+        rs.buscarComentariosCarona(total, 10, idCarona, new GetRetorno() {
+            @Override
+            public void concluido(Object object) {
+
+            }
+
+            @Override
+            public void concluido(Object object, Object object2) {
+                List<String> textos = (List<String>) object;
+                List<Usuario> usuarios = (List<Usuario>) object2;
+                criaBroadcastComents("nvComents", usuarios,textos);
+            }
+        });
+
     }
 
 
@@ -281,64 +314,60 @@ public class Servico extends IntentService {
         int ultimoIdCarona = md.getUltimoIdCarona();
         final Usuario usuario = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
-            rs.buscaUltimasCaronas(usuario, ultimoIdCarona, new GetRetorno() {
-                @Override
-                public void concluido(Object object) {
+        rs.buscaUltimasCaronas(usuario, ultimoIdCarona, new GetRetorno() {
+            @Override
+            public void concluido(Object object) {
 
-                }
+            }
 
-                @Override
-                public void concluido(Object object, Object object2) {
-                    if (md.getUsuario() != null) {
-                        List<Usuario> usuarios = (List<Usuario>) object2;
-                        List<Carona> caronas = (List<Carona>) object;
+            @Override
+            public void concluido(Object object, Object object2) {
+                if (md.getUsuario() != null) {
+                    List<Usuario> usuarios = (List<Usuario>) object2;
+                    List<Carona> caronas = (List<Carona>) object;
 
-                        Log.e("QUANTIDADE",caronas.size()+"");
 
-                        if (caronas.size() > 0) {
-                            criaBroadcast(caronas.size(), "novaCarona");
-                            criaBroadcastHome("nova(s)Carona(s)");
-                        }
+                    if (caronas.size() > 0) {
+                        criaBroadcast(caronas.size(), "novaCarona");
+                        criaBroadcastHome("nova(s)Carona(s)");
+                    }
 
-                        if (usuarios.size() > 1) {
-                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
-                            String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
-                            String texto = "";
-                            usuarios = f.removeUsuarioRepitidos(usuarios);
-                            for (int i = 0; i < usuarios.size(); i++) {
-                                if (i == 0) {
-                                    texto += usuarios.get(i).getNome();
+                    if (usuarios.size() > 1) {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                        String titulo = usuarios.size() + " novas caronas foram oferecidas, aproveite!";
+                        String texto = "";
+                        usuarios = f.removeUsuarioRepitidos(usuarios);
+                        for (int i = 0; i < usuarios.size(); i++) {
+                            if (i == 0) {
+                                texto += usuarios.get(i).getNome();
 
-                                } else {
-                                    if (i < 2) {
-                                        if (i == (usuarios.size() - 1)) {
-                                            texto += " e " + usuarios.get(i).getNome() + " estão ofertando carona";
-                                        } else {
-                                            texto += ", " + usuarios.get(i).getNome();
-                                        }
+                            } else {
+                                if (i < 2) {
+                                    if (i == (usuarios.size() - 1)) {
+                                        texto += " e " + usuarios.get(i).getNome() + " estão ofertando carona";
                                     } else {
-                                        texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão ofertando carona";
-                                        break;
+                                        texto += ", " + usuarios.get(i).getNome();
                                     }
+                                } else {
+                                    texto += "," + usuarios.get(i).getNome() + " e +" + (usuarios.size() - (i + 1)) + " estão ofertando carona";
+                                    break;
                                 }
                             }
-                            f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 1);
-                            md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
-                            Log.e("CONFERE ID:", caronas.get(caronas.size() - 1).getId() + "");
-                            Log.e("CONFERE ID2:",caronas.get(0).getId()+"");
-                        } else if (caronas.size() == 1) {
-                            Log.e("aqui", "33");
-                            byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";
-                            String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
-                            Funcoes f = new Funcoes();
-                            f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 5);
-                            Log.e("CONFERE ID3:", caronas.get(0).getId() + "");
-                            md.gravarUltimaCarona(caronas.get(0).getId());
                         }
+                        f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 1);
+                        md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
+                    } else if (caronas.size() == 1) {
+                        Log.e("aqui", "33");
+                        byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";
+                        String texto = "DE " + caronas.get(0).getOrigem() + " PARA " + caronas.get(0).getDestino() + " às " + caronas.get(0).getHorario();
+                        Funcoes f = new Funcoes();
+                        f.notificacaoFechado(bitmap, titulo, texto, getApplicationContext(), 5);
+                        md.gravarUltimaCarona(caronas.get(0).getId());
                     }
                 }
-            });
+            }
+        });
     }
 }

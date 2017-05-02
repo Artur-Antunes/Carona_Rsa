@@ -29,6 +29,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
@@ -48,6 +49,7 @@ public class EditarDadosActivity extends AppCompatActivity {
     private EditText telefoneEditar;
     private Spinner sexoEditar;
     private Switch cnhEditar;
+    Uri selectedImage;
     private ImageView imFoto;
     private String foto = null;
     private ImageButton editarFoto;
@@ -197,12 +199,6 @@ public class EditarDadosActivity extends AppCompatActivity {
                 final Usuario usuarioEditado = verificaCamposAlterados(matricula, nome, sobrenome, telefone, email, sexo, cnh);
 
                 if (usuarioEditado != null) {
-
-                    Log.e("vCampos[0]",vCampos[0]+"");
-                    Log.e("vCampos[1]",vCampos[1]+"");
-                    Log.e("vCampos[2]",vCampos[2]+"");
-                    Log.e("vCampos[3]",vCampos[3]+"");
-                    Log.e("vCampos[4]",vCampos[4]+"");
 
                     if (vCampos[0] && vCampos[4] && vCampos[1] && vCampos[2] && vCampos[3]) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(EditarDadosActivity.this);
@@ -442,7 +438,7 @@ public class EditarDadosActivity extends AppCompatActivity {
 
                 if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
                     try {
-                        Uri selectedImage = data.getData();
+                        selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                         cursor.moveToFirst();
@@ -467,20 +463,31 @@ public class EditarDadosActivity extends AppCompatActivity {
                 } else {
                     Intent returnFromGalleryIntent = new Intent();
                     setResult(RESULT_CANCELED, returnFromGalleryIntent);
-                    finish();
                 }
                 break;
 
             case PIC_CROP:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
-                    Bitmap bitmap = extras.getParcelable("data");
-                    foto = new Funcoes().BitMapToString(bitmap);
-                    imFoto.setImageResource(0);
-                    imFoto.setImageBitmap(bitmap);
-                    imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-                    imagemEditada = true;
-                    break;
+                    if (extras != null) {
+                        Bitmap bitmap = extras.getParcelable("data");
+                        foto = new Funcoes().BitMapToString(bitmap);
+                        imFoto.setImageResource(0);
+                        imFoto.setImageBitmap(bitmap);
+                        imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+                        imagemEditada = true;
+                    }else{
+                        try {
+                            Bitmap profilePic = MediaStore.Images.Media.getBitmap(EditarDadosActivity.this.getContentResolver(), selectedImage);
+                            foto = new Funcoes().BitMapToString(profilePic);
+                            imFoto.setImageBitmap(profilePic);
+                            imFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+                            imagemEditada=true;
+                        } catch (IOException e) {
+                            Toast.makeText(EditarDadosActivity.this, "Erro ao selecionar foto",Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    }
                 }else if(resultCode==Activity.RESULT_CANCELED){
                     Toast.makeText(EditarDadosActivity.this, "Cancelado!", Toast.LENGTH_SHORT).show();
                 }

@@ -21,12 +21,14 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
@@ -58,6 +60,7 @@ public class RequisicoesServidor {
             return false;
         }
     }
+
     public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
@@ -68,19 +71,20 @@ public class RequisicoesServidor {
         new BuscaDadosUsuarioAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void buscasSolicitacoesCaronas(int ttViewsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+    public void buscasSolicitacoesCaronas(int ttViewsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaSolicitacaoAsyncTask(ttViewsAtuais,ttBuscar,usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaSolicitacaoAsyncTask(ttViewsAtuais, ttBuscar, usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void buscarComentariosCarona(int idCarona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
-        progressDialog.show();// Mostra a barra de dialogo.
-        new buscarComentariosAsyncTask(idCarona, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+    public void buscarComentariosCarona(int ttComents, int ttBuscar, int idCarona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        //progressDialog.show();// Mostra a barra de dialogo.
+        new buscarComentariosAsyncTask(ttComents,ttBuscar, idCarona, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     public void gravaCarona(Carona carona, Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaCaronaAsyncTask(carona, usuario, retorno).execute();
+
     }
 
     public void gravarComentarioCarona(int IdCarona, int idUsuario, String texto, GetRetorno retorno) {
@@ -107,14 +111,14 @@ public class RequisicoesServidor {
         new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
-    public void fecharCaronaOferecida(int idCarona, int idUsuario,int tipo, GetRetorno retorno) {
+    public void fecharCaronaOferecida(int idCarona, int idUsuario, int tipo, GetRetorno retorno) {
         progressDialog.show();
-        new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario,tipo, retorno).execute();
+        new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario, tipo, retorno).execute();
     }
 
-    public void exibirMinhasSolicitações(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
+    public void exibirMinhasSolicitações(int ttVsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {
         progressDialog.show();// Mostra a barra de dialogo.
-        new exibirMinhasSolicitaçõesAsyncTask(ttVsAtuais,ttBuscar,usuario, retorno).execute();
+        new exibirMinhasSolicitaçõesAsyncTask(ttVsAtuais, ttBuscar, usuario, retorno).execute();
     }
 
     public void exibirSolicitacoesCaronas(Usuario usuario, GetRetorno retorno) {
@@ -151,6 +155,7 @@ public class RequisicoesServidor {
         //progressDialog.show();// Mostra a barra de dialogo.
         new BuscaUltimaCaronasAsyncTask(usuario, id, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
+
     //classe que armazena dados de usuario no banco de modo  que economiza recursos do celular
     public class armazenaDadosUsuarioAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
@@ -260,8 +265,6 @@ public class RequisicoesServidor {
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
 
 
-
-
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
             String teste = "Não foi possível se conectar";
@@ -347,10 +350,14 @@ public class RequisicoesServidor {
                     String horario = jObj.getString("horario");
                     String veiculo = jObj.getString("tipoVeiculo");
                     String restricao = jObj.getString("restricao");
+                    int vagas = jObj.getInt("vagas");
+                    int vagasOculpadas = jObj.getInt("vagasOculpadas");
                     String ponto = jObj.getString("ponto");
                     String statusUsuario = jObj.getString("status_usuario");
 
-                    Carona carona = new Carona(origem, destino, horario, veiculo, restricao, ponto);    //Novo obj de usuário.
+                    Carona carona = new Carona(origem, destino, horario, veiculo, restricao, ponto);
+                    carona.setVagas(vagas);
+                    carona.setVagasOcupadas(vagasOculpadas);
                     carona.setId(this.carona.getId());
                     carona.setStatusUsuario(statusUsuario);
                     dadosX.add(carona);
@@ -452,7 +459,7 @@ public class RequisicoesServidor {
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);
                 //
-                JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
+                JSONObject jObj = new JSONObject(resultado);
                 if (jObj.length() == 0) {
                 } else {
                     mensagem = jObj.getString("mensagem");
@@ -461,27 +468,27 @@ public class RequisicoesServidor {
                 Log.e(TAG, "vamo lá " + e);
             }
 
-            return mensagem;    //Retorno para o método 'onPostExecute'.
-        }//Fim método.
+            return mensagem;
+        }
 
         @Override
         protected void onPostExecute(String caronaRetornada) {
-            progressDialog.dismiss(); //Finalizar
+            progressDialog.dismiss();
             retornoUsuario.concluido(caronaRetornada);
             super.onPostExecute(caronaRetornada);
-        }//Fim método.
-    }//Fim classe.
+        }
+    }
 
-    //DAQUI--------------------------------------------------------------------------------------------------------------------
 
     public class buscarComentariosAsyncTask extends AsyncTask<Void, Void, JSONObject> {
-        //Campos da classe.
-        int idCarona;
+        int idCarona, ttBuscar, ttComents;
         GetRetorno retornoUsuario;
 
-        public buscarComentariosAsyncTask(int idCarona, GetRetorno retorno) {
+        public buscarComentariosAsyncTask(int totalComent, int totalBuscar, int idCarona, GetRetorno retorno) {
+            this.ttBuscar = totalBuscar;
+            this.ttComents = totalComent;
             this.idCarona = idCarona;
-            this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
+            this.retornoUsuario = retorno;
         }
 
         @Override
@@ -489,8 +496,8 @@ public class RequisicoesServidor {
 
             ArrayList<NameValuePair> dados = new ArrayList();
             dados.add(new BasicNameValuePair("id_comentario_carona", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-
-
+            dados.add(new BasicNameValuePair("tt_buscar", this.ttBuscar + ""));
+            dados.add(new BasicNameValuePair("tt_coments", this.ttComents + ""));
             HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
             HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
             HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
@@ -498,27 +505,17 @@ public class RequisicoesServidor {
             HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService
             JSONObject jObjeto = null;
-
             try {
                 post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
                 HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-
-                // Recebendo a resposta do servidor após a execução do HTTP POST.
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);
                 jObjeto = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-
-                if (jObjeto == null) {
-                    Log.e("obj", "nulo");
-                } else {
-                    Log.e("obj", "não nulo");
-                }
-
             } catch (Exception e) {
                 Log.e(TAG, "vamo lá " + e);
             }
-            return jObjeto;    //Retorno para o método 'onPostExecute'.
-        }//Fim método.
+            return jObjeto;
+        }
 
         @Override
         protected void onPostExecute(JSONObject jObjeto) {
@@ -536,6 +533,7 @@ public class RequisicoesServidor {
                     user.setNome(nome);
                     user.setFoto(foto);
                     user.setDataRegistro(hora);
+                    user.setAtivo(id);
 
                     usuarios.add(user);
                     textos.add(texto);
@@ -559,10 +557,10 @@ public class RequisicoesServidor {
         int tipo;
         GetRetorno retornoUsuario;
 
-        public fecharCaronaOferecidaAsyncTask(int idCarona, int idUser,int tipo, GetRetorno retorno) {
+        public fecharCaronaOferecidaAsyncTask(int idCarona, int idUser, int tipo, GetRetorno retorno) {
             this.idCarona = idCarona;
             this.idUsuario = idUser; //O campo usuário recebe o parâmetro de usuário.
-            this.tipo=tipo;
+            this.tipo = tipo;
             this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
         }
 
@@ -789,12 +787,8 @@ public class RequisicoesServidor {
             try {
                 post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
                 HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-
-
-                // Recebendo a resposta do servidor após a execução do HTTP POST.
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);
-                //
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
                 if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
                     usuarioRetornado = null;
@@ -822,19 +816,18 @@ public class RequisicoesServidor {
                 }
 
             } catch (Exception e) {
-                e.getMessage();// se não der certo:mensagem de erro
+                e.getMessage();
             }
-
-            return usuarioRetornado;    //Retorno para o método 'onPostExecute'.
-        }//Fim método.
+            return usuarioRetornado;
+        }
 
         @Override
         protected void onPostExecute(Object usuarioRetornado) {
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(usuarioRetornado);
             super.onPostExecute(usuarioRetornado);
-        }//Fim método.
-    }//Fim classe.
+        }
+    }
 
     public class verificaSolicitacoesAsyncTask extends AsyncTask<Void, Void, List<Usuario>> {
         //Campos da classe.
@@ -959,14 +952,11 @@ public class RequisicoesServidor {
             this.carona = carona;
             this.retorno = retorno;
             this.usuario = usuario;
-
         }
 
         @Override //metodo que � execudado em segundo plano para economia de recursos
         protected Object doInBackground(Void... params) {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            //adicionado dados no arraylist para ser enviado
-
             dadosParaEnvio.add(new BasicNameValuePair("origem", carona.getOrigem()));
             dadosParaEnvio.add(new BasicNameValuePair("destino", carona.getDestino()));
             dadosParaEnvio.add(new BasicNameValuePair("horario", carona.getHorario()));
@@ -975,9 +965,15 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("restricao", carona.getRestricao()));
             dadosParaEnvio.add(new BasicNameValuePair("vagas", carona.getVagas() + ""));
             dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
+
+            Log.e("GRAVANDO","0.7");
+
             HttpParams httpRequestsParametros = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
             HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
+
+            Log.e("GRAVANDO", "0.8");
+
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
@@ -987,11 +983,8 @@ public class RequisicoesServidor {
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
                 HttpEntity entidade = httpResposta.getEntity();
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-
                 JSONObject jObjeto = new JSONObject(resultado);
                 teste = jObjeto.getString("teste");
-                Log.e("FOOOIII????", teste);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1045,7 +1038,7 @@ public class RequisicoesServidor {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
                     usuario.setFoto(jObjeto.getString("foto"));
                     usuario.setEmail(jObjeto.getString("res_solicitacao"));
-                } else  {
+                } else {
                     usuario = new Usuario(teste);
                 }
 
@@ -1067,11 +1060,11 @@ public class RequisicoesServidor {
 
         Usuario usuario;
         GetRetorno retornoUsuario;
-        int ttVsAtuais,ttBuscar;
+        int ttVsAtuais, ttBuscar;
 
-        public exibirMinhasSolicitaçõesAsyncTask(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
-            this.ttVsAtuais=ttVsAtuais;
-            this.ttBuscar=ttBuscar;
+        public exibirMinhasSolicitaçõesAsyncTask(int ttVsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {
+            this.ttVsAtuais = ttVsAtuais;
+            this.ttBuscar = ttBuscar;
             this.usuario = usuario;
             this.retornoUsuario = retorno;
         }
@@ -1104,7 +1097,7 @@ public class RequisicoesServidor {
                 //
                 JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
 
-                if (jObj.length() == 0 || jObj.getInt("tamanho")==0) {    //Se o tamanho de jObj for igual a zero.
+                if (jObj.length() == 0 || jObj.getInt("tamanho") == 0) {    //Se o tamanho de jObj for igual a zero.
                     caronas = null;
                 } else {
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
@@ -1167,9 +1160,9 @@ public class RequisicoesServidor {
             dadosParaEnvio.add(new BasicNameValuePair("totalViews", totalViews + ""));
 
             Log.e("sexo_User:", usuario.getSexo());
-            Log.e("id_User:",usuario.getId() + "");
-            Log.e("ultimoValor:",ultimoValor + "");
-            Log.e("totalView:",totalViews+"");
+            Log.e("id_User:", usuario.getId() + "");
+            Log.e("ultimoValor:", ultimoValor + "");
+            Log.e("totalView:", totalViews + "");
 
 
             //delara��o de variaveis http (params, cliente, post) para enviar dados
@@ -1329,15 +1322,15 @@ public class RequisicoesServidor {
 
     public class BuscaSolicitacaoAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
-        int ttViewsAtuais,ttBuscar;
+        int ttViewsAtuais, ttBuscar;
         GetRetorno retornoUsuario;
 
         //contrutor requer um usuario uma interface com metodo previamente escrito.
-        public BuscaSolicitacaoAsyncTask(int ttVsAtuais,int ttBuscar,Usuario usuario, GetRetorno retorno) {
+        public BuscaSolicitacaoAsyncTask(int ttVsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {
             this.usuario = usuario;
             this.retornoUsuario = retorno;
-            this.ttViewsAtuais=ttVsAtuais;
-            this.ttBuscar=ttBuscar;
+            this.ttViewsAtuais = ttVsAtuais;
+            this.ttBuscar = ttBuscar;
         }
 
         @Override //metodo que � execudado em segundo plano para economia de recursos
@@ -1364,7 +1357,7 @@ public class RequisicoesServidor {
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
                 jObjeto = new JSONObject(resultado);
 
-                if(jObjeto==null || jObjeto.getInt("tamanho")==-1){
+                if (jObjeto == null || jObjeto.getInt("tamanho") == -1) {
                     jObjeto = null;
                 }
 
@@ -1499,11 +1492,11 @@ public class RequisicoesServidor {
             try {
 
                 for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
-                    if(new ManipulaDados(cnt).getCaronaSolicitada()==jObjeto.getInt("id_" + i)){
-                        Log.e("valor de I:",i+"ppp");
+                    if (new ManipulaDados(cnt).getCaronaSolicitada() == jObjeto.getInt("id_" + i)) {
+                        Log.e("valor de I:", i + "ppp");
                         continue;
                     }
-                    Log.e("Origemm:",jObjeto.getString("origem_" + i));
+                    Log.e("Origemm:", jObjeto.getString("origem_" + i));
 
                     String origem = jObjeto.getString("origem_" + i);
                     String destino = jObjeto.getString("destino_" + i);
@@ -1568,7 +1561,7 @@ public class RequisicoesServidor {
         }
     }
 
-    public class solicitaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
+    public class solicitaCaronaAsyncTask extends AsyncTask<Void, Void, String[]> {
         Carona carona;
         Usuario usuario;
         GetRetorno retorno;
@@ -1581,7 +1574,7 @@ public class RequisicoesServidor {
         }
 
         @Override //metodo que � execudado em segundo plano para economia de recursos
-        protected Object doInBackground(Void... params) {
+        protected String[] doInBackground(Void... params) {
             ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
             //adicionado dados no arraylist para ser enviado
 
@@ -1594,7 +1587,8 @@ public class RequisicoesServidor {
 
             HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
             HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
-            String teste = "Erro 404";
+            String res[] = new String[2];
+            res[0] = "Erro 404";
             try {
                 post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
                 HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
@@ -1602,17 +1596,18 @@ public class RequisicoesServidor {
                 String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
 
                 JSONObject jObjeto = new JSONObject(resultado);
-                teste = jObjeto.getString("teste");
+                res[0] = jObjeto.getString("teste");
+                res[1] = jObjeto.getString("v_oculpadas");
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return teste;
+            return res;
         }
 
         @Override //metodo que � executado quando o post for exetutado/enviado
-        protected void onPostExecute(Object resultado) {
+        protected void onPostExecute(String[] resultado) {
             progressDialog.dismiss();//encerra o circulo de progresso
             retorno.concluido(resultado);
             super.onPostExecute(resultado);

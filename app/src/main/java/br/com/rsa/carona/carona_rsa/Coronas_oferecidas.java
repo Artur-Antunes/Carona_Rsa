@@ -189,6 +189,7 @@ public class Coronas_oferecidas extends Fragment {
                                                                 Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
                                                                 if (object.equals("Usuario Aceito!")) {
                                                                     ll.removeView(modelo2);
+                                                                    criaBroadcastHome("nova(s)Carona(s)");
                                                                     RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
                                                                     TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
                                                                     TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
@@ -203,6 +204,7 @@ public class Coronas_oferecidas extends Fragment {
                                                                     fotoSolicitante.setImageDrawable(dr);
                                                                     m.setId(k);
                                                                     ll.addView(m, 0);
+                                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
                                                                 }
                                                             }
 
@@ -240,6 +242,7 @@ public class Coronas_oferecidas extends Fragment {
                                                                 if (object.equals("Usuario Recusado!")) {
                                                                     tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
                                                                     ll.removeView(modelo2);
+                                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
                                                                 }
                                                             }
 
@@ -304,16 +307,21 @@ public class Coronas_oferecidas extends Fragment {
 
             }
         });
-        getContInflater();
+        getLabel();getRecarrega();
     }
 
 
-    private void getContInflater() {
+    private void getRecarrega() {
+        Log.e("TOTAL DE ELEMENTOS 0:", lloferecidas.getChildCount() + "");
         if (lloferecidas.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
         } else {
             recarrega.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void getLabel() {
+        Log.e("TOTAL DE ELEMENTOS 1:", lloferecidas.getChildCount() + "");
         if (lloferecidas.getChildCount() == 0) {
             labelOferecidas.setVisibility(View.VISIBLE);
         } else {
@@ -321,7 +329,16 @@ public class Coronas_oferecidas extends Fragment {
         }
     }
 
-    @Override
+    public void criaBroadcastHome(String tipo) {//Enviar dados para MainActivity
+        Intent dialogIntent = new Intent();
+        dialogIntent.setAction("abcHome");
+        dialogIntent.putExtra("mensagem", tipo);
+        activity.sendBroadcast(dialogIntent);
+    }
+
+
+
+        @Override
     public void onStart() {
         super.onStart();
 
@@ -334,7 +351,6 @@ public class Coronas_oferecidas extends Fragment {
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
-            getContInflater();
             if (((MainActivity) activity).numNovasSolicitacoes > 0) {
                 ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
                 new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
@@ -368,11 +384,9 @@ public class Coronas_oferecidas extends Fragment {
 
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread
-
         public MyReceiver(Handler handler) {
             this.handler = handler;
         }
-
         @Override
         public void onReceive(final Context context, Intent intent) {
             String mensagem = intent.getStringExtra("mensagem");
