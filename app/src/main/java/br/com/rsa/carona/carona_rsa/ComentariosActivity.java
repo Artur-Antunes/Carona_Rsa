@@ -16,11 +16,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
@@ -37,7 +36,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class ComentariosActivity extends AppCompatActivity {
+public class ComentariosActivity extends AppCompatActivity implements Serializable{
 
     public static int idCarona;
     LayoutInflater linf;
@@ -86,8 +85,8 @@ public class ComentariosActivity extends AppCompatActivity {
 
                         }
                     });
-                }else{
-                    Toast.makeText(ComentariosActivity.this,R.string.campos_branco,Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ComentariosActivity.this, R.string.campos_branco, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -96,6 +95,7 @@ public class ComentariosActivity extends AppCompatActivity {
 
     public void buscarComentarios(List<String> textos, List<Usuario> usuarios) {
         for (int i = 0; i < usuarios.size(); i++) {
+            active=-1;
             final View modelo = linf.inflate(R.layout.modelo_comentario, null);
             TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome3);
             ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto3);
@@ -104,7 +104,6 @@ public class ComentariosActivity extends AppCompatActivity {
             tv_nome.setText(usuarios.get(i).getNome());
             tv_msg.setText(textos.get(i));
             tv_hora.setText(new Funcoes().horaSimples(usuarios.get(i).getDataRegistro()));
-
             byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             Resources res = getResources();
@@ -112,8 +111,10 @@ public class ComentariosActivity extends AppCompatActivity {
             dr.setCircular(true);
             c_foto.setImageDrawable(dr);
             modelo.setId(usuarios.get(i).getAtivo());
-            llComentario.addView(modelo);
-            active = llComentario.getChildCount();
+            if(verificaModeloAdd(modelo)==-1) {
+                llComentario.addView(modelo);
+                active = llComentario.getChildCount();
+            }
         }
     }
 
@@ -137,6 +138,17 @@ public class ComentariosActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         active = -1;
+    }
+
+    private int verificaModeloAdd(View modelo) {
+        for (int i = 0; i < llComentario.getChildCount(); i++) {
+            if (llComentario.getChildAt(i) != null) {
+                if (llComentario.getChildAt(i).getId() == modelo.getId()) {
+                    return modelo.getId();
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -176,7 +188,7 @@ public class ComentariosActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                                buscarComentarios(textos,users);
+                            buscarComentarios(textos, users);
                         }
                     });
                     break;

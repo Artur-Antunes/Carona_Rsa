@@ -26,16 +26,15 @@ import br.com.rsa.carona.carona_rsa.R;
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 
-public class Servico extends IntentService implements Serializable{
+public class Servico extends IntentService {
     public static final String ACTION_MyIntentService = "br.com.rsa.carona.carona_rsa.entidades.RESPONSE";
     final Funcoes f = new Funcoes();
     private int cont;
     public static volatile boolean ativo;
-    private boolean verificaConnexao = true;
 
     public Servico() {
-        super("Servico");//Nome do serviço
-        ativo = true;//Serviço ativo
+        super("Servico");
+        ativo = true;
         cont = 0;
     }
 
@@ -53,11 +52,9 @@ public class Servico extends IntentService implements Serializable{
         if (md.getUsuario() != null) {
             while (ativo) {
                 if (rs.isConnectedToServer("http://10.0.2.2/Caronas/", 10000)) {
-
-                    verificaSolicitacao("AGUARDANDO");//Buscando as solicitações de uma carona que eu ofereci...
-                    verificaSolicitacao("DESISTENCIA");//Buscar os usuários que estão desistindo da carona...
-
-                    verificaNovasCaronas();//Buscando as novas caronas e exibindo as notificações...
+                    verificaSolicitacao("AGUARDANDO");
+                    verificaSolicitacao("DESISTENCIA");
+                    verificaNovasCaronas();
 
                     if (Home.userCarOferecida != -1) {
                         verificaCaronaOferecida();
@@ -66,7 +63,6 @@ public class Servico extends IntentService implements Serializable{
                     if (ComentariosActivity.active > -1) {
                         buscarComentarios(ComentariosActivity.active, ComentariosActivity.idCarona);
                     }
-
 
                     int idCaronaSolicitada = md.getCaronaSolicitada();
                     if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
@@ -107,7 +103,7 @@ public class Servico extends IntentService implements Serializable{
     }
 
 
-    public void criaBroadcastComents(String tipo,List<Usuario> usuarios,List<String> textos) {//Enviar dados para MainActivity
+    public void criaBroadcastComents(String tipo, List<Usuario> usuarios, List<String> textos) {//Enviar dados para MainActivity
         Intent dialogIntent = new Intent();
         dialogIntent.setAction("abcComents");
         dialogIntent.putExtra("mensagem", tipo);
@@ -118,7 +114,7 @@ public class Servico extends IntentService implements Serializable{
     }
 
 
-    public void criaBroadcastHome(String tipo) {//Enviar dados para MainActivity
+    public void criaBroadcastHome(String tipo) {
         Intent dialogIntent = new Intent();
         dialogIntent.setAction("abcHome");
         dialogIntent.putExtra("mensagem", tipo);
@@ -126,7 +122,7 @@ public class Servico extends IntentService implements Serializable{
     }
 
 
-    public void verificaSolicitacao(final String status) {//ESTUDAR ESSE ????
+    public void verificaSolicitacao(final String status) {
         final ManipulaDados md = new ManipulaDados(this);
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
@@ -191,7 +187,6 @@ public class Servico extends IntentService implements Serializable{
         });
     }
 
-
     public void verificaCaronaOferecida() {
         final int idCarona = Home.userCarOferecida;
         RequisicoesServidor rs = new RequisicoesServidor(this);
@@ -208,8 +203,6 @@ public class Servico extends IntentService implements Serializable{
                     texto = "Esperamos que volte a ofertar caronas!";
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
                     criaBroadcastHome("removeCaronaOferecida");
-                } else {
-                    Log.e("Corrija", "ERRO!");
                 }
             }
 
@@ -302,7 +295,10 @@ public class Servico extends IntentService implements Serializable{
             public void concluido(Object object, Object object2) {
                 List<String> textos = (List<String>) object;
                 List<Usuario> usuarios = (List<Usuario>) object2;
-                criaBroadcastComents("nvComents", usuarios,textos);
+                Log.e("retorno:", usuarios.size() + "");
+                if (usuarios.size() > 0) {
+                    criaBroadcastComents("nvComents", usuarios, textos);
+                }
             }
         });
 
@@ -357,7 +353,6 @@ public class Servico extends IntentService implements Serializable{
                         f.notificacaoFechado(bm, titulo, texto, getApplicationContext(), 1);
                         md.gravarUltimaCarona(caronas.get(caronas.size() - 1).getId());
                     } else if (caronas.size() == 1) {
-                        Log.e("aqui", "33");
                         byte[] decodedString = Base64.decode(usuarios.get(0).getFoto(), Base64.DEFAULT);
                         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         String titulo = usuarios.get(0).getNome() + " está oferecendo uma carona:";

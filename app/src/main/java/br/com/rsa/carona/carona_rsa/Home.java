@@ -1,7 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +16,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,11 +30,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import junit.framework.Test;
 
 import java.util.List;
 
@@ -67,13 +59,13 @@ public class Home extends Fragment {
     ManipulaDados m;
     ViewGroup container;
     IntentFilter filter = new IntentFilter();
-    public static int userCarOferecida;
+    public static volatile int userCarOferecida;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         this.container = container;
-        userCarOferecida = -1;//NENHUMA CARONA OFERECIDA
+        userCarOferecida = -1;
         activity = getActivity();
         resource = getResources();
         labelHome = (TextView) view.findViewById(R.id.label1Vazio);
@@ -82,7 +74,6 @@ public class Home extends Fragment {
         dialog = new AlertDialog.Builder(getActivity());
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
         recarrega = (ImageButton) view.findViewById(R.id.b_recarrega);
-
         load = (FloatingActionButton) view.findViewById(R.id.b_atualiza);
         newCarona = (FloatingActionButton) view.findViewById(R.id.b_FloatNewCar);
         load.setVisibility(View.INVISIBLE);
@@ -103,10 +94,8 @@ public class Home extends Fragment {
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userCarOferecida = -1;
-                atualizarEspera();
-                atualizaCaronas(0, 6, true);
-                new Funcoes().apagarNotificacaoEspecifica(getActivity(), 5);
+                Toast.makeText(activity, "Verifique sua conexão...", Toast.LENGTH_LONG).show();
+                load.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -134,7 +123,6 @@ public class Home extends Fragment {
         tab2.setCustomView(R.layout.tab);
         tab3.setCustomView(R.layout.tab);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
         return view;
     }
 
@@ -163,7 +151,7 @@ public class Home extends Fragment {
                         ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
                         modelo.setId(carona.getId());
 
-                        final String vagasCarona = organizaVagas(carona.getVagasOcupadas(),carona.getVagas());
+                        final String vagasCarona = organizaVagas(carona.getVagasOcupadas(), carona.getVagas());
 
                         if (verificaModeloAdd(modelo) != -1) {
                             ll.removeViewAt(verificaModeloAdd(modelo));
@@ -194,7 +182,7 @@ public class Home extends Fragment {
                             public void onClick(View v) {
                                 Carona caronaLocal = new Carona(m.getCaronaSolicitada());
                                 RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
-                                rserv.desistirCarona(m.getUsuario(), caronaLocal, new GetRetorno() {
+                                rserv.desistirCarona(m.getUsuario().getId(), caronaLocal.getId(), new GetRetorno() {
                                     @Override
                                     public void concluido(Object object) {
                                         Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
@@ -254,7 +242,6 @@ public class Home extends Fragment {
 
 
     private void getRecarrega() {
-        Log.e("TOTAL DE ELEMENTOS 0:", ll.getChildCount() + "");
         if (ll.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
         } else {
@@ -263,7 +250,6 @@ public class Home extends Fragment {
     }
 
     private void getLabel() {
-        Log.e("TOTAL DE ELEMENTOS 1:", ll.getChildCount() + "");
         if (ll.getChildCount() == 0) {
             labelHome.setVisibility(View.VISIBLE);
         } else {
@@ -279,7 +265,6 @@ public class Home extends Fragment {
             }
             atualizaCaronasTela(selecionaIds);
         }
-
     }
 
     private void comentarios(int idCar) {
@@ -331,7 +316,6 @@ public class Home extends Fragment {
                 public void concluido(Object object, Object object2) {
                     final List<Carona> caronas = (List<Carona>) object;
                     if (caronas.size() > 0) {
-                        Log.e("TAMANHO NOVAS", caronas.size() + "");
                         final List<Usuario> usuarios = (List<Usuario>) object2;
                         if (removerAntigas) {
                             removeCaronasAntigas(caronas);
@@ -394,7 +378,6 @@ public class Home extends Fragment {
                             exibirBtnAdd();
                             final int id_carona = caronas.get(i).getId();
                             final int j = i;
-
                             //final int finalI = i;
                             btnComentar.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -402,8 +385,6 @@ public class Home extends Fragment {
                                     comentarios(id_carona);
                                 }
                             });
-
-
                             btnSolicitar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -448,7 +429,7 @@ public class Home extends Fragment {
                                                                             exibirMsg("Solicitação Recusada!");
                                                                             tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
                                                                         } else {
-                                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:"+res[0]);
+                                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
                                                                         }
 
                                                                     }
@@ -536,9 +517,9 @@ public class Home extends Fragment {
         }
     }
 
-    private String organizaVagas(int vagasOculpadas,int vagasTotal){
-        int vagasDisponiveis=vagasTotal-vagasOculpadas;
-        String res=vagasDisponiveis+"/"+vagasTotal;
+    private String organizaVagas(int vagasOculpadas, int vagasTotal) {
+        int vagasDisponiveis = vagasTotal - vagasOculpadas;
+        String res = vagasDisponiveis + "/" + vagasTotal;
         return res;
     }
 
@@ -562,7 +543,9 @@ public class Home extends Fragment {
     public void onResume() {
         super.onResume();
         filter.addAction("abcHome");
-        exibirBtnAdd();getRecarrega();getLabel();
+        exibirBtnAdd();
+        getRecarrega();
+        getLabel();
         getActivity().registerReceiver(receiver, filter);
     }
 
@@ -573,10 +556,8 @@ public class Home extends Fragment {
             getActivity().unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
-                // Ignore this exception. This is exactly what is desired
                 Log.w("OK!", "Tried to unregister the reciver when it's not registered");
             } else {
-                // unexpected, re-throw
                 throw e;
             }
         }
@@ -590,9 +571,8 @@ public class Home extends Fragment {
         }
     }
 
-
     public class MyReceiver extends BroadcastReceiver {
-        private final Handler handler; // Handler used to execute code on the UI thread
+        private final Handler handler;
 
         public MyReceiver(Handler handler) {
             this.handler = handler;
@@ -639,7 +619,8 @@ public class Home extends Fragment {
                             if (ll.getChildAt(0) != null) {
                                 if (ll.getChildAt(0).getId() == userCarOferecida) {
                                     ll.removeViewAt(0);
-                                    userCarOferecida = -1;
+                                    Home.userCarOferecida = -1;
+                                    Log.e("REMOVIDO","SIM");
                                     exibirBtnAdd();
                                 }
                             }

@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         //mDados.limparDados();
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            //finish();
+            finish();
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
         mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
@@ -92,12 +92,14 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void concluido(Object object) {
-                if (object == null) {    //Se não existir o usuário informado.
+                Usuario user= (Usuario) object;
+                if (user == null) {
+                    Toast.makeText(LoginActivity.this,R.string.alert_sem_conexao,Toast.LENGTH_LONG).show();
+                } else if(user.getId()==0){
                     mostrarMensagemErro();
-                } else {
-                    logarUsuario(object);    //Realizar o login.
+                }else{
+                    logarUsuario(object);
                 }
-
             }
 
             @Override
@@ -118,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final EditText emailAtual = new EditText(this);
 
-        emailAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS );
+        emailAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailAtual.setHint("E-Mail");
 
         LinearLayout ll = new LinearLayout(this);
@@ -173,9 +175,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void salvarDadosExtras(Usuario user){//não utilizado
+    private void salvarDadosExtras(Usuario user) {//não utilizado
         RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
-        rs.exibirMinhasSolicitações(0,6,user, new GetRetorno() {
+        rs.exibirMinhasSolicitações(0, 6, user, new GetRetorno() {
             @Override
             public void concluido(Object object) {
                 final List<Carona> caronas = (List<Carona>) object;

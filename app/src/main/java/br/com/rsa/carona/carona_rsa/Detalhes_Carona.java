@@ -156,7 +156,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                         Log.e("usuario:", "caroneiro_cancelando!");
                         RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
                         Usuario userLocal = new Usuario((md.getUsuario().getId()));
-                        rserv.desistirCarona(userLocal, carona, new GetRetorno() {
+                        rserv.desistirCarona(userLocal.getId(),carona.getId(), new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
                                 Toast.makeText(Detalhes_Carona.this, object.toString(), Toast.LENGTH_LONG).show();

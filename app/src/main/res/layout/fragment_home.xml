@@ -87,7 +87,7 @@
         android:layout_margin="12dp"
         android:background="@color/primary_text"
         android:fillViewport="true"
-        android:src="@drawable/add2"
+        android:src="@drawable/add"
         android:visibility="invisible" />
 
 </RelativeLayout>

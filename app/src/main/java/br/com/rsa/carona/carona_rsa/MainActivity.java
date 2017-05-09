@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Servico;
@@ -46,16 +45,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         md=new ManipulaDados(MainActivity.this);
-
-        Intent it = new Intent(this, Servico.class);//Instanciando o serviço !
+        Intent it = new Intent(this, Servico.class);
         startService(it);
-
         receiver = new MyReceiver(new Handler());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-
-
         TabLayout.Tab tab1 = tabLayout.newTab();
         TabLayout.Tab tab2 = tabLayout.newTab();
         TabLayout.Tab tab3 = tabLayout.newTab();
@@ -120,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         filter.addAction("abc");
         registerReceiver(receiver, filter);
-        Log.e("registro", "registrado");
     }
 
     @Override
@@ -213,19 +207,19 @@ public class MainActivity extends AppCompatActivity {
     public void mostraBadge(String valor, BadgeView badge, int tipo) {
         switch (tipo) {
             case 1:
-                numNovasCaronas += Integer.parseInt(valor);//campo que é incrementado quando tem novas caronas.
+                numNovasCaronas += Integer.parseInt(valor);
                 badge.setText(numNovasCaronas + "");
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();
                 break;
             case 2:
-                numNovasSolicitacoes += Integer.parseInt(valor);//campo que é incrementado quando tem novas solicitações.
+                numNovasSolicitacoes += Integer.parseInt(valor);
                 badge.setText(numNovasSolicitacoes + "");
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();
                 break;
             case 3:
-                numCarAceita += Integer.parseInt(valor);//campo que é incrementado quando tem novas solicitações.
+                numCarAceita += Integer.parseInt(valor);
                 badge.setText(numCarAceita + "");
                 badge.setBadgeBackgroundColor(R.color.color1);
                 badge.show();

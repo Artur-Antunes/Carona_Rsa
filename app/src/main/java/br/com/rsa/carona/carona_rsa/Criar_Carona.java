@@ -115,13 +115,17 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                 RequisicoesServidor rs = new RequisicoesServidor(Criar_Carona.this);
                                                 ManipulaDados md = new ManipulaDados(Criar_Carona.this);
                                                 // Log.e("hora?",carona.get);
-                                                rs.gravaCarona(carona, md.getUsuario(), new GetRetorno() {
+                                                rs.gravaCarona(carona, md.getUsuario().getId(), new GetRetorno() {
                                                     @Override
                                                     public void concluido(Object object) {
-                                                        Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
+                                                        if(object.toString().equals("1")) {
+                                                            Toast.makeText(Criar_Carona.this, "Carona salva!", Toast.LENGTH_SHORT).show();
+                                                            criaBroadcastHome("nova(s)Carona(s)");
+                                                            criaBroadcast(0, "myCarona");
+                                                        }else{
+                                                            Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
+                                                        }
                                                         finish();
-                                                        criaBroadcastHome("nova(s)Carona(s)");
-                                                        criaBroadcast(0,"myCarona");
                                                     }
                                                     @Override
                                                     public void concluido(Object object, Object object2) {

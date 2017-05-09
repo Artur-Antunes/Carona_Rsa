@@ -142,7 +142,7 @@ public class Registro2Activity extends AppCompatActivity {
                                 } else if (object.toString().equals("0")) {
                                     Toast.makeText(Registro2Activity.this, "Matricula já existe", Toast.LENGTH_SHORT).show();
                                 } else  {
-                                    Toast.makeText(Registro2Activity.this, "Erro de comunicação", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Registro2Activity.this, R.string.alert_sem_conexao, Toast.LENGTH_SHORT).show();
                                 }
                             }
 
