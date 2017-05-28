@@ -1,5 +1,6 @@
 package br.com.rsa.carona.carona_rsa;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         md=new ManipulaDados(MainActivity.this);
-        Intent it = new Intent(this, Servico.class);
-        startService(it);
+        //Intent it = new Intent(this, Servico.class);
+        //startService(it);
         receiver = new MyReceiver(new Handler());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tab2);
         tabLayout.addTab(tab3);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
         v1 = tabLayout.getTabAt(0).getCustomView();
         v2 = tabLayout.getTabAt(1).getCustomView();
         v3 = tabLayout.getTabAt(2).getCustomView();
@@ -88,10 +88,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-
                 TextView text = (TextView) tab.getCustomView();
                 text.setTypeface(null, Typeface.BOLD);
-
             }
 
             @Override
@@ -124,7 +122,22 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManager.cancel(1);
         mNotificationManager.cancel(2);
         mNotificationManager.cancel(3);
+        if(!isMyServiceRunning(Servico.class)){
+            Intent it = new Intent(this, Servico.class);
+            startService(it);
+        }
     }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -133,10 +146,8 @@ public class MainActivity extends AppCompatActivity {
             unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Receiver not registered")) {
-                // Ignore this exception. This is exactly what is desired
                 Log.w("oiooi", "Tried to unregister the reciver when it's not registered");
             } else {
-                // unexpected, re-throw
                 throw e;
             }
         }
@@ -177,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, UsuarioDetalhesActivity.class));
             return true;
         } else if (id == R.id.action_sair) {
-            if(Home.userCarOferecida==-1 || Home.userCarOferecida!=-1) {
+            if(Home.userCarOferecida==-1) {
                 Servico.ativo = false;
                 try {
                     Thread.sleep(1000);

@@ -312,7 +312,6 @@ public class Coronas_oferecidas extends Fragment {
 
 
     private void getRecarrega() {
-        Log.e("TOTAL DE ELEMENTOS 0:", lloferecidas.getChildCount() + "");
         if (lloferecidas.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
         } else {
@@ -321,7 +320,6 @@ public class Coronas_oferecidas extends Fragment {
     }
 
     private void getLabel() {
-        Log.e("TOTAL DE ELEMENTOS 1:", lloferecidas.getChildCount() + "");
         if (lloferecidas.getChildCount() == 0) {
             labelOferecidas.setVisibility(View.VISIBLE);
         } else {

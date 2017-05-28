@@ -14,5 +14,6 @@ public class StarMeLeva extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent it = new Intent(context, Servico.class);
         context.startService(it);
+        Servico.cntVerificaNovasCaronas=true;
     }
 }

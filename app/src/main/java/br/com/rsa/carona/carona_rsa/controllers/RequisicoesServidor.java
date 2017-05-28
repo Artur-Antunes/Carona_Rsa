@@ -6,27 +6,13 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -39,10 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
+import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class RequisicoesServidor {
@@ -51,7 +36,7 @@ public class RequisicoesServidor {
     public static final int TEMPO_CONEXAO = 1000 * 10;
     public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";
     Context cnt;
-    private volatile boolean  running;
+    private volatile boolean running;
 
     public RequisicoesServidor(Context context) {
         progressDialog = new ProgressDialog(context);
@@ -61,11 +46,11 @@ public class RequisicoesServidor {
         cnt = context;
     }
 
-    public boolean isConnectedToServer(String url, int timeout) {
+    public boolean isConnectedToServer(String url) {
         try {
             URL myUrl = new URL(url);
             URLConnection connection = myUrl.openConnection();
-            connection.setConnectTimeout(timeout);
+            connection.setConnectTimeout(TEMPO_CONEXAO);
             connection.connect();
             return true;
         } catch (Exception e) {
@@ -79,7 +64,7 @@ public class RequisicoesServidor {
     }
 
     public void buscaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
-        progressDialog.show();// Mostra a barra de dialogo.
+        progressDialog.show();
         new BuscaDadosUsuarioAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
@@ -93,7 +78,7 @@ public class RequisicoesServidor {
         new buscarComentariosAsyncTask(ttComents, ttBuscar, idCarona, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void gravaCarona(Carona carona, int  idUsuario, GetRetorno retorno) {
+    public void gravaCarona(Carona carona, int idUsuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaCaronaAsyncTask(carona, idUsuario, retorno).execute();
 
@@ -154,7 +139,6 @@ public class RequisicoesServidor {
     }
 
 
-
     public void desistirCarona(int idUsuario, int idCarona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
         progressDialog.show();// Mostra a barra de dialogo.
         new cancelarCaronaAsyncTask(idCarona, idUsuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
@@ -201,48 +185,72 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();
-            dadosParaEnvio.add(new BasicNameValuePair("nome", usuario.getNome()));
-            dadosParaEnvio.add(new BasicNameValuePair("sobrenome", usuario.getSobrenome()));
-            dadosParaEnvio.add(new BasicNameValuePair("matricula", usuario.getMatricula()));
-            dadosParaEnvio.add(new BasicNameValuePair("telefone", usuario.getTelefone()));
-            dadosParaEnvio.add(new BasicNameValuePair("email", usuario.getEmail()));
-            dadosParaEnvio.add(new BasicNameValuePair("sexo", usuario.getSexo()));
-            dadosParaEnvio.add(new BasicNameValuePair("ativo", usuario.getAtivo() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("senha", usuario.getSenha()));
-            dadosParaEnvio.add(new BasicNameValuePair("foto", usuario.getFoto()));
-            dadosParaEnvio.add(new BasicNameValuePair("extencao", usuario.getExtFoto()));
+            Map<String, String> dataToSend = new HashMap<>();
+            if(usuario.getNome()!=null)dataToSend.put("nome", usuario.getNome());
+            if(usuario.getSobrenome()!=null)dataToSend.put("sobrenome", usuario.getSobrenome());
+            if(usuario.getMatricula()!=null)dataToSend.put("matricula", usuario.getMatricula());
+            if(usuario.getTelefone()!=null)dataToSend.put("telefone", usuario.getTelefone());
+            if(usuario.getEmail()!=null)dataToSend.put("email", usuario.getEmail());
+            if(usuario.getSexo()!=null)dataToSend.put("sexo", usuario.getSexo());
+            dataToSend.put("ativo", usuario.getAtivo() + "");
+            if(usuario.getSenha()!=null)dataToSend.put("senha", usuario.getSenha());
+            if(usuario.getFoto()!=null)dataToSend.put("foto", usuario.getFoto());
+            if(usuario.getExtFoto()!=null)dataToSend.put("extencao", usuario.getExtFoto());
+
+
+
+
             String aquivoPhp = "Registros.php";
             if (usuario.getEdicao()) {
-                dadosParaEnvio.add(new BasicNameValuePair("id_edicao", usuario.getId() + ""));
+                //dadosParaEnvio.add(new BasicNameValuePair("id_edicao", usuario.getId() + ""));
+                dataToSend.put("id_edicao", usuario.getId() + "");
                 aquivoPhp = "Edicao.php";
             }
 
             if (usuario.isCnh()) {
-                dadosParaEnvio.add(new BasicNameValuePair("cnh", "1"));
+                //dadosParaEnvio.add(new BasicNameValuePair("cnh", "1"));
+                dataToSend.put("cnh", "1");
+
             } else {
-                dadosParaEnvio.add(new BasicNameValuePair("cnh", "0"));
+                //dadosParaEnvio.add(new BasicNameValuePair("cnh", "0"));
+                dataToSend.put("cnh", "0");
             }
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + aquivoPhp);
-            String teste = "não";
+
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            String teste = "Sem conexão!";
+
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-                    JSONObject jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + aquivoPhp);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("teste");
-                    Log.e("BUSCANDO DAOS:", "SIM");
                     return teste;
                 }
             } catch (Exception e) {
                 Log.e(TAG, "erro registro " + e);
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return teste;
         }
@@ -289,37 +297,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-
-            /**
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();
-            dadosParaEnvio.add(new BasicNameValuePair("id_carona", idCarona + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("id_user", idUsuario + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("texto_comentario", this.texto));*/
-
-
-            Map<String,String> dataToSend = new HashMap<>();
+            Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("id_carona", idCarona + "");
             dataToSend.put("id_user", idUsuario + "");
             dataToSend.put("texto_comentario", this.texto);
             String encodedStr = getEncodedData(dataToSend);
             BufferedReader reader = null;
-
-
-            /**HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");*/
             String teste = "Não foi possível se conectar";
             try {
-                /**
-                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-                JSONObject jObjeto = new JSONObject(resultado);
-                teste = jObjeto.getString("teste");
-                 */
                 URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
@@ -331,16 +316,15 @@ public class RequisicoesServidor {
                 writer.flush();
                 StringBuilder sb = new StringBuilder();
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                while((teste = reader.readLine()) != null) {
+                while ((teste = reader.readLine()) != null) {
                     sb.append(teste + "\n");
                 }
-                teste = sb.toString();
-                JSONObject jObjeto = new JSONObject(teste);
-                teste=jObjeto.getString("teste");
+                JSONObject jObjeto = new JSONObject(sb.toString());
+                teste = jObjeto.getString("teste");
             } catch (Exception e) {
                 e.printStackTrace();
-            }finally {
-                if(reader != null) {
+            } finally {
+                if (reader != null) {
                     try {
                         reader.close();
                     } catch (IOException e) {
@@ -390,26 +374,32 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected List doInBackground(Void... params) { //Implementação obrigatória.
-
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id_usuario", this.usuario.getId() + ""));
-            dados.add(new BasicNameValuePair("id_carona", this.carona.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "aguardaConfirmacaoCarona.php");    //Fazer uma requisição tipo Post no WebService.
-            List dadosX = null;    //Variável que irá receber os dados do usuário.
-
+        protected List doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_usuario", this.usuario.getId() + "");
+            dataToSend.put("id_carona", this.carona.getId() + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            List dadosX = null;
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                    HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);
-                    JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-                    if (jObj.length() == 0) {    //Se o tamanho de jObj for igual a zero.
+                    URL url = new URL(ENDERECO_SERVIDOR + "aguardaConfirmacaoCarona.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String teste = null;
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    JSONObject jObj = new JSONObject(sb.toString());
+                    if (jObj.length() == 0) {
                         dadosX = null;
                     } else {
                         dadosX = new LinkedList();
@@ -464,8 +454,15 @@ public class RequisicoesServidor {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "doInBackground " + e.getMessage());
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
             return dadosX;
         }
 
@@ -484,8 +481,8 @@ public class RequisicoesServidor {
 
         public alteraStatusCaronaAsyncTask(int idCarona, int status, GetRetorno retorno) {
             this.idCarona = idCarona;
-            this.status = status; //O campo usuário recebe o parâmetro de usuário.
-            this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
+            this.status = status;
+            this.retornoUsuario = retorno;
         }
 
         @Override
@@ -508,25 +505,30 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected String doInBackground(Void... params) { //Implementação obrigatória.
-
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("status3", this.status + ""));
-            dados.add(new BasicNameValuePair("id_carona3", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService.
-            String mensagem = "Houve um erro ao se conectar ao banco";    //Variável que irá receber os dados do usuário.
-
+        protected String doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("status3", this.status + "");
+            dataToSend.put("id_carona3", this.idCarona + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            String mensagem = "Sem conexão!";
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                    HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);
-                    JSONObject jObj = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((mensagem = reader.readLine()) != null) {
+                        sb.append(mensagem + "\n");
+                    }
+                    JSONObject jObj = new JSONObject(sb.toString());
                     if (jObj.length() == 0) {
                     } else {
                         mensagem = jObj.getString("mensagem");
@@ -535,8 +537,15 @@ public class RequisicoesServidor {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "vamo lá " + e);
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
             return mensagem;
         }
 
@@ -561,57 +570,35 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected JSONObject doInBackground(Void... params) { //Implementação obrigatória.
+        protected JSONObject doInBackground(Void... params) {
 
-            Map<String,String> dataToSend = new HashMap<>();
+            Map<String, String> dataToSend = new HashMap<>();
             dataToSend.put("id_comentario_carona", this.idCarona + "");
             dataToSend.put("tt_buscar", this.ttBuscar + "");
             dataToSend.put("tt_coments", this.ttComents + "");
             String encodedStr = getEncodedData(dataToSend);
             BufferedReader reader = null;
-
-            /**
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id_comentario_carona", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            dados.add(new BasicNameValuePair("tt_buscar", this.ttBuscar + ""));
-            dados.add(new BasicNameValuePair("tt_coments", this.ttComents + ""));
-
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-
-
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService
-            JSONObject jObjeto = null;*/
             JSONObject jObjeto = null;
             try {
                 URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
                 con.setDoOutput(true);
-                //con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setConnectTimeout(TEMPO_CONEXAO);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
                 StringBuilder sb = new StringBuilder();
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String line;
-                while((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
                     sb.append(line + "\n");
                 }
-                line = sb.toString();
-                jObjeto = new JSONObject(line);
-                /**post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-                jObjeto = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-            */
+                jObjeto = new JSONObject(sb.toString());
             } catch (Exception e) {
                 Log.e(TAG, "vamo lá " + e);
             } finally {
-                if(reader != null) {
+                if (reader != null) {
                     try {
                         reader.close();     //Closing the
                     } catch (IOException e) {
@@ -627,7 +614,6 @@ public class RequisicoesServidor {
             List<String> textos = new LinkedList<String>();
             List<Usuario> usuarios = new LinkedList<Usuario>();
             try {
-
                 for (int i = 0; i < jObjeto.getInt("tamanho"); i++) {
                     int id = jObjeto.getInt("id_" + i);
                     int idCom = jObjeto.getInt("idComentarios_" + i);
@@ -646,13 +632,11 @@ public class RequisicoesServidor {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(textos, usuarios);
             super.onPostExecute(jObjeto);
-        }//Fim método.
-    }//Fim classe.
-
+        }
+    }
 
     public class fecharCaronaOferecidaAsyncTask extends AsyncTask<Void, Void, String> {
         int idCarona;
@@ -688,46 +672,54 @@ public class RequisicoesServidor {
 
         @Override
         protected String doInBackground(Void... params) {
-
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id_user_close", this.idUsuario + ""));
-            dados.add(new BasicNameValuePair("id_carona_close", this.idCarona + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            dados.add(new BasicNameValuePair("tipo", this.tipo + ""));
-
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-
-
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService.
-            //Página de registro
-            String mensagem = "Verifique sua conexão!";    //Variável que irá receber os dados do usuário.
-
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_user_close", this.idUsuario + "");
+            dataToSend.put("id_carona_close", this.idCarona + "");
+            dataToSend.put("tipo", this.tipo + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            String mensagem = "Verifique sua conexão!";
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                    HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);
-                    JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
+                    URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((mensagem = reader.readLine()) != null) {
+                        sb.append(mensagem + "\n");
+                    }
+                    JSONObject jObj = new JSONObject(sb.toString());
                     mensagem = jObj.getString("mensagem");
                     return mensagem;
                 }
             } catch (Exception e) {
                 Log.e(TAG, "vamo lá " + e);
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
             return mensagem;
-        }//Fim método.
+        }
 
         @Override
         protected void onPostExecute(String mensagem) {
             progressDialog.dismiss(); //Finalizar
             retornoUsuario.concluido(mensagem);
             super.onPostExecute(mensagem);
-        }//Fim método.
-    }//Fim classe.
+        }
+    }
 
 
     public class aceitaOuRecusaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
@@ -763,67 +755,87 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("id", usuario.getId() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("resposta", this.resposta));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "aceitaRecusaCarona.php");
-            String teste = "não";
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id", usuario.getId() + "");
+            dataToSend.put("resposta", this.resposta);
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            String teste = "Sem conexão!";
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-                    JSONObject jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "aceitaRecusaCarona.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("teste");
                     return teste;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return teste;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object resultado) {
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retornoUsuario.concluido(resultado);
             super.onPostExecute(resultado);
         }
     }
-
 
     public class exibirUsuariosSolicitantesAsyncTask extends AsyncTask<Void, Void, List<Usuario>> {
         Usuario usuario;
         GetRetorno retornoUsuario;
 
         public exibirUsuariosSolicitantesAsyncTask(Usuario usuario, GetRetorno retorno) {
-            this.usuario = usuario; //O campo usuário recebe o parâmetro de usuário.
-            this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
+            this.usuario = usuario;
+            this.retornoUsuario = retorno;
         }
 
         @Override
-        protected List<Usuario> doInBackground(Void... params) { //Implementação obrigatória.
-
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id", this.usuario.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscarSolicitantesCaronas.php");    //Fazer uma requisição tipo Post no WebService.
+        protected List<Usuario> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id", this.usuario.getId() + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             List<Usuario> usuarios = new LinkedList<Usuario>();    //Variável que irá receber os dados do usuário.
             try {
-                post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-
-                JSONObject jObj = new JSONObject(resultado);
+                URL url = new URL(ENDERECO_SERVIDOR + "buscarSolicitantesCaronas.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String mensagem = null;
+                while ((mensagem = reader.readLine()) != null) {
+                    sb.append(mensagem + "\n");
+                }
+                JSONObject jObj = new JSONObject(sb.toString());
                 if (jObj.length() == 0) {
                     usuarios = null;
                 } else {
@@ -851,8 +863,15 @@ public class RequisicoesServidor {
 
             } catch (Exception e) {
                 e.getMessage();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
             return usuarios;
         }
 
@@ -875,21 +894,29 @@ public class RequisicoesServidor {
 
         @Override
         protected Usuario doInBackground(Void... params) {
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("matricula", this.usuario.getMatricula()));
-            dados.add(new BasicNameValuePair("senha", this.usuario.getSenha()));
-            HttpParams httpParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscaDadosUsuario.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("matricula", this.usuario.getMatricula());
+            dataToSend.put("senha", this.usuario.getSenha());
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             Usuario usuarioRetornado = null;
             try {
-                post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-                JSONObject jObj = new JSONObject(resultado);
+                URL url = new URL(ENDERECO_SERVIDOR + "buscaDadosUsuario.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String teste = null;
+                while ((teste = reader.readLine()) != null) {
+                    sb.append(teste + "\n");
+                }
+                JSONObject jObj = new JSONObject(sb.toString());
                 if (jObj.getInt("retorno") == 0) {
                     Usuario user = new Usuario(jObj.getInt("retorno"));
                     usuarioRetornado = user;
@@ -917,6 +944,14 @@ public class RequisicoesServidor {
                 }
             } catch (Exception e) {
                 e.getMessage();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return usuarioRetornado;
         }
@@ -941,53 +976,64 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected List<Usuario> doInBackground(Void... params) { //Implementação obrigatória.
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id_usuario2", this.usuario.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            dados.add(new BasicNameValuePair("status", this.status));        //Adicionando a senha do usuário a o array dados com a chave 'senha'.
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");    //Fazer uma requisição tipo Post no WebService.
-            //Página de registro
-            List<Usuario> usuarios = null;    //Variável que irá receber os dados do usuário.
-
+        protected List<Usuario> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_usuario2", this.usuario.getId() + "");
+            dataToSend.put("status", this.status);
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            List<Usuario> usuarios = null;
             try {
-                post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável
-                // Recebendo a resposta do servidor após a execução do HTTP POST.
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-                //
-                JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
+                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String teste = null;
+                while ((teste = reader.readLine()) != null) {
+                    sb.append(teste + "\n");
+                }
+                JSONObject jObj = new JSONObject(sb.toString());
                 usuarios = new LinkedList<Usuario>();
-                if (jObj.getInt("retorno") > 0) {    //Se o tamanho de jObj for igual a zero.
-                    //Senão,se o tamanho de jObj for diferente de zero.
+                if (jObj.getInt("retorno") > 0) {
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
                         String nome = jObj.getString("nome_" + i);
                         String foto = jObj.getString("foto_" + i);
                         Integer id = jObj.getInt("id_" + i);
-                        Usuario usuario = new Usuario(id, nome);    //Novo obj de usuário.
+                        Usuario usuario = new Usuario(id, nome);
                         usuario.setFoto(foto);
                         usuarios.add(usuario);
+                        return usuarios;
                     }
                 }
             } catch (Exception e) {
-                e.getMessage();// se não der certo:mensagem de erro
+                e.getMessage();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            return usuarios;    //Retorno para o método 'onPostExecute'.
-        }//Fim método.
+            return usuarios;
+        }
 
         @Override
         protected void onPostExecute(List<Usuario> usuariosRetornado) {
             retornoUsuario.concluido(usuariosRetornado);
             super.onPostExecute(usuariosRetornado);
-        }//Fim método.
-    }//Fim classe.
+        }
+    }
 
     public class cancelarCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
-
         int carona;
         int usuario;
         GetRetorno retorno;
@@ -996,7 +1042,6 @@ public class RequisicoesServidor {
             this.carona = idCarona;
             this.usuario = idUsuario;
             this.retorno = retorno;
-
         }
 
         @Override
@@ -1020,36 +1065,50 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();
-            dadosParaEnvio.add(new BasicNameValuePair("id_carona", carona + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario + ""));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "cancelarCarona.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_carona", carona + "");
+            dataToSend.put("id_usuario", usuario + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String teste = "Sem conexão!";
-
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-                    JSONObject jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "cancelarCarona.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    teste = null;
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("desistencia");
                     return teste;
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return teste;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object resultado) {
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retorno.concluido(resultado);
             super.onPostExecute(resultado);
         }
@@ -1061,7 +1120,7 @@ public class RequisicoesServidor {
         int usuario;
         GetRetorno retorno;
 
-        public armazenaCaronaAsyncTask(Carona carona, int  idUsuario, GetRetorno retorno) {
+        public armazenaCaronaAsyncTask(Carona carona, int idUsuario, GetRetorno retorno) {
             this.carona = carona;
             this.retorno = retorno;
             this.usuario = idUsuario;
@@ -1087,43 +1146,57 @@ public class RequisicoesServidor {
         }
 
 
-        @Override //metodo que � execudado em segundo plano para economia de recursos
+        @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("origem", carona.getOrigem()));
-            dadosParaEnvio.add(new BasicNameValuePair("destino", carona.getDestino()));
-            dadosParaEnvio.add(new BasicNameValuePair("horario", carona.getHorario()));
-            dadosParaEnvio.add(new BasicNameValuePair("tipoVeiculo", carona.getTipoVeiculo()));
-            dadosParaEnvio.add(new BasicNameValuePair("ponto", carona.getPonto()));
-            dadosParaEnvio.add(new BasicNameValuePair("restricao", carona.getRestricao()));
-            dadosParaEnvio.add(new BasicNameValuePair("vagas", carona.getVagas() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario+""));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
-            String teste = "Erro: Verifique sua conexão!";
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("origem", carona.getOrigem());
+            dataToSend.put("destino", carona.getDestino());
+            dataToSend.put("horario", carona.getHorario());
+            dataToSend.put("tipoVeiculo", carona.getTipoVeiculo());
+            dataToSend.put("ponto", carona.getPonto());
+            dataToSend.put("restricao", carona.getRestricao());
+            dataToSend.put("vagas", carona.getVagas() + "");
+            dataToSend.put("id_usuario", usuario + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            String teste = "Verifique sua conexão!";
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-                    JSONObject jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("teste");
                     return teste;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return teste;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object resultado) {
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retorno.concluido(resultado);
             super.onPostExecute(resultado);
         }
@@ -1138,29 +1211,34 @@ public class RequisicoesServidor {
             this.idCarona = idCarona;
             this.retorno = retorno;
             this.usuario = usuario;
-
         }
 
         @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();
-            dadosParaEnvio.add(new BasicNameValuePair("id_carona", idCarona + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("id_usuario", usuario.getId() + ""));
-
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_carona", idCarona + "");
+            dataToSend.put("id_usuario", usuario.getId() + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             int teste = -100;
             Usuario usuario = null;
             try {
-                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse
-                JSONObject jObjeto = new JSONObject(resultado);
+                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                JSONObject jObjeto = new JSONObject(sb.toString());
                 teste = jObjeto.getInt("retorno");
                 if (teste == 1) {
                     usuario = new Usuario(jObjeto.getInt("id"), jObjeto.getString("nome"));
@@ -1172,6 +1250,14 @@ public class RequisicoesServidor {
 
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return usuario;
         }
@@ -1197,38 +1283,36 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected List<Carona> doInBackground(Void... params) { //Implementação obrigatória.
-
-            ArrayList<NameValuePair> dados = new ArrayList();
-            dados.add(new BasicNameValuePair("id", this.usuario.getId() + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            dados.add(new BasicNameValuePair("ttVsAtuais", this.ttVsAtuais + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-            dados.add(new BasicNameValuePair("ttBuscar", this.ttBuscar + ""));    //Adicionando o nome do usuário a o array dados com a chave 'nome'.
-
-
-            HttpParams httpParametros = new BasicHttpParams();  //Configurar os timeouts de conexão.
-            HttpConnectionParams.setConnectionTimeout(httpParametros, TEMPO_CONEXAO); // Configura o timeout da conexão em milisegundos até que a conexão seja estabelecida.
-            HttpConnectionParams.setSoTimeout(httpParametros, TEMPO_CONEXAO);  // Configura o timeout do socket em milisegundos do tempo que será utilizado para aguardar os dados.
-
-
-            HttpClient cliente = new DefaultHttpClient(httpParametros);    //Cria um novo cliente HTTP a partir de parâmetros.
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "caronasAceitas.php");    //Fazer uma requisição tipo Post no WebService.
-            //Página de registro
-            List<Carona> caronas = new LinkedList<Carona>();    //Variável que irá receber os dados do usuário.
+        protected List<Carona> doInBackground(Void... params) {
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id", this.usuario.getId() + "");
+            dataToSend.put("ttVsAtuais", this.ttVsAtuais + "");
+            dataToSend.put("ttBuscar", this.ttBuscar + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
+            List<Carona> caronas = new LinkedList<Carona>();
 
             try {
-                post.setEntity(new UrlEncodedFormEntity(dados, "UTF-8"));    //Configurando a entidade na requisição post.
-                HttpResponse httpResposta = cliente.execute(post);    //Executando a requisição post e armazenando na variável.
-                // Recebendo a resposta do servidor após a execução do HTTP POST.
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-                //
-                JSONObject jObj = new JSONObject(resultado);    //Recebendo a string da resposta no objeto 'jObj' e os valores dele.
-
-                if (jObj.length() == 0 || jObj.getInt("tamanho") == 0) {    //Se o tamanho de jObj for igual a zero.
+                URL url = new URL(ENDERECO_SERVIDOR + "caronasAceitas.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String mensagem = null;
+                while ((mensagem = reader.readLine()) != null) {
+                    sb.append(mensagem + "\n");
+                }
+                JSONObject jObj = new JSONObject(sb.toString());
+                if (jObj.length() == 0 || jObj.getInt("tamanho") == 0) {
                     caronas = null;
                 } else {
                     for (int i = 0; i < jObj.getInt("tamanho"); i++) {
-
                         String origem = jObj.getString("origem_" + i);
                         String destino = jObj.getString("destino_" + i);
                         String tipoVeiculo = jObj.getString("tipoVeiculo_" + i);
@@ -1238,28 +1322,34 @@ public class RequisicoesServidor {
                         int ativo = jObj.getInt("ativo_" + i);
                         int id = jObj.getInt("id_" + i);
                         String ponto = jObj.getString("ponto_" + i);
-
                         Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, ponto);
                         car.setStatus(status);
                         car.setAtivo(ativo);
                         car.setId(id);
-
                         caronas.add(car);
                     }
                 }
 
             } catch (Exception e) {
-                e.getMessage();// se não der certo:mensagem de erro
+                e.getMessage();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            return caronas;    //Retorno para o método 'onPostExecute'.
-        }//Fim método.
+            return caronas;
+        }
 
         @Override
         protected void onPostExecute(List<Carona> Caronas) {
-            progressDialog.dismiss(); //Finalizar
+            progressDialog.dismiss();
             retornoUsuario.concluido(Caronas);
             super.onPostExecute(Caronas);
-        }//Fim método.
+        }
     }
 
     public class BuscaCaronasAsyncTask extends AsyncTask<Void, Void, Object> {
@@ -1268,7 +1358,6 @@ public class RequisicoesServidor {
         int totalViews;
         GetRetorno retornoUsuario;
 
-        //contrutor requer um usuario uma interface com metodo previamente escrito.
         public BuscaCaronasAsyncTask(Usuario usuario, int ultimoValor, int totalViews, GetRetorno retorno) {
             this.usuario = usuario;
             this.ultimoValor = ultimoValor;
@@ -1298,25 +1387,32 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", usuario.getSexo()));
-            dadosParaEnvio.add(new BasicNameValuePair("idUser", usuario.getId() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("ultimoValor", ultimoValor + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("totalViews", totalViews + ""));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Listas.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("sexoUsuario", usuario.getSexo());
+            dataToSend.put("idUser", usuario.getId() + "");
+            dataToSend.put("ultimoValor", ultimoValor + "");
+            dataToSend.put("totalViews", totalViews + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);
-                    jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "Listas.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((teste = reader.readLine()) != null) {
+                        sb.append(teste + "\n");
+                    }
+                    jObjeto = new JSONObject(sb.toString());
                     if (jObjeto == null) {
                         Log.e("objeto:", "nulo");
                     } else {
@@ -1326,6 +1422,14 @@ public class RequisicoesServidor {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return jObjeto;
         }
@@ -1356,7 +1460,6 @@ public class RequisicoesServidor {
                     car.setVagasOcupadas(vagasOcupadas);
                     car.setAtivo(ativo);
                     car.setDataCriacao(dataCriacao);
-
                     List<Usuario> participantes = new LinkedList<Usuario>();
                     List participantesStatus = new LinkedList();
                     for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
@@ -1372,7 +1475,6 @@ public class RequisicoesServidor {
                     car.setParticipantes(participantes);
                     car.setParticipantesStatus(participantesStatus);
                     caronas.add(car);
-
                     String telefone = jObjeto.getString("telefone_" + i);
                     String nome = jObjeto.getString("nome_" + i);
                     String sobrenome = jObjeto.getString("sobrenome_" + i);
@@ -1384,7 +1486,6 @@ public class RequisicoesServidor {
                     if (cnh1 == 0) {
                         cnh = false;
                     }
-
                     String matricula = jObjeto.getString("matricula_" + i);
                     String sexo = jObjeto.getString("sexo_" + i);
                     Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
@@ -1396,7 +1497,7 @@ public class RequisicoesServidor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retornoUsuario.concluido(caronas, usuarios);
             super.onPostExecute(objeto);
         }
@@ -1411,38 +1512,48 @@ public class RequisicoesServidor {
             this.retornoUsuario = retorno;
         }
 
-        @Override //metodo que � execudado em segundo plano para economia de recursos
+        @Override
         protected Object doInBackground(Void... params) {
-
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("email_user", emailUser + ""));
-
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "RetornaDados.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("email_user", emailUser + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             try {
-                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);
-
-                JSONObject jObjeto = new JSONObject(resultado);
+                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                while ((teste = reader.readLine()) != null) {
+                    sb.append(teste + "\n");
+                }
+                JSONObject jObjeto = new JSONObject(sb.toString());
                 teste = jObjeto.getString("teste");
-
             } catch (Exception e) {
                 Log.e(TAG, "erro registro " + e);
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return teste;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object resultado) {
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retornoUsuario.concluido(resultado);
             super.onPostExecute(resultado);
         }
@@ -1453,7 +1564,6 @@ public class RequisicoesServidor {
         int ttViewsAtuais, ttBuscar;
         GetRetorno retornoUsuario;
 
-        //contrutor requer um usuario uma interface com metodo previamente escrito.
         public BuscaSolicitacaoAsyncTask(int ttVsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {
             this.usuario = usuario;
             this.retornoUsuario = retorno;
@@ -1461,39 +1571,51 @@ public class RequisicoesServidor {
             this.ttBuscar = ttBuscar;
         }
 
-        @Override //metodo que � execudado em segundo plano para economia de recursos
+        @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("id_user", usuario.getId() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("ttViewsAtuais", ttViewsAtuais + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("ttBuscar", ttBuscar + ""));
-
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "buscaSolicitacoes.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("id_user", usuario.getId() + "");
+            dataToSend.put("ttViewsAtuais", ttViewsAtuais + "");
+            dataToSend.put("ttBuscar", ttBuscar + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
-                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
-                jObjeto = new JSONObject(resultado);
-
+                URL url = new URL(ENDERECO_SERVIDOR + "buscaSolicitacoes.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                while ((teste = reader.readLine()) != null) {
+                    sb.append(teste + "\n");
+                }
+                jObjeto = new JSONObject(sb.toString());
                 if (jObjeto == null || jObjeto.getInt("tamanho") == -1) {
                     jObjeto = null;
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return jObjeto;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object objeto) {
             JSONObject jObjeto = (JSONObject) objeto;
             List<Carona> caronas = new LinkedList<Carona>();
@@ -1550,13 +1672,11 @@ public class RequisicoesServidor {
                     car.setParticipantes(participantes);
                     car.setParticipantesStatus(participantesStatus);
                     caronas.add(car);
-
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            progressDialog.dismiss();//encerra o circulo de progresso
+            progressDialog.dismiss();
             retornoUsuario.concluido(caronas);
             super.onPostExecute(objeto);
         }
@@ -1567,51 +1687,60 @@ public class RequisicoesServidor {
         GetRetorno retornoUsuario;
         int idUltimaCarona;
 
-        //contrutor requer um usuario uma interface com metodo previamente escrito.
         public BuscaUltimaCaronasAsyncTask(Usuario usuario, int idUltimaCarona, GetRetorno retorno) {
             this.usuario = usuario;
             this.idUltimaCarona = idUltimaCarona;
             this.retornoUsuario = retorno;
         }
 
-        @Override //metodo que � execudado em segundo plano para economia de recursos
+        @Override
         protected Object doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("sexoUsuario", usuario.getSexo()));
-            dadosParaEnvio.add(new BasicNameValuePair("id_user", usuario.getId() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("id", this.idUltimaCarona + ""));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("sexoUsuario", usuario.getSexo());
+            dataToSend.put("id_user", usuario.getId() + "");
+            dataToSend.put("id", this.idUltimaCarona + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String arquivoServ = "UltimasCaronas.php";
-
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + arquivoServ);
             String teste = "Erro de conexão";
             JSONObject jObjeto = null;
             try {
-                post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                HttpResponse httpResposta = cliente.execute(post);//declara httpResponse para pegar dados
-                HttpEntity entidade = httpResposta.getEntity();
-                String resultado = EntityUtils.toString(entidade);//resultado que veio graças ao httpResponse;
-
-                jObjeto = new JSONObject(resultado);
-
-
+                URL url = new URL(ENDERECO_SERVIDOR + arquivoServ);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                con.setConnectTimeout(TEMPO_CONEXAO);
+                con.setReadTimeout(TEMPO_CONEXAO);
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(encodedStr);
+                writer.flush();
+                StringBuilder sb = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                while ((teste = reader.readLine()) != null) {
+                    sb.append(teste + "\n");
+                }
+                jObjeto = new JSONObject(sb.toString());
+                return jObjeto;
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
             return jObjeto;
         }
 
-        @Override //metodo que � executado quando o post for exetutado/enviado
+        @Override
         protected void onPostExecute(Object objeto) {
             JSONObject jObjeto = (JSONObject) objeto;
             List<Carona> caronas = new LinkedList<Carona>();
             List<Usuario> usuarios = new LinkedList<Usuario>();
             try {
-
                 for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
                     if (new ManipulaDados(cnt).getCaronaSolicitada() == jObjeto.getInt("id_" + i)) {
                         continue;
@@ -1623,24 +1752,26 @@ public class RequisicoesServidor {
                     String tipoVeiculo = jObjeto.getString("tipoVeiculo_" + i);
                     String restricao = jObjeto.getString("restricao_" + i);
                     int vagas = jObjeto.getInt("vagas_" + i);
+                    int vagasOcupadas = jObjeto.getInt("vagas_ocupadas_" + i);
                     int status = jObjeto.getInt("status_" + i);
                     int ativo = jObjeto.getInt("ativo_" + i);
                     int id = jObjeto.getInt("id_" + i);
-
                     String dataCriacao = jObjeto.getString("datacriacao_" + i);
                     Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, vagas, ponto);
                     car.setId(id);
                     car.setStatus(status);
                     car.setAtivo(ativo);
+                    car.setVagasOcupadas(vagasOcupadas);
                     car.setDataCriacao(dataCriacao);
-
                     List<Usuario> participantes = new LinkedList<Usuario>();
                     List participantesStatus = new LinkedList();
                     for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
                         int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
                         String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                        String sobrenomenomePart = jObjeto.getString("participantes_" + i + "_" + j + "_sobrenome");
                         String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
                         Usuario participante = new Usuario(idPart, nomePart);
+                        participante.setSobrenome(sobrenomenomePart);
                         participantes.add(participante);
                         participantesStatus.add(statusSoliciacao);
                     }
@@ -1659,20 +1790,17 @@ public class RequisicoesServidor {
                     if (cnh1 == 0) {
                         cnh = false;
                     }
-
                     String matricula = jObjeto.getString("matricula_" + i);
                     String sexo = jObjeto.getString("sexo_" + i);
                     Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
                     usuario.setFoto(foto);
                     usuario.setId(idU);
                     usuarios.add(usuario);
-
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // progressDialog.dismiss();//encerra o circulo de progresso
             retornoUsuario.concluido(caronas, usuarios);
             super.onPostExecute(objeto);
         }
@@ -1708,34 +1836,47 @@ public class RequisicoesServidor {
             running = false;
         }
 
-
-        @Override //metodo que � execudado em segundo plano para economia de recursos
+        @Override
         protected String[] doInBackground(Void... params) {
-            ArrayList<NameValuePair> dadosParaEnvio = new ArrayList();//list que sera passada para o aquivo php atraves do httpPost
-            dadosParaEnvio.add(new BasicNameValuePair("idCaronaSolicita", carona.getId() + ""));
-            dadosParaEnvio.add(new BasicNameValuePair("idUsuarioSolicita", usuario.getId() + ""));
-            HttpParams httpRequestsParametros = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-            HttpConnectionParams.setSoTimeout(httpRequestsParametros, TEMPO_CONEXAO);
-
-            HttpClient cliente = new DefaultHttpClient(httpRequestsParametros);
-            HttpPost post = new HttpPost(ENDERECO_SERVIDOR + "Registros.php");
+            Map<String, String> dataToSend = new HashMap<>();
+            dataToSend.put("idCaronaSolicita", carona.getId() + "");
+            dataToSend.put("idUsuarioSolicita", usuario.getId() + "");
+            String encodedStr = getEncodedData(dataToSend);
+            BufferedReader reader = null;
             String res[] = new String[2];
             res[0] = "Erro 404";
             try {
                 while (running) {
-                    post.setEntity(new UrlEncodedFormEntity(dadosParaEnvio, "UTF-8"));
-                    HttpResponse httpResposta = cliente.execute(post);
-                    HttpEntity entidade = httpResposta.getEntity();
-                    String resultado = EntityUtils.toString(entidade);
-                    JSONObject jObjeto = new JSONObject(resultado);
+                    URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setConnectTimeout(TEMPO_CONEXAO);
+                    con.setReadTimeout(TEMPO_CONEXAO);
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    StringBuilder sb = new StringBuilder();
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String mensagem = null;
+                    while ((mensagem = reader.readLine()) != null) {
+                        sb.append(mensagem + "\n");
+                    }
+                    JSONObject jObjeto = new JSONObject(sb.toString());
                     res[0] = jObjeto.getString("teste");
                     res[1] = jObjeto.getString("v_oculpadas");
                     return res;
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return res;
         }

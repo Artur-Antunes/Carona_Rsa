@@ -1,23 +1,14 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
-
 import android.app.IntentService;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.ComentariosActivity;
@@ -31,9 +22,15 @@ public class Servico extends IntentService {
     final Funcoes f = new Funcoes();
     private int cont;
     public static volatile boolean ativo;
+    private volatile boolean cntVerificaSolicitacao, cntVerificaCaronaOferecida, cntVerificaSolicitacaoAceita, cntBuscarComentarios;
+    public static volatile boolean cntVerificaNovasCaronas;
 
     public Servico() {
         super("Servico");
+        cntVerificaSolicitacao = true;
+        cntVerificaCaronaOferecida = true;
+        cntVerificaSolicitacaoAceita = true;
+        cntBuscarComentarios = true;
         ativo = true;
         cont = 0;
     }
@@ -44,53 +41,55 @@ public class Servico extends IntentService {
         return Service.START_STICKY;
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
-        final ManipulaDados md = new ManipulaDados(Servico.this);
+        ManipulaDados md = new ManipulaDados(Servico.this);
         RequisicoesServidor rs = new RequisicoesServidor(Servico.this);
         if (md.getUsuario() != null) {
             while (ativo) {
-                if (rs.isConnectedToServer("http://10.0.2.2/Caronas/", 10000)) {
-                    verificaSolicitacao("AGUARDANDO");
-                    verificaSolicitacao("DESISTENCIA");
-                    verificaNovasCaronas();
-
+                if (rs.isConnectedToServer("http://10.0.2.2/Caronas/")) {
+                    if (cntVerificaSolicitacao) {
+                        verificaSolicitacao("AGUARDANDO");
+                        verificaSolicitacao("DESISTENCIA");
+                    }
+                    if ((cntVerificaNovasCaronas) && (ComentariosActivity.active == -1) && (md.getUltimoIdCarona() >= 0)) {
+                        verificaNovasCaronas();
+                    }
                     if (Home.userCarOferecida != -1) {
-                        verificaCaronaOferecida();
+                        if (cntVerificaCaronaOferecida) verificaCaronaOferecida();
                     }
 
                     if (ComentariosActivity.active > -1) {
-                        buscarComentarios(ComentariosActivity.active, ComentariosActivity.idCarona);
+                        if (cntBuscarComentarios)
+                            buscarComentarios(ComentariosActivity.active, ComentariosActivity.idCarona);
                     }
 
                     int idCaronaSolicitada = md.getCaronaSolicitada();
                     if ((idCaronaSolicitada != -1) && (idCaronaSolicitada != md.getUltimoIdCaronaAceita())) {
-                        verificaSolicitacaoAceita();
+                        if (cntVerificaSolicitacaoAceita) verificaSolicitacaoAceita();
                     } else if ((idCaronaSolicitada == md.getUltimoIdCaronaAceita()) && idCaronaSolicitada != -1) {
-                        verificaSolicitacaoAceita();
+                        if (cntVerificaSolicitacaoAceita) verificaSolicitacaoAceita();
                     }
                     cont++;
                     Log.e("testando", "cont" + cont);
                 } else {
                     Log.e("CONEXÃO:", "DESATIVADA");
                     criaBroadcast(0, "sem_conexao");
-                    try {
-                        Thread.sleep(8000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    setDelay(8000);
                 }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                setDelay(1100);
             }
-            //ativo = true;
             cont = 0;
         } else {
             stopSelf();
+        }
+    }
+
+    private void setDelay(int tempo) {
+        try {
+            Thread.sleep(tempo);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -109,21 +108,23 @@ public class Servico extends IntentService {
         dialogIntent.putExtra("mensagem", tipo);
         dialogIntent.putExtra("users", (Serializable) usuarios);
         dialogIntent.putExtra("textos", (Serializable) textos);
-        Log.e("USUARIOS", usuarios.size() + "");
         sendBroadcast(dialogIntent);
     }
 
 
-    public void criaBroadcastHome(String tipo) {
+    public void criaBroadcastHome(String tipo, List<Carona> caronas, List<Usuario> usuarios) {
         Intent dialogIntent = new Intent();
         dialogIntent.setAction("abcHome");
         dialogIntent.putExtra("mensagem", tipo);
+        dialogIntent.putExtra("caronas", (Serializable) caronas);
+        dialogIntent.putExtra("usuarios", (Serializable) usuarios);
         sendBroadcast(dialogIntent);
     }
 
 
     public void verificaSolicitacao(final String status) {
-        final ManipulaDados md = new ManipulaDados(this);
+        final ManipulaDados md = new ManipulaDados(Servico.this);
+        cntVerificaSolicitacao = false;
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.verificaSolicitacoes(status, us, new GetRetorno() {
@@ -131,7 +132,7 @@ public class Servico extends IntentService {
             public void concluido(Object object) {
                 if (object != null && md.getUsuario() != null) {
                     List<Usuario> usuarios = (List<Usuario>) object;
-                    String tipoP = "";
+                    String tipoP;
                     int idNotificacao = 3;
                     if (status.equals("AGUARDANDO")) {
                         tipoP = "solicitando";
@@ -144,7 +145,6 @@ public class Servico extends IntentService {
                         if (usuarios.size() > 0) {
                             criaBroadcast(usuarios.size(), "solicitacao");
                         }
-
                     }
 
                     if (usuarios.size() > 1) {
@@ -155,7 +155,6 @@ public class Servico extends IntentService {
                         for (int i = 0; i < usuarios.size(); i++) {
                             if (i == 0) {
                                 texto += usuarios.get(i).getNome();
-
                             } else {
                                 if (i < 2) {
                                     if (i == (usuarios.size() - 1)) {
@@ -178,6 +177,8 @@ public class Servico extends IntentService {
                         f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), idNotificacao);
                     }
                 }
+                setDelay(10);
+                cntVerificaSolicitacao = true;
             }
 
             @Override
@@ -188,9 +189,10 @@ public class Servico extends IntentService {
     }
 
     public void verificaCaronaOferecida() {
+        cntVerificaCaronaOferecida = false;
+        ManipulaDados md = new ManipulaDados(Servico.this);
         final int idCarona = Home.userCarOferecida;
         RequisicoesServidor rs = new RequisicoesServidor(this);
-        final ManipulaDados md = new ManipulaDados(this);
         Usuario usLoc = md.getUsuario();
         rs.verificaCarona_SolitadaOuOfertada(idCarona, usLoc, new GetRetorno() {
             @Override
@@ -202,8 +204,10 @@ public class Servico extends IntentService {
                     titulo = "Obrigado!";
                     texto = "Esperamos que volte a ofertar caronas!";
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                    criaBroadcastHome("removeCaronaOferecida");
+                    criaBroadcastHome("removeCaronaOferecida", null, null);
                 }
+                setDelay(10);
+                cntVerificaCaronaOferecida = true;
             }
 
             @Override
@@ -215,6 +219,7 @@ public class Servico extends IntentService {
 
 
     public void verificaSolicitacaoAceita() {
+        cntVerificaSolicitacaoAceita = false;
         final ManipulaDados md = new ManipulaDados(this);
         final int idCaronaSolicitada = md.getCaronaSolicitada();
         Usuario usLoc = md.getUsuario();
@@ -232,7 +237,7 @@ public class Servico extends IntentService {
                             titulo += "aceita";
                             texto += " aceitou sua solicitação de Carona";
                             criaBroadcast(1, "solicitacao_aceita");
-                            criaBroadcastHome("atSolicitacao");
+                            criaBroadcastHome("atSolicitacao", null, null);
                             md.gravarUltimaCaronaAceita(idCaronaSolicitada);
                             byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
                             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -240,8 +245,8 @@ public class Servico extends IntentService {
                         } else if (us.getEmail().toString().equals("RECUSADO")) {
                             titulo += "recusada";
                             texto += " recusou sua solicitação de carona";
-                            md.setCaronaSolicitada(-1);
-                            criaBroadcastHome("atSolicitacao");
+                            //md.setCaronaSolicitada(-1);
+                            criaBroadcastHome("closeSlt", null, null);
                             byte[] decodedString = Base64.decode(us.getFoto(), Base64.DEFAULT);
                             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             f.notificacaoAbertoFechado(bitmap, titulo, texto, getApplicationContext(), 2);
@@ -251,29 +256,27 @@ public class Servico extends IntentService {
                         titulo = "Solicitação expirou";
                         texto = "Sua solicitação de carona expirou !";
                         f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                        md.setCaronaSolicitada(-1);
                         //criaBroadcast(-1, "solicitacao_expirou");
-                        criaBroadcastHome("atSolicitacao");
-
+                        criaBroadcastHome("closeSlt", null, null);
                     } else if ((us != null) && (us.getId() == -2)) {
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                         titulo = "Boa Viagem!";
                         texto = "Aproveite a carona !";
                         f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
                         //criaBroadcast(-1, "solicitacao_expirou");
-                        md.setCaronaSolicitada(-1);
-                        criaBroadcastHome("atSolicitacao");
+                        criaBroadcastHome("closeSlt", null, null);
                     } else if ((us != null) && (us.getId() == -3)) {
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
                         titulo = "Cancelamento";
                         texto = "A carona solicitada foi cancelada";
                         f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
                         //criaBroadcast(-1, "solicitacao_expirou");
-                        criaBroadcastHome("atSolicitacao");
-                        md.setCaronaSolicitada(-1);
+                        criaBroadcastHome("closeSlt", null, null);
+                        //md.setCaronaSolicitada(-1);
                     }
                 }
-
+                setDelay(10);
+                cntVerificaSolicitacaoAceita = true;
             }
 
             @Override
@@ -281,9 +284,11 @@ public class Servico extends IntentService {
 
             }
         });
+
     }
 
     public void buscarComentarios(int total, int idCarona) {
+        cntBuscarComentarios = false;
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.buscarComentariosCarona(total, 10, idCarona, new GetRetorno() {
             @Override
@@ -295,17 +300,18 @@ public class Servico extends IntentService {
             public void concluido(Object object, Object object2) {
                 List<String> textos = (List<String>) object;
                 List<Usuario> usuarios = (List<Usuario>) object2;
-                Log.e("retorno:", usuarios.size() + "");
                 if (usuarios.size() > 0) {
                     criaBroadcastComents("nvComents", usuarios, textos);
                 }
+                setDelay(10);
+                cntBuscarComentarios = true;
             }
         });
-
     }
 
 
     public void verificaNovasCaronas() {
+        cntVerificaNovasCaronas = false;
         final ManipulaDados md = new ManipulaDados(this);
         int ultimoIdCarona = md.getUltimoIdCarona();
         final Usuario usuario = md.getUsuario();
@@ -321,11 +327,10 @@ public class Servico extends IntentService {
                 if (md.getUsuario() != null) {
                     List<Usuario> usuarios = (List<Usuario>) object2;
                     List<Carona> caronas = (List<Carona>) object;
-
-
                     if (caronas.size() > 0) {
+                        Log.e("tamanhoCar:", caronas.size() + "");
                         criaBroadcast(caronas.size(), "novaCarona");
-                        criaBroadcastHome("nova(s)Carona(s)");
+                        criaBroadcastHome("ultima(s)Carona(s)", caronas, usuarios);
                     }
 
                     if (usuarios.size() > 1) {
@@ -362,6 +367,8 @@ public class Servico extends IntentService {
                         md.gravarUltimaCarona(caronas.get(0).getId());
                     }
                 }
+                setDelay(10);
+                cntVerificaNovasCaronas = true;
             }
         });
     }

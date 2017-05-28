@@ -49,7 +49,7 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	public void gravarUltimaCaronaAceita(int id){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("ultimo_id_carona_aceita", id);
-		editorBancoDeDados.commit(); //Executando a ediçao.
+		editorBancoDeDados.commit();
 	}
 	public void setCaronaSolicitada(int id){
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();

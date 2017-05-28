@@ -29,6 +29,7 @@ import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
+import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 /**
@@ -53,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
-        mMatriculaView = (EditText) findViewById(R.id.matricula_login);//matrucula usuario
-        mSenhaView = (EditText) findViewById(R.id.senha_login);//senha usuario
+        mMatriculaView = (EditText) findViewById(R.id.matricula_login);
+        mSenhaView = (EditText) findViewById(R.id.senha_login);
 
     }
 
@@ -117,12 +118,9 @@ public class LoginActivity extends AppCompatActivity {
     public void recSenha() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Recuperar Senha");
-
         final EditText emailAtual = new EditText(this);
-
         emailAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailAtual.setHint("E-Mail");
-
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ll.setPadding(10, 10, 10, 10);
@@ -168,8 +166,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void logarUsuario(Object object) {    //Usuário existente.
         Usuario usuario = (Usuario) object;
-        mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
+        mDados.gravarDados(usuario);
         mDados.setLogado(true);
+        Servico.cntVerificaNovasCaronas=false;
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
         finish();

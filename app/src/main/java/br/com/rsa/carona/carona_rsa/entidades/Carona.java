@@ -1,11 +1,12 @@
 package br.com.rsa.carona.carona_rsa.entidades;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by josehelder on 23/10/2016.
  */
-public class Carona {
+public class Carona implements Serializable{
     private String origem;
     private String destino;
     private String ponto;

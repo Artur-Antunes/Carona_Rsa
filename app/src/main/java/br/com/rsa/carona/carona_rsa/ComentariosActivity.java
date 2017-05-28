@@ -95,7 +95,6 @@ public class ComentariosActivity extends AppCompatActivity implements Serializab
 
     public void buscarComentarios(List<String> textos, List<Usuario> usuarios) {
         for (int i = 0; i < usuarios.size(); i++) {
-            active=-1;
             final View modelo = linf.inflate(R.layout.modelo_comentario, null);
             TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome3);
             ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto3);

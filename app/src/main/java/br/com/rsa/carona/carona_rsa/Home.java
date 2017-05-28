@@ -37,7 +37,6 @@ import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
-import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
@@ -80,8 +79,6 @@ public class Home extends Fragment {
         m = new ManipulaDados(activity);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
-        atualizaCaronas(0, 6, true);
-        atualizarEspera();
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -106,8 +103,6 @@ public class Home extends Fragment {
                 new Funcoes().apagarNotificacaoEspecifica(getActivity(), 5);
             }
         });
-
-
         recarrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,17 +118,21 @@ public class Home extends Fragment {
         tab2.setCustomView(R.layout.tab);
         tab3.setCustomView(R.layout.tab);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        if(m.getUsuario()!=null){
+            atualizaCaronas(0,6,true);
+            if(m.getCaronaSolicitada()!=-1){
+                atualizarEspera();
+            }
+        }
         return view;
     }
 
 
     public void atualizarEspera() {
-        load.setVisibility(View.INVISIBLE);
         if (m.getCaronaSolicitada() != -1) {
             Carona carona = new Carona(m.getCaronaSolicitada());
             RequisicoesServidor rs = new RequisicoesServidor(getActivity());
             rs.aguardaRespostaCarona(m.getUsuario(), carona, new GetRetorno() {
-
                 @Override
                 public void concluido(Object object) {
                     if (object != null) {
@@ -150,9 +149,7 @@ public class Home extends Fragment {
                         ta_status.setText(carona.getStatusUsuario());
                         ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
                         modelo.setId(carona.getId());
-
                         final String vagasCarona = organizaVagas(carona.getVagasOcupadas(), carona.getVagas());
-
                         if (verificaModeloAdd(modelo) != -1) {
                             ll.removeViewAt(verificaModeloAdd(modelo));
                             ll.addView(modelo, 0);
@@ -211,7 +208,7 @@ public class Home extends Fragment {
         } else {
             if (ll.getChildAt(0) != null) {
                 if (userCarOferecida == -1) {
-                    ll.removeViewAt(0);//REMOVENDO MODELO POSIÇÃO 0
+                    ll.removeViewAt(0);
                 }
 
             }
@@ -221,10 +218,23 @@ public class Home extends Fragment {
         exibirBtnAdd();
     }
 
+    private void removerSolicitacao(){
+        if (ll.getChildAt(0) != null) {
+            if (ll.getChildAt(0).getId() == m.getCaronaSolicitada()) {
+                ll.removeViewAt(0);
+            }
+        }
+        m.setCaronaSolicitada(-1);
+        limparBadge();
+    }
+
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
+            if (((MainActivity) activity).numNovasCaronas > 0) {
+                ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge1, 1);
+            }
         }
     }
 
@@ -301,7 +311,9 @@ public class Home extends Fragment {
     }
 
     public void atualizaCaronas(int ultNum, int ttViews, final boolean removerAntigas) {
-        load.setVisibility(View.INVISIBLE);
+        Servico.cntVerificaNovasCaronas = false;
+        limparBadge();
+        Log.e("VERIFICANDO1", "BREAK");
         MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
         if (M.getUsuario() != null) {
@@ -334,7 +346,6 @@ public class Home extends Fragment {
                             TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
                             Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
                             Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
-
                             tv_nome.setText(usuarios.get(i).getNome());
                             tv_telefone.setText(usuarios.get(i).getTelefone());
                             byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
@@ -346,11 +357,8 @@ public class Home extends Fragment {
                             tv_destino.setText(caronas.get(i).getDestino());
                             tv_origem.setText(caronas.get(i).getOrigem());
                             tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            //final int vagasCarna = caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas();
                             tv_vagas.setText(organizaVagas(caronas.get(i).getVagasOcupadas(), caronas.get(i).getVagas()));
-                            //tv_vagas.setText((vagasCarna) + "/" + caronas.get(i).getVagas() + "");
                             modelo.setId(caronas.get(i).getId());
-
                             if (M.getUsuario().getId() == usuarios.get(i).getId()) {
                                 btnSolicitar.setText("Cancelar");
                                 Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
@@ -372,7 +380,7 @@ public class Home extends Fragment {
                                     ll.addView(modelo);
                                 }
                             }
-
+                            Log.e("VERIFICANDO2", "GRAVOU:"+modelo.getId());
                             getRecarrega();
                             getActivity();
                             exibirBtnAdd();
@@ -388,7 +396,7 @@ public class Home extends Fragment {
                             btnSolicitar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-
+                                    ///////////////////
                                     final ManipulaDados md = new ManipulaDados(getActivity());
                                     if (M.getUsuario().getId() != usuarios.get(j).getId()) {
                                         if (userCarOferecida == -1) {
@@ -431,7 +439,7 @@ public class Home extends Fragment {
                                                                         } else {
                                                                             exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
                                                                         }
-
+                                                                        limparBadge();
                                                                     }
 
                                                                     @Override
@@ -491,12 +499,22 @@ public class Home extends Fragment {
                         if (removerAntigas == false)
                             Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
                     }
+                    setBusca();getRecarrega();getLabel();exibirBtnAdd();
+                    Servico.cntVerificaNovasCaronas = true;
+                    Log.e("DD1",Servico.cntVerificaNovasCaronas+"");
                 }
             });
         }
-        getRecarrega();
-        getLabel();
-        exibirBtnAdd();
+    }
+
+    private void setBusca() {
+        int maiorId = m.getUltimoIdCarona();
+        for (int i = 0; i < ll.getChildCount(); i++) {
+            if (maiorId < ll.getChildAt(i).getId()) {
+                maiorId = ll.getChildAt(i).getId();
+            }
+        }
+        m.gravarUltimaCarona(maiorId);
     }
 
     private void exibirMsg(String msg) {
@@ -532,10 +550,12 @@ public class Home extends Fragment {
             Intent i = new Intent(getActivity(), LoginActivity.class);
             startActivity(i);
         } else {
-            if (((MainActivity) getActivity()).numNovasCaronas > 0) {
-                ((MainActivity) getActivity()).LimparBadge(((MainActivity) getActivity()).badge1, 1);
-            }
+            limparBadge();
         }
+    }
+
+    private void limparBadge(){
+            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge1, 1);
     }
 
 
@@ -563,6 +583,177 @@ public class Home extends Fragment {
         }
     }
 
+    public void ultimasCaronas(final List<Carona> caronas, final List<Usuario> usuarios) {
+        for (int i = 0; i < caronas.size(); i++) {
+            if (caronas.get(i).getId() == m.getCaronaSolicitada()) {
+                continue;
+            }
+            final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
+            TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
+            TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+            final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+            TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
+            TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
+            ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
+            TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
+            Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
+            Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
+            tv_nome.setText(usuarios.get(i).getNome());
+            tv_telefone.setText(usuarios.get(i).getTelefone());
+            byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            Resources res = resource;
+            RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+            dr.setCircular(true);
+            c_foto.setImageDrawable(dr);
+            tv_destino.setText(caronas.get(i).getDestino());
+            tv_origem.setText(caronas.get(i).getOrigem());
+            tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
+            tv_vagas.setText(organizaVagas(caronas.get(i).getVagasOcupadas(), caronas.get(i).getVagas()));
+            modelo.setId(caronas.get(i).getId());
+            if (m.getUsuario().getId() == usuarios.get(i).getId()) {
+                btnSolicitar.setText("Cancelar");
+                Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
+                img.setBounds(0, 0, 35, 35);
+                btnSolicitar.setCompoundDrawables(img, null, null, null);
+                modelo.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary_light));
+                userCarOferecida = modelo.getId();
+                if (verificaModeloAdd(modelo) != -1) {
+                    ll.removeViewAt(verificaModeloAdd(modelo));
+                    ll.addView(modelo, 0);
+                } else {
+                    ll.addView(modelo, 0);
+                }
+            } else {
+                if (verificaModeloAdd(modelo) != -1) {
+                    ll.removeViewAt(verificaModeloAdd(modelo));
+                    if (userCarOferecida == -1 && m.getCaronaSolicitada() == -1) {
+                        ll.addView(modelo, 0);
+                    } else {
+                        ll.addView(modelo);
+                    }
+                } else {
+                    if (userCarOferecida == -1 && m.getCaronaSolicitada() == -1) {
+                        ll.addView(modelo, 0);
+                    } else {
+                        ll.addView(modelo);
+                    }
+                }
+            }
+            getRecarrega();
+            getActivity();
+            exibirBtnAdd();
+            final int id_carona = caronas.get(i).getId();
+            final int j = i;
+            //final int finalI = i;
+            btnComentar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    comentarios(id_carona);
+                }
+            });
+            btnSolicitar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (m.getUsuario().getId() != usuarios.get(j).getId()) {
+                        if (userCarOferecida == -1) {
+                            if (m.getCaronaSolicitada() == -1) {
+                                dialog.setTitle(R.string.title_confirmacao)
+                                        .setMessage(R.string.alert_solicitar_carona)
+                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
+
+
+                                            }
+                                        })
+                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialoginterface, int i) {
+                                                Usuario eu = m.getUsuario();
+                                                Carona carona = caronas.get(j);
+                                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                                rs.solicitaCarona(carona, eu, new GetRetorno() {
+                                                    @Override
+                                                    public void concluido(Object object) {
+                                                        String[] res = (String[]) object;
+                                                        if (res[0].trim().equals("1")) {
+                                                            m.setCaronaSolicitada(id_carona);
+                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
+                                                            atualizarEspera();
+                                                            ll.removeView(modelo);
+                                                            exibirMsg("Carona solicitada!");
+                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
+                                                        } else if (res[0].trim().equals("2")) {
+                                                            ll.removeView(modelo);
+                                                            exibirMsg("Essa carona não está mais disponível!");
+                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
+                                                        } else if (res[0].trim().equals("-3")) {
+                                                            exibirMsg(" Sem vagas!");
+                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
+                                                        } else if (res[0].trim().equals("-2")) {
+                                                            exibirMsg("Solicitação Recusada!");
+                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
+                                                        } else {
+                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
+                                                        }
+
+                                                    }
+
+                                                    @Override
+                                                    public void concluido(Object object, Object object2) {
+
+                                                    }
+                                                });
+                                            }
+                                        }).show();
+                            } else {
+                                Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_cancelar_carona)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+                                        RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                        rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                exibirMsg((String) object);
+                                                ll.removeView(modelo);
+                                                userCarOferecida = -1;
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+                                            }
+                                        });
+                                    }
+                                }).show();
+
+                    }
+                }
+            });
+            modelo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String vagas = organizaVagas(caronas.get(j).getVagasOcupadas(), caronas.get(j).getVagas());
+                    detalhesCarona(usuarios.get(j), caronas.get(j), vagas);
+                }
+            });
+        }
+    }
+
     private void exibirBtnAdd() {
         if ((userCarOferecida != -1) || (m.getCaronaSolicitada() != -1) || (load.getVisibility() == View.VISIBLE)) {
             newCarona.setVisibility(View.INVISIBLE);
@@ -570,6 +761,7 @@ public class Home extends Fragment {
             newCarona.setVisibility(View.VISIBLE);
         }
     }
+
 
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler;
@@ -581,6 +773,8 @@ public class Home extends Fragment {
         @Override
         public void onReceive(final Context context, Intent intent) {
             String mensagem = intent.getStringExtra("mensagem");
+            final List<Carona> caronas = (List<Carona>) intent.getSerializableExtra("caronas");
+            final List<Usuario> usuarios = (List<Usuario>) intent.getSerializableExtra("usuarios");
             switch (mensagem) {
                 case "novaCarona":
                     handler.post(new Runnable() {
@@ -598,7 +792,6 @@ public class Home extends Fragment {
                         @Override
                         public void run() {
                             atualizarEspera();
-                            exibirBtnAdd();
                         }
                     });
                     break;
@@ -612,6 +805,23 @@ public class Home extends Fragment {
                         }
                     });
                     break;
+                case "ultima(s)Carona(s)":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ultimasCaronas(caronas, usuarios);
+                            exibirBtnAdd();
+                        }
+                    });
+                    break;
+                case "closeSlt":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            removerSolicitacao();
+                        }
+                    });
+                    break;
                 case "removeCaronaOferecida":
                     handler.post(new Runnable() {
                         @Override
@@ -620,7 +830,7 @@ public class Home extends Fragment {
                                 if (ll.getChildAt(0).getId() == userCarOferecida) {
                                     ll.removeViewAt(0);
                                     Home.userCarOferecida = -1;
-                                    Log.e("REMOVIDO","SIM");
+                                    Log.e("REMOVIDO", "SIM");
                                     exibirBtnAdd();
                                 }
                             }

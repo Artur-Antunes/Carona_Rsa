@@ -148,6 +148,7 @@ public class EditarDadosActivity extends AppCompatActivity {
         salvarAteracoes = (Button) findViewById(R.id.b_salvar_alteracoes);
         editarFoto = (ImageButton) findViewById(R.id.button_editarImagem);
         editarFoto.bringToFront();
+        usuarioEditar.setExtFoto(mDados.getUsuario().getExtFoto());
 
         String nome = usuarioEditar.getNome();
         String sobrenome = usuarioEditar.getSobrenome();
@@ -155,7 +156,6 @@ public class EditarDadosActivity extends AppCompatActivity {
         String email = usuarioEditar.getEmail();
         String telefone = usuarioEditar.getTelefone();
         boolean cnhUsuario = usuarioEditar.isCnh();
-        Log.e(usuarioEditar.getSexo().toString(), "sexo_antigo");
         int sexoUsuarioPosicao = (usuarioEditar.getSexo().equals("M") ? 0 : 1);
 
         cnhEditar.setChecked(cnhUsuario);
@@ -196,10 +196,14 @@ public class EditarDadosActivity extends AppCompatActivity {
                 sexo = new Funcoes().retornaSimbolo(sexo);
                 emailEditar.requestFocus();
 
+
+
+
                 final Usuario usuarioEditado = verificaCamposAlterados(matricula, nome, sobrenome, telefone, email, sexo, cnh);
 
-                if (usuarioEditado != null) {
 
+
+                if (usuarioEditado != null) {
                     if (vCampos[0] && vCampos[4] && vCampos[1] && vCampos[2] && vCampos[3]) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(EditarDadosActivity.this);
                         dialog.setTitle(R.string.title_confirmacao)
@@ -213,11 +217,12 @@ public class EditarDadosActivity extends AppCompatActivity {
                                 .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
                                         usuarioEditado.setEditado(true);
+                                        usuarioEditado.setId(usuarioEditar.getId());
+                                        usuarioEditado.setSenha(usuarioEditar.getSenha());
                                         RequisicoesServidor rs = new RequisicoesServidor(EditarDadosActivity.this);
                                         rs.gravaDadosDoUsuario(usuarioEditado, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
-
                                                 String nomeAlterar = nomeEditar.getText().toString();
                                                 String sobrenomeAlterar = sobrenomeEditar.getText().toString();
                                                 String matriculaAlterar = matriculaEditar.getText().toString();
@@ -368,6 +373,7 @@ public class EditarDadosActivity extends AppCompatActivity {
 
         Usuario usuarioEditado = new Usuario(usuarioEditar.getId());
         int alteracaoes = 0;
+
         if (!usuarioEditar.getMatricula().toString().equals(matricula)) {
             usuarioEditado.setMatricula(matricula);
             alteracaoes++;
