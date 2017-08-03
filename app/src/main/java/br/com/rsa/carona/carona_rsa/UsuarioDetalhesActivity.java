@@ -63,9 +63,8 @@ public class UsuarioDetalhesActivity extends AppCompatActivity {
 
     }
 
-
     public void editarDados(View view) {
-        if(mDados.getCaronaSolicitada()==-1 && Home.userCarOferecida==-1){
+        if(mDados.getCaronaSolicitada().getId()==-1 && mDados.getCaronaOferecida()==null){
             Intent it = new Intent(this, EditarDadosActivity.class);
             startActivity(it);
             finish();

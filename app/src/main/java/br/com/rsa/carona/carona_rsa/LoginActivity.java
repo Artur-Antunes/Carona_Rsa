@@ -47,9 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
+        mDados.limparDados();
         new Funcoes().apagarNotificacoes(LoginActivity.this);
-
-        //mDados.limparDados();
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();

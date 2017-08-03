@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
+import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Mask;
@@ -166,7 +167,7 @@ public class Registro2Activity extends AppCompatActivity {
         mDados = new ManipulaDados(Registro2Activity.this);
         Usuario usuario = (Usuario) object;
         mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
-        mDados.setCaronaSolicitada(-1);
+        mDados.setCaronaSolicitada(new Carona(-1));
         mDados.setLogado(true);
         startActivity(new Intent(this, MainActivity.class));
         Toast.makeText(Registro2Activity.this, R.string.alert_versao, Toast.LENGTH_LONG).show();

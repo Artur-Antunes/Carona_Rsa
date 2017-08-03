@@ -103,11 +103,10 @@ public class Caronas_Recebidas extends Fragment {
                             ll.addView(modelo);
                             final int idCarona = caronas.get(i).getId();
                             final int idUsuario = M.getUsuario().getId();
-
                             btnClose.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (M.getCaronaSolicitada() != idCarona) {
+                                    if (M.getCaronaSolicitada().getId() != idCarona) {
                                         RequisicoesServidor rs3 = new RequisicoesServidor(activity);
                                         rs3.fecharCaronaOferecida(idCarona, idUsuario, 2, new GetRetorno() {
                                             @Override
@@ -115,7 +114,8 @@ public class Caronas_Recebidas extends Fragment {
                                                 if (object.toString().equals("1")) {
                                                     Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
                                                     ll.removeView(modelo);
-                                                    getRecarrega();getRecebidas();
+                                                    getRecarrega();
+                                                    getRecebidas();
                                                 } else if (object.toString().equals("0")) {
                                                     Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
                                                 }
@@ -133,8 +133,7 @@ public class Caronas_Recebidas extends Fragment {
                             });
                             ultimoIdCaronaIncluida = (ll.getChildCount() > 0) ? ll.getChildAt(0).getId() : -2;
                         }
-                    }else
-                        if(caronas==null && remover==false)
+                    } else if (caronas == null && remover == false)
                         Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
 
                 }
@@ -145,18 +144,19 @@ public class Caronas_Recebidas extends Fragment {
                 }
             });
         }
-        getRecarrega();getRecebidas();
+        getRecarrega();
+        getRecebidas();
     }
 
-    private void getRecarrega(){
+    private void getRecarrega() {
         if (ll.getChildCount() >= 6) {
             recarrega.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             recarrega.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void getRecebidas(){
+    private void getRecebidas() {
         if (ll.getChildCount() == 0) {
             labelRecebidas.setVisibility(View.VISIBLE);
         } else {
@@ -165,13 +165,13 @@ public class Caronas_Recebidas extends Fragment {
     }
 
 
-
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
             limparBadge();
-            getRecarrega();getRecebidas();
+            getRecarrega();
+            getRecebidas();
         }
     }
 

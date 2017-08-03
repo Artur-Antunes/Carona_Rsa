@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,27 +20,96 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	public static final String SP_NOME="detalhesDoUsuario"; //Constante chamada SP_NOME.
 	SharedPreferences usuarioLocal;// Variavel do tipo SharedPreferences !
 
-
 	public ManipulaDados(Context context){	// Metodo construtor que exige o contexto como parametro.
 		usuarioLocal=context.getSharedPreferences(SP_NOME,0); //usuarioLocal recebe um identificador e o modo de acesso do metodo do parametro context!
 	}
 	
 	public void gravarDados(Usuario usuario){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
-
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("id", usuario.getId());//Editardo os valores que serao guardados por meio da interface Editor do Shered prefeneces!
 		editorBancoDeDados.putString("nome", usuario.getNome()); 	// Guardando o nome de usuario com uma clave chamada "nome".
 		editorBancoDeDados.putString("sobrenome",usuario.getSobrenome());
 		editorBancoDeDados.putString("matricula",usuario.getMatricula());
 		editorBancoDeDados.putString("email", usuario.getEmail());	// Guardando a idade do usuario com uma clave chamada "idade".
-		editorBancoDeDados.putString("telefone",usuario.getTelefone()); // Guardando o usuario do usuario com uma clave chamada "usuario".
+		editorBancoDeDados.putString("telefone", usuario.getTelefone()); // Guardando o usuario do usuario com uma clave chamada "usuario".
 		editorBancoDeDados.putString("sexo", usuario.getSexo());
 		editorBancoDeDados.putBoolean("cnh", usuario.isCnh());
-		editorBancoDeDados.putInt("id_carona", usuario.getIdCaronaSolicitada());
 		editorBancoDeDados.putString("senha", usuario.getSenha());
 		editorBancoDeDados.putString("foto", usuario.getFoto());
 		editorBancoDeDados.putInt("quant_caronas_aceitas", 0);
+		Carona car=new Carona(usuario.getIdCaronaSolicitada());
+		setCaronaSolicitada(car);
 		editorBancoDeDados.commit(); //Executando a ediçao.
+	}
+
+	//CARONA OFERECIDA ->
+
+
+	public void setCaronaOferecida(Carona car){//Setar a carona oferecida
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		Gson gson = new Gson();
+		String json = gson.toJson(car);
+		editorBancoDeDados.putString("carOf", json);
+		editorBancoDeDados.commit();
+	}
+
+	public Carona getCaronaOferecida(){//Retorna a carona oferecida
+		Gson gson = new Gson();
+		String json = usuarioLocal.getString("carOf", "");
+		Carona car= gson.fromJson(json, Carona.class);
+		return car;
+	}
+
+	private int verificaUsuarioBDLocal(Usuario user){//Verifica se existe um determinado usuário
+		for(int t=0;t<getTtParCarOf();t++){
+			if(getParticipantesCarOferecida(t).getId()==user.getId()){
+				return t;//Retorna o ID do User
+			}
+		}
+		return -1;
+	}
+
+	public void setParticipantesCarOferecida(Usuario user,int pos){//Setando um usuário localmente, indicando a posição!
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		Gson gson = new Gson();
+		String json = gson.toJson(user);
+		int vr=verificaUsuarioBDLocal(user);
+		if(vr==-1){
+			editorBancoDeDados.putString("partCarOf_" + pos, json);
+			setTtParCarOf(getTtParCarOf()+1);
+		}else{
+			editorBancoDeDados.remove("partCarOf_"+vr);
+			editorBancoDeDados.putString("partCarOf_"+vr, json);//SUBSTITUIDO
+		}
+		editorBancoDeDados.commit();
+	}
+
+	public Usuario getParticipantesCarOferecida(int pos){//Retorna um usuário
+		Gson gson = new Gson();
+		String json = usuarioLocal.getString("partCarOf_"+pos, "");
+		Usuario caroneiro= gson.fromJson(json, Usuario.class);
+		return caroneiro;
+	}
+
+	public void setTtParCarOf(int valor){//Inserindo o total de participantes da carona oferecida
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		editorBancoDeDados.putInt("totalParCarOf", valor);
+		editorBancoDeDados.commit();
+	}
+
+	public int getTtParCarOf(){//Retornando o total de participantes da carona oferecida
+		int total=usuarioLocal.getInt("totalParCarOf", 0);
+		return total;
+	}
+
+	public void clearAtualCarOf(){//Apagando todos os dados da carona oferecida
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		for(int i=0;i<getTtParCarOf();i++){
+			editorBancoDeDados.remove("partCarOf_"+i);
+		}
+		editorBancoDeDados.remove("totalParCarOf");
+		editorBancoDeDados.remove("carOf");
+		editorBancoDeDados.commit();
 	}
 
 	public void gravarUltimaCarona(int id){ //!
@@ -46,18 +117,29 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.putInt("ultimo_id_carona", id);
 		editorBancoDeDados.commit();
 	}
-	public void gravarUltimaCaronaAceita(int id){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
+	public void gravarUltimaCaronaAceita(int id){
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("ultimo_id_carona_aceita", id);
 		editorBancoDeDados.commit();
 	}
-	public void setCaronaSolicitada(int id){
+	public void setCaronaSolicitada(Carona car){//Setando a carona solicitada
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
-		editorBancoDeDados.putInt("id_carona", id);
+		Gson gson = new Gson();
+		String json = gson.toJson(car);
+		editorBancoDeDados.putString("carSltd", json);
 		editorBancoDeDados.commit();
 	}
 
-	public void gravarCaronasAceita(Carona car){//não utilizado
+	public Carona getCaronaSolicitada(){//Retornando a carona solicitada...
+		Gson gson = new Gson();
+		String json = usuarioLocal.getString("carSltd", "");
+		Carona car= gson.fromJson(json, Carona.class);
+		return car;
+	}
+
+
+
+	public void gravarCaronasAceita(Carona car){//NÃO UTILIZADO AINDA
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("id_car_"+getQuantCarAceitas(), car.getId());
 		editorBancoDeDados.putString("des_car_"+getQuantCarAceitas(), car.getDestino());
@@ -65,13 +147,13 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.commit();
 	}
 
-	public void retornaCaronaAceita(int pos){//não utiliado
-		int id=usuarioLocal.getInt("id_car_"+pos, -1);
+	public void retornaCaronaAceita(int pos){//NÃO UTILIZADO AINDA
+		int id=usuarioLocal.getInt("id_car_" + pos, -1);
 		String destino=usuarioLocal.getString("des_car_" + pos, null);
 		String horario=usuarioLocal.getString("saida_car_"+pos, null);
 	}
 
-	public void incrementarCaronasAceitas(){//não utilizado
+	public void incrementarCaronasAceitas(){//NÃO UTILIZADO AINDA
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		editorBancoDeDados.putInt("quant_caronas_aceitas", (getQuantCarAceitas() + 1));
 		editorBancoDeDados.commit();
@@ -81,10 +163,6 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		return quant;
 	}
 
-	public int getCaronaSolicitada(){
-		int id_carona=usuarioLocal.getInt("id_carona", -1);
-		return id_carona;
-	}
 	public int getUltimoIdCarona(){
 		int id_carona=usuarioLocal.getInt("ultimo_id_carona",0);
 		return id_carona;
@@ -98,41 +176,38 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();// editando..
 		editorBancoDeDados.clear();//limpar.
 		if(editorBancoDeDados.commit()){// Executar limpeza.
-		return true;
+			return true;
 		}
 		return false;
 	}
 	
-	public void setLogado(boolean logado){ //Verifica se tem algum usuario ja logado.
-		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();// Editar.
-		editorBancoDeDados.putBoolean("logado",logado); // guardando falso/verdade numa chave chamada "logado".
-		editorBancoDeDados.commit();	// Executar ediçao.
-		
+	public void setLogado(boolean logado){
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		editorBancoDeDados.putBoolean("logado",logado);
+		editorBancoDeDados.commit();
 	}
 
-	public Usuario getUsuario(){ //Metodo que retorna o usuario logado.
-		if(usuarioLocal.getBoolean("logado",false)==false){ //Caso nao tenha ninguem logado fara.
-			return null;// se nao tiver nenhum usuario logado retornar vazio!
+	public Usuario getUsuario(){
+		if(usuarioLocal.getBoolean("logado",false)==false){
+			return null;
 		}
 		//caso contrario->
 		int id=usuarioLocal.getInt("id",-1);
-		String nome=usuarioLocal.getString("nome", ""); // Nome recebe o valor atribuido a chave nome.
-		String sobrenome=usuarioLocal.getString("sobrenome","");// usuario recebe o valor atribuido a chave usuario.
-		String matricula=usuarioLocal.getString("matricula","");// usuario recebe o valor atribuido a chave usuario.
-		String email=usuarioLocal.getString("email","");// usuario recebe o valor atribuido a chave usuario.
-		String telefone=usuarioLocal.getString("telefone","");// usuario recebe o valor atribuido a chave usuario.
-		String sexo=usuarioLocal.getString("sexo","");// usuario recebe o valor atribuido a chave usuario.
+		String nome=usuarioLocal.getString("nome", "");
+		String sobrenome=usuarioLocal.getString("sobrenome","");
+		String matricula=usuarioLocal.getString("matricula","");
+		String email=usuarioLocal.getString("email","");
+		String telefone=usuarioLocal.getString("telefone","");
+		String sexo=usuarioLocal.getString("sexo","");
 		Boolean cnh=usuarioLocal.getBoolean("cnh", true);
 		String foto=usuarioLocal.getString("foto", "");
-		String senha=usuarioLocal.getString("senha","");// usuario recebe o valor atribuido a chave usuario.
+		String senha=usuarioLocal.getString("senha","");
 		int id_carona=usuarioLocal.getInt("id_carona",-1);
-
-		Usuario usuarioLogado = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);    //Novo obj de usuário.
+		Usuario usuarioLogado = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
 		usuarioLogado.setId(id);
 		usuarioLogado.setSenha(senha);
 		usuarioLogado.setFoto(foto);
 		usuarioLogado.setIdCaronaSolicitada(id_carona);
-		return usuarioLogado;//Retorna o objeto usuarioLogado !
+		return usuarioLogado;
 	}
-
 }

@@ -71,7 +71,8 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_nome = (TextView) findViewById(R.id.tv_nome);
         tv_email = (TextView) findViewById(R.id.tv_email);
         b_salvar = (Button) findViewById(R.id.b_solicitar);
-        if ((md.getCaronaSolicitada() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
+
+        if ((md.getCaronaSolicitada().getId() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
         } else {
@@ -83,16 +84,21 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_destino.setText(carona.getDestino());
 
         Bundle b= getIntent().getExtras();
-        tv_vagas.setText(b.get("vagas")+"");
-
-        tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
+        tv_vagas.setText(b.get("vagas") + "");
+        if(carona.getHorario().length()==4 || carona.getHorario().length()==5 ){
+            tv_horario.setText(carona.getHorario());
+        }else {
+            tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
+        }
         tv_ponto.setText(carona.getPonto());
+        Log.e("www","ok");
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
             tv_status.setText("Ativa");
         } else {
             tv_status.setText("Inativa");
         }
+        Log.e("www","ok2");
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());
         tv_nome.setText(usuario.getNome());
@@ -103,7 +109,6 @@ public class Detalhes_Carona extends AppCompatActivity {
             tv_cnh.setText("Não Possui CNH");
         }
         //ll.removeAllViews();
-        Log.e("tamanho paticipantes", carona.getParticipantes().size() + "");
         /**
         for (int i = 0; i < carona.getParticipantes().size(); i++) {
             final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
@@ -140,7 +145,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                         rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
-                                                Home.userCarOferecida=-1;
+                                                md.clearAtualCarOf();
                                                 Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
                                             }
@@ -152,7 +157,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                         });
                                     }
                                 }).show();
-                    } else if (md.getCaronaSolicitada() == carona.getId()) {//O usuário vai cancelar sua solicitação!
+                    } else if (md.getCaronaSolicitada().getId() == carona.getId()) {//O usuário vai cancelar sua solicitação!
                         Log.e("usuario:", "caroneiro_cancelando!");
                         RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
                         Usuario userLocal = new Usuario((md.getUsuario().getId()));
@@ -160,7 +165,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                             @Override
                             public void concluido(Object object) {
                                 Toast.makeText(Detalhes_Carona.this, object.toString(), Toast.LENGTH_LONG).show();
-                                md.setCaronaSolicitada(-1);
+                                md.setCaronaSolicitada(new Carona(-1));
                                 startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
                             }
 
@@ -172,7 +177,7 @@ public class Detalhes_Carona extends AppCompatActivity {
 
                     }
                 } else if (intencao.equals(("Me Leva!"))) {
-                    if (md.getCaronaSolicitada() == -1) {
+                    if (md.getCaronaSolicitada().getId() == -1) {
                         Log.e("usuario:", "caroneiro_pedindo!");
                         dialog.setTitle(R.string.title_confirmacao)
                                 .setMessage(R.string.alert_solicitar_carona)
@@ -190,7 +195,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                             public void concluido(Object object) {
                                                 if (object.toString().trim().equals("1")) {
                                                     Toast.makeText(Detalhes_Carona.this, "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
-                                                    md.setCaronaSolicitada(carona.getId());
+                                                    md.setCaronaSolicitada(carona);
                                                     startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
                                                 }
                                             }
@@ -216,7 +221,7 @@ public class Detalhes_Carona extends AppCompatActivity {
 
     public void show(View v) {
         String usuarios = "";
-        if (carona.getParticipantes().size() > 0) {
+        if ((carona.getParticipantes()!=null) && (carona.getParticipantes().size() > 0)) {
             for (int i = 0; i < carona.getParticipantes().size(); i++) {
                 String nome = carona.getParticipantes().get(i).getNome();
                 String sobrenome = carona.getParticipantes().get(i).getSobrenome();
@@ -226,8 +231,6 @@ public class Detalhes_Carona extends AppCompatActivity {
         } else {
             Toast.makeText(Detalhes_Carona.this, "Nenhum participante", Toast.LENGTH_LONG).show();
         }
-
-        //exibir();
     }
 
 

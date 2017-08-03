@@ -43,6 +43,7 @@
     <string name="alert_car_oferecida">Você já ofereceu uma carona!</string>
     <string name="alert_sem_conexao">Tente se conectar novamente!</string>
     <string name="alert_car_ativa">A carona ainda está ativa!</string>
+    <string name="alert_car_desativa">A carona não está ativa!</string>
     <string name="alert_removido">Removido!</string>
     <string name="alert_versao">Ainda estamos na versão Beta!</string>
     <string name="alert_0_caronas">Nenhuma carona encontrada!</string>

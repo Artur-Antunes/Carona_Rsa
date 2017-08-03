@@ -22,6 +22,7 @@ public class Carona implements Serializable{
     private List<Usuario> participantes;
     private List participantesStatus;
     private String statusUsuario;
+    private Usuario proprietario;
 
     public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, int vagas, String ponto){
         this.origem=origem;
@@ -45,6 +46,14 @@ public class Carona implements Serializable{
 
     public Carona(int id){
         this.id=id;
+    }
+
+    public void setProprietario(Usuario user){
+        this.proprietario=user;
+    }
+
+    public Usuario getProprietario(){
+        return this.proprietario;
     }
 
     public String getOrigem() {

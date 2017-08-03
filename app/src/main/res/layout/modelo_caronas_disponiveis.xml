@@ -152,6 +152,20 @@
             android:layout_marginTop="4dp"
             android:src="@drawable/user" />
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_margin="4dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_atok"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:background="@color/icons"
+            android:id="@+id/imageViewAndamento"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+             />
+
         <TableLayout
             android:id="@+id/LinearLayout02"
             android:layout_width="fill_parent"

@@ -173,11 +173,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.add) {
             if(Home.load.getVisibility()==View.INVISIBLE) {
-                if (md.getUsuario().getIdCaronaSolicitada() == -1 && Home.userCarOferecida == -1) {
+                if (md.getUsuario().getIdCaronaSolicitada() == -1 && md.getCaronaOferecida() == null) {
                     startActivity(new Intent(this, Criar_Carona.class));
                 } else if (md.getUsuario().getIdCaronaSolicitada() != -1) {
                     Toast.makeText(MainActivity.this, R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
-                } else if (Home.userCarOferecida != -1) {
+                } else if (md.getCaronaOferecida() != null) {
                     Toast.makeText(MainActivity.this, R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
                 }
             }else {
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, UsuarioDetalhesActivity.class));
             return true;
         } else if (id == R.id.action_sair) {
-            if(Home.userCarOferecida==-1) {
+            if(md.getCaronaOferecida()==null) {
                 Servico.ativo = false;
                 try {
                     Thread.sleep(1000);

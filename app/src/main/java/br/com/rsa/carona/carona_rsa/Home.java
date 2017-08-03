@@ -58,17 +58,14 @@ public class Home extends Fragment {
     ManipulaDados m;
     ViewGroup container;
     IntentFilter filter = new IntentFilter();
-    public static volatile int userCarOferecida;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         this.container = container;
-        userCarOferecida = -1;
         activity = getActivity();
         resource = getResources();
         labelHome = (TextView) view.findViewById(R.id.label1Vazio);
-        receiver = new MyReceiver(new Handler());
         receiver = new MyReceiver(new Handler());
         dialog = new AlertDialog.Builder(getActivity());
         ll = (LinearLayout) view.findViewById(R.id.caixa_home);
@@ -82,8 +79,7 @@ public class Home extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                userCarOferecida = -1;
-                atualizarEspera();
+                atualizaCaronaSolicitada();
                 atualizaCaronas(0, 6, true);
                 swipeLayout.setRefreshing(false);
             }
@@ -118,113 +114,211 @@ public class Home extends Fragment {
         tab2.setCustomView(R.layout.tab);
         tab3.setCustomView(R.layout.tab);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        if(m.getUsuario()!=null){
-            atualizaCaronas(0,6,true);
-            if(m.getCaronaSolicitada()!=-1){
-                atualizarEspera();
+        if (m.getUsuario() != null) {
+            atualizaCaronas(0, 6, true);
+            if (m.getCaronaSolicitada().getId() != -1) {
+                atualizaCaronaSolicitada();
             }
         }
         return view;
     }
 
+    private RelativeLayout montarLayoutCaronaDisponivel(final Carona car, final Usuario proprietario) {//DESENVOLVENDO..
+        final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
+        TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
+        TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+        final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
+        TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
+        TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
+        ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
+        TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
+        Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
+        Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
+        ImageView imgAndamento = (ImageView) modelo.findViewById(R.id.imageViewAndamento);
+        tv_nome.setText(proprietario.getNome());
+        tv_telefone.setText(proprietario.getTelefone());
+        byte[] decodedString = Base64.decode(proprietario.getFoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        Resources res = resource;
+        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+        dr.setCircular(true);
+        c_foto.setImageDrawable(dr);
+        tv_destino.setText(car.getDestino());
+        tv_origem.setText(car.getOrigem());
+        if (car.getHorario().length() == 4) {
+            tv_horario.setText("0" + car.getHorario());
+        } else if (car.getHorario().length() == 5) {
+            tv_horario.setText(car.getHorario());
+        } else {
+            tv_horario.setText(new Funcoes().horaSimples(car.getHorario()));
+        }
+        tv_vagas.setText(organizaVagas(car.getVagasOcupadas(), car.getVagas()));
+        modelo.setId(car.getId());
+        if (isMotorista(proprietario)) {
+            btnSolicitar.setText("Cancelar");
+            Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
+            img.setBounds(0, 0, 35, 35);
+            btnSolicitar.setCompoundDrawables(img, null, null, null);
+            modelo.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary_light));
+            if (car.getId() == -2) {
+                imgAndamento.setImageResource(R.drawable.icon_clock);
+            }
+        }
+        btnComentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comentarios(car.getId());
+            }
+        });
+        btnSolicitar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (m.getUsuario().getId() != proprietario.getId()) {
+                    if (m.getCaronaOferecida() == null) {
+                        if (m.getCaronaSolicitada().getId() == -1) {
+                            dialog.setTitle(R.string.title_confirmacao)
+                                    .setMessage(R.string.alert_solicitar_carona)
+                                    .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialoginterface, int i) {
 
-    public void atualizarEspera() {
-        if (m.getCaronaSolicitada() != -1) {
-            Carona carona = new Carona(m.getCaronaSolicitada());
-            RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-            rs.aguardaRespostaCarona(m.getUsuario(), carona, new GetRetorno() {
-                @Override
-                public void concluido(Object object) {
-                    if (object != null) {
-                        final List dados = (List) object;
-                        final Carona carona = (Carona) dados.get(0);
-                        final Usuario user = (Usuario) dados.get(1);
-                        final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
-                        TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
-                        TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
-                        TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_r);
-                        Button btnCancelar = (Button) modelo.findViewById(R.id.b_desistencia);
-                        Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car2);
-                        ta_destino.setText(carona.getDestino());
-                        ta_status.setText(carona.getStatusUsuario());
-                        ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
-                        modelo.setId(carona.getId());
-                        final String vagasCarona = organizaVagas(carona.getVagasOcupadas(), carona.getVagas());
-                        if (verificaModeloAdd(modelo) != -1) {
-                            ll.removeViewAt(verificaModeloAdd(modelo));
-                            ll.addView(modelo, 0);
+
+                                        }
+                                    })
+                                    .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialoginterface, int i) {
+                                            car.setProprietario(proprietario);
+                                            car.setStatusUsuario("AGUARDANDO");
+                                            car.setStatus(0);
+                                            m.setCaronaSolicitada(car);
+                                            atualizaCaronaSolicitada();
+                                        }
+                                    }).show();
                         } else {
-                            ll.addView(modelo, 0);
+                            Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+
                         }
-                        getRecarrega();
-                        getActivity();
-                        exibirBtnAdd();
-
-                        btnComentar.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                comentarios(carona.getId());
-                            }
-                        });
-
-                        modelo.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                detalhesCarona(user, carona, vagasCarona);
-                            }
-                        });
-
-                        btnCancelar.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Carona caronaLocal = new Carona(m.getCaronaSolicitada());
-                                RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
-                                rserv.desistirCarona(m.getUsuario().getId(), caronaLocal.getId(), new GetRetorno() {
-                                    @Override
-                                    public void concluido(Object object) {
-                                        Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
-                                        m.setCaronaSolicitada(-1);
-                                        atualizaCaronas(0, 6, true);
-                                        ll.removeView(modelo);
-                                    }
-
-                                    @Override
-                                    public void concluido(Object object, Object object2) {
-
-                                    }
-                                });
-                            }
-                        });
-
+                    } else {
+                        Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                    dialog.setTitle(R.string.title_confirmacao)
+                            .setMessage(R.string.alert_cancelar_carona)
+                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialoginterface, int i) {
+
+                                }
+                            })
+                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialoginterface, int i) {
+                                    RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+                                    rs.alteraStatusCarona(car.getId(), 0, new GetRetorno() {
+                                        @Override
+                                        public void concluido(Object object) {
+                                            exibirMsg((String) object);
+                                            ll.removeView(modelo);
+                                            m.clearAtualCarOf();
+                                        }
+
+                                        @Override
+                                        public void concluido(Object object, Object object2) {
+                                        }
+                                    });
+                                }
+                            }).show();
+
                 }
+            }
+        });
+        modelo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String vagas = organizaVagas(car.getVagasOcupadas(), car.getVagas());
+                detalhesCarona(proprietario, car, vagas);
+            }
+        });
 
+        return modelo;
+    }
+
+
+    public void atualizaCaronaSolicitada() {
+        if (m.getCaronaSolicitada().getId() != -1) {
+            final Carona carona = m.getCaronaSolicitada();
+            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
+            TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
+            TextView ta_status = (TextView) modelo.findViewById(R.id.tv_status_aguarda);
+            TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario_r);
+            Button btnCancelar = (Button) modelo.findViewById(R.id.b_desistencia);
+            Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car2);
+            ImageView imgLoad = (ImageView) modelo.findViewById(R.id.imageViewAndamento);
+            if (carona.getStatus() == 1) {
+                imgLoad.setImageResource(R.drawable.icon_atok);
+            }
+            ta_destino.setText(carona.getDestino());
+            ta_status.setText(carona.getStatusUsuario());
+            ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
+            modelo.setId(carona.getId());
+            final String vagasCarona = organizaVagas(carona.getVagasOcupadas(), carona.getVagas());
+            if (verificaModeloAdd(modelo) != -1) {
+                ll.removeViewAt(verificaModeloAdd(modelo));
+                ll.addView(modelo, 0);
+            } else {
+                ll.addView(modelo, 0);
+            }
+            getExtra();
+            getActivity();
+            btnComentar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void concluido(Object object, Object object2) {
-
+                public void onClick(View v) {
+                    comentarios(carona.getId());
                 }
             });
 
-        } else {
-            if (ll.getChildAt(0) != null) {
-                if (userCarOferecida == -1) {
-                    ll.removeViewAt(0);
+            modelo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    detalhesCarona(carona.getProprietario(), carona, vagasCarona);
                 }
+            });
 
-            }
+            btnCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
+                    rserv.desistirCarona(m.getUsuario().getId(), m.getCaronaSolicitada().getId(), new GetRetorno() {
+                        @Override
+                        public void concluido(Object object) {
+                            Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
+                            m.setCaronaSolicitada(new Carona(-1));
+                            atualizaCaronas(0, 6, true);
+                            ll.removeView(modelo);
+                        }
+
+                        @Override
+                        public void concluido(Object object, Object object2) {
+
+                        }
+                    });
+                }
+            });
         }
-        getRecarrega();
-        getLabel();
-        exibirBtnAdd();
+        getExtra();
     }
 
-    private void removerSolicitacao(){
-        if (ll.getChildAt(0) != null) {
-            if (ll.getChildAt(0).getId() == m.getCaronaSolicitada()) {
+    private boolean closePosicao_1(int id) {
+        if (ll.getChildCount() > 0) {
+            if (ll.getChildAt(0).getId() == id) {
                 ll.removeViewAt(0);
+                return true;
             }
         }
-        m.setCaronaSolicitada(-1);
+        return false;
+    }
+
+    private void removerSolicitacao() {
+        closePosicao_1(m.getCaronaSolicitada().getId());
+        m.setCaronaSolicitada(new Carona(-1));
         limparBadge();
     }
 
@@ -251,20 +345,25 @@ public class Home extends Fragment {
     }
 
 
-    private void getRecarrega() {
-        if (ll.getChildCount() >= 6) {
-            recarrega.setVisibility(View.VISIBLE);
-        } else {
-            recarrega.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void getLabel() {
+    private void getExtra() {
         if (ll.getChildCount() == 0) {
             labelHome.setVisibility(View.VISIBLE);
         } else {
             labelHome.setVisibility(View.INVISIBLE);
         }
+
+        if (ll.getChildCount() >= 6) {
+            recarrega.setVisibility(View.VISIBLE);
+        } else {
+            recarrega.setVisibility(View.INVISIBLE);
+        }
+
+        if ((m.getCaronaOferecida() != null) || (m.getCaronaSolicitada().getId() != -1) || (load.getVisibility() == View.VISIBLE)) {
+            newCarona.setVisibility(View.INVISIBLE);
+        } else {
+            newCarona.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void removeCaronasAntigas(List<Carona> caronas) {
@@ -296,24 +395,33 @@ public class Home extends Fragment {
         for (int j = 0; j < ll.getChildCount(); j++) {
             comparador = false;
             for (int i = 0; i < ids.length; i++) {
-                if ((ll.getChildAt(j).getId() == ids[i]) && (ll.getChildAt(j).getId() != userCarOferecida)) {
-                    i = ids.length;
-                    comparador = true;
+                if ((ll.getChildAt(j).getId() == ids[i]) && (m.getCaronaOferecida() != null)) {
+                    if (ll.getChildAt(j).getId() != m.getCaronaOferecida().getId()) {
+                        i = ids.length;
+                        comparador = true;
+                    }
                 }
             }
             if (comparador == false) {
                 ll.removeViewAt(j);
             }
         }
-        getRecarrega();
+        getExtra();
         getActivity();
-        exibirBtnAdd();
+    }
+
+    private boolean isMotorista(Usuario user) {
+        if (m.getUsuario().getId() == user.getId()) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public void atualizaCaronas(int ultNum, int ttViews, final boolean removerAntigas) {
         Servico.cntVerificaNovasCaronas = false;
         limparBadge();
-        Log.e("VERIFICANDO1", "BREAK");
         MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
         if (M.getUsuario() != null) {
@@ -333,39 +441,11 @@ public class Home extends Fragment {
                             removeCaronasAntigas(caronas);
                         }
                         for (int i = 0; i < caronas.size(); i++) {
-                            if (caronas.get(i).getId() == M.getCaronaSolicitada()) {
+                            if (caronas.get(i).getId() == m.getCaronaSolicitada().getId()) {
                                 continue;
                             }
-                            final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
-                            TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
-                            TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                            final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
-                            TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
-                            TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
-                            ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
-                            TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
-                            Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
-                            Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
-                            tv_nome.setText(usuarios.get(i).getNome());
-                            tv_telefone.setText(usuarios.get(i).getTelefone());
-                            byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            Resources res = resource;
-                            RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                            dr.setCircular(true);
-                            c_foto.setImageDrawable(dr);
-                            tv_destino.setText(caronas.get(i).getDestino());
-                            tv_origem.setText(caronas.get(i).getOrigem());
-                            tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            tv_vagas.setText(organizaVagas(caronas.get(i).getVagasOcupadas(), caronas.get(i).getVagas()));
-                            modelo.setId(caronas.get(i).getId());
-                            if (M.getUsuario().getId() == usuarios.get(i).getId()) {
-                                btnSolicitar.setText("Cancelar");
-                                Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
-                                img.setBounds(0, 0, 35, 35);
-                                btnSolicitar.setCompoundDrawables(img, null, null, null);
-                                modelo.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary_light));
-                                userCarOferecida = modelo.getId();
+                            RelativeLayout modelo = montarLayoutCaronaDisponivel(caronas.get(i), usuarios.get(i));
+                            if (isMotorista(usuarios.get(i))) {
                                 if (verificaModeloAdd(modelo) != -1) {
                                     ll.removeViewAt(verificaModeloAdd(modelo));
                                     ll.addView(modelo, 0);
@@ -380,128 +460,14 @@ public class Home extends Fragment {
                                     ll.addView(modelo);
                                 }
                             }
-                            Log.e("VERIFICANDO2", "GRAVOU:"+modelo.getId());
-                            getRecarrega();
-                            getActivity();
-                            exibirBtnAdd();
-                            final int id_carona = caronas.get(i).getId();
-                            final int j = i;
-                            //final int finalI = i;
-                            btnComentar.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    comentarios(id_carona);
-                                }
-                            });
-                            btnSolicitar.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    ///////////////////
-                                    final ManipulaDados md = new ManipulaDados(getActivity());
-                                    if (M.getUsuario().getId() != usuarios.get(j).getId()) {
-                                        if (userCarOferecida == -1) {
-                                            if (md.getCaronaSolicitada() == -1) {
-                                                dialog.setTitle(R.string.title_confirmacao)
-                                                        .setMessage(R.string.alert_solicitar_carona)
-                                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialoginterface, int i) {
-
-
-                                                            }
-                                                        })
-                                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialoginterface, int i) {
-                                                                Usuario eu = md.getUsuario();
-                                                                Carona carona = caronas.get(j);
-                                                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                                                rs.solicitaCarona(carona, eu, new GetRetorno() {
-
-                                                                    @Override
-                                                                    public void concluido(Object object) {
-                                                                        String[] res = (String[]) object;
-                                                                        if (res[0].trim().equals("1")) {
-                                                                            md.setCaronaSolicitada(id_carona);
-                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                                            atualizarEspera();
-                                                                            ll.removeView(modelo);
-                                                                            exibirMsg("Carona solicitada!");
-                                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
-                                                                        } else if (res[0].trim().equals("2")) {
-                                                                            ll.removeView(modelo);
-                                                                            exibirMsg("Essa carona não está mais disponível!");
-                                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
-                                                                        } else if (res[0].trim().equals("-3")) {
-                                                                            exibirMsg(" Sem vagas!");
-                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                                        } else if (res[0].trim().equals("-2")) {
-                                                                            exibirMsg("Solicitação Recusada!");
-                                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                                        } else {
-                                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
-                                                                        }
-                                                                        limparBadge();
-                                                                    }
-
-                                                                    @Override
-                                                                    public void concluido(Object object, Object object2) {
-
-                                                                    }
-                                                                });
-                                                            }
-                                                        }).show();
-                                            } else {
-                                                Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
-
-                                            }
-                                        } else {
-                                            Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
-                                        }
-                                    } else {
-
-                                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                                        dialog.setTitle(R.string.title_confirmacao)
-                                                .setMessage(R.string.alert_cancelar_carona)
-                                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                                    }
-                                                })
-                                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-                                                        RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                                        rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
-                                                            @Override
-                                                            public void concluido(Object object) {
-                                                                exibirMsg((String) object);
-                                                                ll.removeView(modelo);
-                                                                userCarOferecida = -1;
-                                                            }
-
-                                                            @Override
-                                                            public void concluido(Object object, Object object2) {
-                                                            }
-                                                        });
-                                                    }
-                                                }).show();
-
-                                    }
-                                }
-                            });
-                            modelo.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    final String vagas = organizaVagas(caronas.get(j).getVagasOcupadas(), caronas.get(j).getVagas());
-                                    detalhesCarona(usuarios.get(j), caronas.get(j), vagas);
-                                }
-                            });
                         }
                     } else {
                         if (removerAntigas == false)
                             Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
                     }
-                    setBusca();getRecarrega();getLabel();exibirBtnAdd();
+                    setBusca();
+                    getExtra();
                     Servico.cntVerificaNovasCaronas = true;
-                    Log.e("DD1",Servico.cntVerificaNovasCaronas+"");
                 }
             });
         }
@@ -521,13 +487,30 @@ public class Home extends Fragment {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
 
+    private void atualizaAtualCaronaOferecida() {
+        final RelativeLayout modelo = montarLayoutCaronaDisponivel(m.getCaronaOferecida(), m.getUsuario());
+        int t1 = verificaModeloAdd(modelo);
+        if (t1 != -1) {
+            ll.removeViewAt(t1);
+            ll.addView(modelo, 0);
+        } else if ((ll.getChildCount() > 0) && (ll.getChildAt(0) != null)) {
+            int id = ll.getChildAt(0).getId();
+            if (id == -2) {
+                ll.removeViewAt(0);
+                ll.addView(modelo, 0);
+            }
+        } else {
+            ll.addView(modelo, 0);
+        }
+    }
+
     private void novaCarona() {
         if (load.getVisibility() == View.INVISIBLE) {
-            if (m.getUsuario().getIdCaronaSolicitada() == -1 && Home.userCarOferecida == -1) {
+            if (m.getUsuario().getIdCaronaSolicitada() == -1 && m.getCaronaOferecida() == null) {
                 startActivity(new Intent(getContext(), Criar_Carona.class));
             } else if (m.getUsuario().getIdCaronaSolicitada() != -1) {
                 Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
-            } else if (Home.userCarOferecida != -1) {
+            } else if (m.getCaronaOferecida() != null) {
                 Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
             }
         } else {
@@ -554,8 +537,8 @@ public class Home extends Fragment {
         }
     }
 
-    private void limparBadge(){
-            ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge1, 1);
+    private void limparBadge() {
+        ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge1, 1);
     }
 
 
@@ -563,9 +546,7 @@ public class Home extends Fragment {
     public void onResume() {
         super.onResume();
         filter.addAction("abcHome");
-        exibirBtnAdd();
-        getRecarrega();
-        getLabel();
+        getExtra();
         getActivity().registerReceiver(receiver, filter);
     }
 
@@ -585,183 +566,38 @@ public class Home extends Fragment {
 
     public void ultimasCaronas(final List<Carona> caronas, final List<Usuario> usuarios) {
         for (int i = 0; i < caronas.size(); i++) {
-            if (caronas.get(i).getId() == m.getCaronaSolicitada()) {
+            if (caronas.get(i).getId() == m.getCaronaSolicitada().getId()) {
                 continue;
             }
-            final RelativeLayout modelo = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.modelo_caronas_disponiveis, null);
-            TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
-            TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-            final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas2);
-            TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
-            TextView tv_nome = (TextView) modelo.findViewById(R.id.tv_nome);
-            ImageView c_foto = (ImageView) modelo.findViewById(R.id.c_foto);
-            TextView tv_telefone = (TextView) modelo.findViewById(R.id.tv_telefone);
-            Button btnSolicitar = (Button) modelo.findViewById(R.id.b_solicitar);
-            Button btnComentar = (Button) modelo.findViewById(R.id.b_comentar_car);
-            tv_nome.setText(usuarios.get(i).getNome());
-            tv_telefone.setText(usuarios.get(i).getTelefone());
-            byte[] decodedString = Base64.decode(usuarios.get(i).getFoto(), Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            Resources res = resource;
-            RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-            dr.setCircular(true);
-            c_foto.setImageDrawable(dr);
-            tv_destino.setText(caronas.get(i).getDestino());
-            tv_origem.setText(caronas.get(i).getOrigem());
-            tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-            tv_vagas.setText(organizaVagas(caronas.get(i).getVagasOcupadas(), caronas.get(i).getVagas()));
-            modelo.setId(caronas.get(i).getId());
+            RelativeLayout modelo = montarLayoutCaronaDisponivel(caronas.get(i), usuarios.get(i));
             if (m.getUsuario().getId() == usuarios.get(i).getId()) {
-                btnSolicitar.setText("Cancelar");
-                Drawable img = getContext().getResources().getDrawable(R.drawable.icon_cancel_car);
-                img.setBounds(0, 0, 35, 35);
-                btnSolicitar.setCompoundDrawables(img, null, null, null);
-                modelo.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary_light));
-                userCarOferecida = modelo.getId();
-                if (verificaModeloAdd(modelo) != -1) {
-                    ll.removeViewAt(verificaModeloAdd(modelo));
+                m.setCaronaOferecida(caronas.get(i));
+                int t1 = verificaModeloAdd(modelo);
+                if (t1 != -1) {
+                    ll.removeViewAt(t1);
                     ll.addView(modelo, 0);
                 } else {
                     ll.addView(modelo, 0);
                 }
             } else {
-                if (verificaModeloAdd(modelo) != -1) {
-                    ll.removeViewAt(verificaModeloAdd(modelo));
-                    if (userCarOferecida == -1 && m.getCaronaSolicitada() == -1) {
+                int t2 = verificaModeloAdd(modelo);
+                if (t2 != -1) {
+                    ll.removeViewAt(t2);
+                    if (m.getCaronaOferecida() == null && m.getCaronaSolicitada().getId() == -1) {
                         ll.addView(modelo, 0);
                     } else {
                         ll.addView(modelo);
                     }
                 } else {
-                    if (userCarOferecida == -1 && m.getCaronaSolicitada() == -1) {
+                    if (m.getCaronaOferecida() == null && m.getCaronaSolicitada().getId() == -1) {
                         ll.addView(modelo, 0);
                     } else {
                         ll.addView(modelo);
                     }
                 }
             }
-            getRecarrega();
-            getActivity();
-            exibirBtnAdd();
-            final int id_carona = caronas.get(i).getId();
-            final int j = i;
-            //final int finalI = i;
-            btnComentar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    comentarios(id_carona);
-                }
-            });
-            btnSolicitar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (m.getUsuario().getId() != usuarios.get(j).getId()) {
-                        if (userCarOferecida == -1) {
-                            if (m.getCaronaSolicitada() == -1) {
-                                dialog.setTitle(R.string.title_confirmacao)
-                                        .setMessage(R.string.alert_solicitar_carona)
-                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialoginterface, int i) {
-
-
-                                            }
-                                        })
-                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialoginterface, int i) {
-                                                Usuario eu = m.getUsuario();
-                                                Carona carona = caronas.get(j);
-                                                RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                                rs.solicitaCarona(carona, eu, new GetRetorno() {
-                                                    @Override
-                                                    public void concluido(Object object) {
-                                                        String[] res = (String[]) object;
-                                                        if (res[0].trim().equals("1")) {
-                                                            m.setCaronaSolicitada(id_carona);
-                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                            atualizarEspera();
-                                                            ll.removeView(modelo);
-                                                            exibirMsg("Carona solicitada!");
-                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
-                                                        } else if (res[0].trim().equals("2")) {
-                                                            ll.removeView(modelo);
-                                                            exibirMsg("Essa carona não está mais disponível!");
-                                                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
-                                                        } else if (res[0].trim().equals("-3")) {
-                                                            exibirMsg(" Sem vagas!");
-                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                        } else if (res[0].trim().equals("-2")) {
-                                                            exibirMsg("Solicitação Recusada!");
-                                                            tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), caronas.get(j).getVagas()));
-                                                        } else {
-                                                            exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
-                                                        }
-
-                                                    }
-
-                                                    @Override
-                                                    public void concluido(Object object, Object object2) {
-
-                                                    }
-                                                });
-                                            }
-                                        }).show();
-                            } else {
-                                Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
-
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_cancelar_carona)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                    }
-                                })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-                                        RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                        rs.alteraStatusCarona(caronas.get(j).getId(), 0, new GetRetorno() {
-                                            @Override
-                                            public void concluido(Object object) {
-                                                exibirMsg((String) object);
-                                                ll.removeView(modelo);
-                                                userCarOferecida = -1;
-                                            }
-
-                                            @Override
-                                            public void concluido(Object object, Object object2) {
-                                            }
-                                        });
-                                    }
-                                }).show();
-
-                    }
-                }
-            });
-            modelo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final String vagas = organizaVagas(caronas.get(j).getVagasOcupadas(), caronas.get(j).getVagas());
-                    detalhesCarona(usuarios.get(j), caronas.get(j), vagas);
-                }
-            });
         }
     }
-
-    private void exibirBtnAdd() {
-        if ((userCarOferecida != -1) || (m.getCaronaSolicitada() != -1) || (load.getVisibility() == View.VISIBLE)) {
-            newCarona.setVisibility(View.INVISIBLE);
-        } else {
-            newCarona.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler;
@@ -781,7 +617,7 @@ public class Home extends Fragment {
                         @Override
                         public void run() {
                             load.setVisibility(View.VISIBLE);
-                            exibirBtnAdd();
+                            getExtra();
                         }
                     });
 
@@ -791,17 +627,60 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            atualizarEspera();
+                            atualizaCaronaSolicitada();
                         }
                     });
                     break;
-
+                case "okSlt":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            new Funcoes().apagarNotificacaoEspecifica(getActivity(), 1);
+                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                                atualizaCaronaSolicitada();
+                                exibirMsg("Carona solicitada!");
+                            }
+                        }
+                    });
+                    break;
+                case "erro1Slt":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                                m.setCaronaSolicitada(new Carona(-1));
+                                exibirMsg("Essa carona não está mais disponível!");
+                            }
+                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
+                        }
+                    });
+                    break;
+                case "erro2Slt":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                                exibirMsg("Sem vagas!");
+                            }
+                        }
+                    });
+                    break;
+                case "erro3Slt":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                                exibirMsg("Solicitação Recusada!");
+                            }
+                        }
+                    });
+                    break;
                 case "nova(s)Carona(s)":
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             atualizaCaronas(0, 6, true);
-                            exibirBtnAdd();
+                            getExtra();
                         }
                     });
                     break;
@@ -810,7 +689,16 @@ public class Home extends Fragment {
                         @Override
                         public void run() {
                             ultimasCaronas(caronas, usuarios);
-                            exibirBtnAdd();
+                            getExtra();
+                        }
+                    });
+                    break;
+                case "atCarOfertada":
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            atualizaAtualCaronaOferecida();
+                            getExtra();
                         }
                     });
                     break;
@@ -826,13 +714,10 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (ll.getChildAt(0) != null) {
-                                if (ll.getChildAt(0).getId() == userCarOferecida) {
-                                    ll.removeViewAt(0);
-                                    Home.userCarOferecida = -1;
-                                    Log.e("REMOVIDO", "SIM");
-                                    exibirBtnAdd();
-                                }
+                            if (closePosicao_1(m.getCaronaOferecida().getId())) {
+                                ll.removeViewAt(0);
+                                m.clearAtualCarOf();
+                                getExtra();
                             }
                         }
                     });

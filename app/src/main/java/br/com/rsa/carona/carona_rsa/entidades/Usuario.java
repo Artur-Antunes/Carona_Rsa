@@ -21,6 +21,7 @@ public class Usuario implements Serializable{
     private int id;
     private String dataRegistro;
     private String senha;
+    private String status;
     private int idCaronaSolicitada;
     private boolean editado;
 
@@ -57,7 +58,6 @@ public class Usuario implements Serializable{
     }
 
     public Usuario(String nome){
-
         this.nome=nome;
         this.editado=false;
 
@@ -179,6 +179,14 @@ public class Usuario implements Serializable{
 
     public String getExtFoto() {
         return extFoto;
+    }
+
+    public void setStatus(String status){
+        this.status=status;
+    }
+
+    public String getStatus(){
+        return this.status;
     }
 
     public void setExtFoto(String extFoto) {

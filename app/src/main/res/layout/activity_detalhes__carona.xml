@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView16"
             android:layout_below="@+id/textView16"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="18dp"
             android:drawableLeft="@drawable/saida_icon"
             android:drawablePadding="4dp"
             android:textColor="@color/primary_text"
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView17"
-            android:layout_toEndOf="@+id/textView8"
+            android:layout_toEndOf="@+id/textView17"
             android:textColor="@color/secondary_text"
             android:text="00"
             android:textAppearance="?android:attr/textAppearanceMedium" />

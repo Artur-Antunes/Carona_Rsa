@@ -112,26 +112,12 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                 RadioButton radioButton = (RadioButton) findViewById(restricoes.getCheckedRadioButtonId());
                                                 String resticaoValor = radioButton.getText().toString();
                                                 Carona carona = new Carona(origemValor, destinoValor, horario.getText().toString(), tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
-                                                RequisicoesServidor rs = new RequisicoesServidor(Criar_Carona.this);
+                                                carona.setAtivo(1);
+                                                carona.setId(-2);
                                                 ManipulaDados md = new ManipulaDados(Criar_Carona.this);
-                                                // Log.e("hora?",carona.get);
-                                                rs.gravaCarona(carona, md.getUsuario().getId(), new GetRetorno() {
-                                                    @Override
-                                                    public void concluido(Object object) {
-                                                        if(object.toString().equals("1")) {
-                                                            Toast.makeText(Criar_Carona.this, "Carona salva!", Toast.LENGTH_SHORT).show();
-                                                            criaBroadcastHome("nova(s)Carona(s)");
-                                                            criaBroadcast(0, "myCarona");
-                                                        }else{
-                                                            Toast.makeText(Criar_Carona.this, object.toString(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        finish();
-                                                    }
-                                                    @Override
-                                                    public void concluido(Object object, Object object2) {
-
-                                                    }
-                                                });
+                                                md.setCaronaOferecida(carona);
+                                                criaBroadcastHome("atCarOfertada");
+                                                finish();
 
                                             }
                                         }).show();

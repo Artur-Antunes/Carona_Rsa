@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
@@ -83,6 +84,229 @@ public class Coronas_oferecidas extends Fragment {
         return view;
     }
 
+    private RelativeLayout montarLayoutCaronaOferecida(final Carona carona){//DESENVOLVENDO
+        final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
+        TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
+        TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
+        TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+        final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas3);
+        ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
+        tv_destino.setText(carona.getDestino());
+        tv_origem.setText(carona.getOrigem());
+        if(carona.getHorario().length()==4 || carona.getHorario().length()==5){
+            tv_horario.setText(carona.getHorario());
+        }else{
+            tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
+        }
+        tv_vagas.setText((carona.getVagas() - carona.getVagasOcupadas()) + "/" + carona.getVagas());
+        modelo.setId(carona.getId());
+        final LinearLayout ll = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
+        final List<Usuario> participantes = carona.getParticipantes();
+        final List statusSolicitacao = carona.getParticipantesStatus();
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RequisicoesServidor rs3 = new RequisicoesServidor(activity);
+                rs3.fecharCaronaOferecida(carona.getId(), M.getUsuario().getId(), 1, new GetRetorno() {
+                    @Override
+                    public void concluido(Object object) {
+                        if (object.toString().equals("1")) {
+                            Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
+                            lloferecidas.removeView(modelo);
+                        } else if (object.toString().equals("0")) {
+                            Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(activity, object.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void concluido(Object object, Object object2) {
+
+                    }
+                });
+
+            }
+        });
+
+
+        for (int j = 0; j < participantes.size(); j++) {
+            final int k = j;
+            if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
+                final RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_solicitadas, null);
+                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
+                TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
+                ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
+                ImageButton btnAceitar = (ImageButton) modelo2.findViewById(R.id.b_aceitar_usuario_carona);
+                ImageButton btnRecusar = (ImageButton) modelo2.findViewById(R.id.b_recusar_usuario_carona);
+                btnAceitar.setBackgroundResource(R.drawable.animacao);
+                btnRecusar.setBackgroundResource(R.drawable.animacao);
+                nomeSolicitante.setText(participantes.get(j).getNome());
+                telefoneSolicitante.setText(participantes.get(j).getTelefone());
+                byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                Resources res = resource;
+                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+                dr.setCircular(true);
+                fotoSolicitante.setImageDrawable(dr);
+                fotoSolicitante.setScaleType(ImageView.ScaleType.FIT_XY);
+                final Usuario userAtual = new Usuario(participantes.get(j).getId());
+                modelo2.setId(participantes.get(j).getId());
+                ll.addView(modelo2, 0);
+                btnAceitar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (modelo.getId()==M.getCaronaOferecida().getId()) {
+                            dialog.setTitle(R.string.title_confirmacao)
+                                    .setMessage(R.string.alert_aceitar_user)
+                                    .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialoginterface, int i) {
+
+                                        }
+                                    })
+                                    .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialoginterface, int i) {
+                                            RequisicoesServidor rs2 = new RequisicoesServidor(activity);
+                                            rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
+                                                @Override
+                                                public void concluido(Object object) {
+                                                    Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
+                                                    if (object.equals("Usuario Aceito!")) {
+                                                        ll.removeView(modelo2);
+                                                        criaBroadcastHome("nova(s)Carona(s)");
+                                                        RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
+                                                        TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
+                                                        TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
+                                                        ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
+                                                        nomeSolicitante.setText(participantes.get(k).getNome());
+                                                        telefoneSolicitante.setText(participantes.get(k).getTelefone());
+                                                        byte[] decodedString = Base64.decode(participantes.get(k).getFoto(), Base64.DEFAULT);
+                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                                        Resources res = resource;
+                                                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+                                                        dr.setCircular(true);
+                                                        fotoSolicitante.setImageDrawable(dr);
+                                                        m.setId(k);
+                                                        ll.addView(m, 0);
+                                                        new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void concluido(Object object, Object object2) {
+
+                                                }
+                                            });
+                                        }
+                                    }).show();
+                        }else{
+                            ll.removeView(modelo2);
+                            Toast.makeText(activity, R.string.alert_car_desativa,Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                btnRecusar.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                        dialog.setTitle(R.string.title_confirmacao)
+                                .setMessage(R.string.alert_recusar_user)
+                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+
+
+                                    }
+                                })
+                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialoginterface, int i) {
+
+                                        RequisicoesServidor rs2 = new RequisicoesServidor(activity);
+                                        rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
+                                            @Override
+                                            public void concluido(Object object) {
+                                                Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
+                                                if (object.equals("Usuario Recusado!")) {
+                                                    tv_vagas.setText((carona.getVagas() - (carona.getVagasOcupadas() - 1)) + "/" + carona.getVagas());
+                                                    ll.removeView(modelo2);
+                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void concluido(Object object, Object object2) {
+
+                                            }
+                                        });
+                                    }
+                                }).show();
+                    }
+                });
+
+                fotoSolicitante.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent it = new Intent(activity, DetalheUsuario.class);
+                        DetalheUsuario.usuarioEditar = participantes.get(k);
+                        startActivity(it);
+                    }
+                });
+
+
+            } else {
+                RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
+                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
+                TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
+                ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
+                nomeSolicitante.setText(participantes.get(j).getNome());
+                telefoneSolicitante.setText(participantes.get(j).getTelefone());
+                byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                Resources res = resource;
+                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+                dr.setCircular(true);
+                fotoSolicitante.setImageDrawable(dr);
+
+                fotoSolicitante.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent it = new Intent(activity, DetalheUsuario.class);
+                        DetalheUsuario.usuarioEditar = participantes.get(k);
+                        startActivity(it);
+                    }
+                });
+                modelo2.setId(j);
+                ll.addView(modelo2, 0);
+            }
+
+        }
+        return modelo;
+    }
+
+    public void atualizaAtualCaronaOferecida() {
+        if(lloferecidas.getChildCount()>0){
+            int idPrimeiroFrame=lloferecidas.getChildAt(0).getId();
+            if(M.getCaronaOferecida().getId()==idPrimeiroFrame){
+                lloferecidas.removeViewAt(0);
+            }
+        }
+
+        Carona car= M.getCaronaOferecida();
+        final List<Usuario> participantes = new LinkedList<Usuario>();
+        final List<String> statusParticipantes = new LinkedList<String>();
+
+        for (int i = 0; i < M.getTtParCarOf(); i++) {
+            participantes.add(M.getParticipantesCarOferecida(i));
+            statusParticipantes.add(M.getParticipantesCarOferecida(i).getStatus());
+        }
+
+        car.setParticipantes(participantes);
+        car.setParticipantesStatus(statusParticipantes);
+        final RelativeLayout modelo=montarLayoutCaronaOferecida(car);
+        lloferecidas.addView(modelo,0);
+    }
+
 
     public void atualizarSolicitantes(int totalviewsAtual, int totalBuscar, final boolean remover) {
         if (remover) {
@@ -97,203 +321,7 @@ public class Coronas_oferecidas extends Fragment {
                 final List<Carona> caronas = (List<Carona>) object;
                 if (caronas.size() > 0) {
                     for (int i = 0; i < caronas.size(); i++) {
-                        final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
-                        TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
-                        TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);//pega os elemetos do modelo para setar dados
-                        TextView tv_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                        final TextView tv_vagas = (TextView) modelo.findViewById(R.id.tv_vagas3);
-                        ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
-
-                        tv_destino.setText(caronas.get(i).getDestino());
-                        tv_origem.setText(caronas.get(i).getOrigem());
-                        tv_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                        tv_vagas.setText((caronas.get(i).getVagas() - caronas.get(i).getVagasOcupadas()) + "/" + caronas.get(i).getVagas());
-
-                        final LinearLayout ll = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
-                        final int m = i;
-                        final List<Usuario> participantes = caronas.get(i).getParticipantes();
-                        final List statusSolicitacao = caronas.get(i).getParticipantesStatus();
-
-                        final int idCarona = caronas.get(i).getId();
-                        final int idUsuario = M.getUsuario().getId();
-                        btnClose.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                RequisicoesServidor rs3 = new RequisicoesServidor(activity);
-                                rs3.fecharCaronaOferecida(idCarona, idUsuario, 1, new GetRetorno() {
-                                    @Override
-                                    public void concluido(Object object) {
-                                        if (object.toString().equals("1")) {
-                                            Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
-                                            lloferecidas.removeView(modelo);
-                                        } else if (object.toString().equals("0")) {
-                                            Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(activity, object.toString(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void concluido(Object object, Object object2) {
-
-                                    }
-                                });
-
-                            }
-                        });
-
-
-                        for (int j = 0; j < participantes.size(); j++) {
-                            final int k = j;
-                            if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
-                                final RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_solicitadas, null);
-                                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
-                                TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
-                                ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
-                                ImageButton btnAceitar = (ImageButton) modelo2.findViewById(R.id.b_aceitar_usuario_carona);
-                                ImageButton btnRecusar = (ImageButton) modelo2.findViewById(R.id.b_recusar_usuario_carona);
-                                btnAceitar.setBackgroundResource(R.drawable.animacao);
-                                btnRecusar.setBackgroundResource(R.drawable.animacao);
-                                nomeSolicitante.setText(participantes.get(j).getNome());
-                                telefoneSolicitante.setText(participantes.get(j).getTelefone());
-                                byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                Resources res = resource;
-                                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                                dr.setCircular(true);
-                                fotoSolicitante.setImageDrawable(dr);
-                                fotoSolicitante.setScaleType(ImageView.ScaleType.FIT_XY);
-
-                                int idSolicitante = participantes.get(j).getId();
-                                final Usuario userAtual = new Usuario(idSolicitante);
-
-
-                                modelo2.setId(j);
-                                ll.addView(modelo2, 0);
-                                btnAceitar.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        dialog.setTitle(R.string.title_confirmacao)
-                                                .setMessage(R.string.alert_aceitar_user)
-                                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                                    }
-                                                })
-                                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-                                                        RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                        rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
-                                                            @Override
-                                                            public void concluido(Object object) {
-                                                                Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                                                if (object.equals("Usuario Aceito!")) {
-                                                                    ll.removeView(modelo2);
-                                                                    criaBroadcastHome("nova(s)Carona(s)");
-                                                                    RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                                                                    TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
-                                                                    TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
-                                                                    ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
-                                                                    nomeSolicitante.setText(participantes.get(k).getNome());
-                                                                    telefoneSolicitante.setText(participantes.get(k).getTelefone());
-                                                                    byte[] decodedString = Base64.decode(participantes.get(k).getFoto(), Base64.DEFAULT);
-                                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                                                    Resources res = resource;
-                                                                    RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                                                                    dr.setCircular(true);
-                                                                    fotoSolicitante.setImageDrawable(dr);
-                                                                    m.setId(k);
-                                                                    ll.addView(m, 0);
-                                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void concluido(Object object, Object object2) {
-
-                                                            }
-                                                        });
-                                                    }
-                                                }).show();
-                                    }
-                                });
-                                btnRecusar.setOnClickListener(new View.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                                        dialog.setTitle(R.string.title_confirmacao)
-                                                .setMessage(R.string.alert_recusar_user)
-                                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-
-                                                    }
-                                                })
-                                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                                        RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                                        rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
-                                                            @Override
-                                                            public void concluido(Object object) {
-                                                                Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                                                if (object.equals("Usuario Recusado!")) {
-                                                                    tv_vagas.setText((caronas.get(m).getVagas() - (caronas.get(m).getVagasOcupadas() - 1)) + "/" + caronas.get(m).getVagas());
-                                                                    ll.removeView(modelo2);
-                                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void concluido(Object object, Object object2) {
-
-                                                            }
-                                                        });
-                                                    }
-                                                }).show();
-                                    }
-                                });
-
-                                fotoSolicitante.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent it = new Intent(activity, DetalheUsuario.class);
-                                        DetalheUsuario.usuarioEditar = participantes.get(k);
-                                        startActivity(it);
-                                    }
-                                });
-
-
-                            } else {
-                                RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
-                                TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
-                                ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
-                                nomeSolicitante.setText(participantes.get(j).getNome());
-                                telefoneSolicitante.setText(participantes.get(j).getTelefone());
-                                byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                Resources res = resource;
-                                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                                dr.setCircular(true);
-                                fotoSolicitante.setImageDrawable(dr);
-
-                                fotoSolicitante.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent it = new Intent(activity, DetalheUsuario.class);
-                                        DetalheUsuario.usuarioEditar = participantes.get(k);
-                                        startActivity(it);
-                                    }
-                                });
-                                modelo2.setId(j);
-                                ll.addView(modelo2, 0);
-                            }
-
-                        }
-
+                        final RelativeLayout modelo = montarLayoutCaronaOferecida(caronas.get(i));
                         lloferecidas.addView(modelo);
                     }
                 } else {
@@ -307,7 +335,7 @@ public class Coronas_oferecidas extends Fragment {
 
             }
         });
-        getLabel();getRecarrega();
+        getRecarrega();
     }
 
 
@@ -317,15 +345,15 @@ public class Coronas_oferecidas extends Fragment {
         } else {
             recarrega.setVisibility(View.INVISIBLE);
         }
-    }
 
-    private void getLabel() {
         if (lloferecidas.getChildCount() == 0) {
             labelOferecidas.setVisibility(View.VISIBLE);
         } else {
             labelOferecidas.setVisibility(View.INVISIBLE);
         }
+
     }
+
 
     public void criaBroadcastHome(String tipo) {//Enviar dados para MainActivity
         Intent dialogIntent = new Intent();
@@ -333,7 +361,6 @@ public class Coronas_oferecidas extends Fragment {
         dialogIntent.putExtra("mensagem", tipo);
         activity.sendBroadcast(dialogIntent);
     }
-
 
 
         @Override
@@ -394,7 +421,8 @@ public class Coronas_oferecidas extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            atualizarSolicitantes(0, 6, true);
+                            atualizaAtualCaronaOferecida();
+                            //atualizarSolicitantes(0, 6, true);
                         }
                     });
                     break;
@@ -402,7 +430,7 @@ public class Coronas_oferecidas extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            atualizarSolicitantes(0, 6, true);
+                            atualizaAtualCaronaOferecida();
                         }
                     });
                     break;

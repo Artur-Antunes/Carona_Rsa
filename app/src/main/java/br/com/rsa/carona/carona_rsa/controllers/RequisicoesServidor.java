@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -58,6 +60,24 @@ public class RequisicoesServidor {
         }
     }
 
+    private Map<String, String> mapaValores(String[] label, String[] valores){
+        Map<String, String> dataToSend = new HashMap<>();
+        for(int i=0;i< label.length;i++){
+            dataToSend.put(label[i], valores[i]);
+        }
+        return dataToSend;
+    }
+
+    private HttpURLConnection modoCon(String nome) throws IOException {
+        URL url = new URL(ENDERECO_SERVIDOR + nome);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        con.setConnectTimeout(TEMPO_CONEXAO);
+        con.setReadTimeout(TEMPO_CONEXAO);
+        return con;
+    }
+
     public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
         progressDialog.show();
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
@@ -79,7 +99,7 @@ public class RequisicoesServidor {
     }
 
     public void gravaCarona(Carona carona, int idUsuario, GetRetorno retorno) {
-        progressDialog.show();
+       // progressDialog.show();
         new armazenaCaronaAsyncTask(carona, idUsuario, retorno).execute();
 
     }
@@ -104,7 +124,7 @@ public class RequisicoesServidor {
     }
 
     public void solicitaCarona(Carona carona, Usuario usuario, GetRetorno retorno) {
-        progressDialog.show();
+        //progressDialog.show();
         new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
@@ -222,12 +242,7 @@ public class RequisicoesServidor {
 
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + aquivoPhp);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon(aquivoPhp);
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -297,20 +312,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_carona", idCarona + "");
-            dataToSend.put("id_user", idUsuario + "");
-            dataToSend.put("texto_comentario", this.texto);
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_carona","id_user","texto_comentario"};
+            String valores[]={idCarona + "",idUsuario + "",this.texto};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
-            String teste = "Não foi possível se conectar";
+            String teste = "Sem conexão";
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("Registros.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -375,20 +383,14 @@ public class RequisicoesServidor {
 
         @Override
         protected List doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_usuario", this.usuario.getId() + "");
-            dataToSend.put("id_carona", this.carona.getId() + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_usuario","id_carona"};
+            String valores[]={this.usuario.getId() + "",this.carona.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             List dadosX = null;
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "aguardaConfirmacaoCarona.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("aguardaConfirmacaoCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -506,20 +508,14 @@ public class RequisicoesServidor {
 
         @Override
         protected String doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("status3", this.status + "");
-            dataToSend.put("id_carona3", this.idCarona + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"status3","id_carona3"};
+            String valores[]={this.status + "",this.idCarona + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String mensagem = "Sem conexão!";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con = modoCon("RetornaDados.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -571,20 +567,13 @@ public class RequisicoesServidor {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_comentario_carona", this.idCarona + "");
-            dataToSend.put("tt_buscar", this.ttBuscar + "");
-            dataToSend.put("tt_coments", this.ttComents + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_comentario_carona","tt_buscar","tt_coments"};
+            String valores[]={this.idCarona + "",this.ttBuscar + "",this.ttComents + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             JSONObject jObjeto = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -672,21 +661,14 @@ public class RequisicoesServidor {
 
         @Override
         protected String doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_user_close", this.idUsuario + "");
-            dataToSend.put("id_carona_close", this.idCarona + "");
-            dataToSend.put("tipo", this.tipo + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_user_close","id_carona_close","tipo"};
+            String valores[]={this.idUsuario + "",this.idCarona + "", this.tipo+""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String mensagem = "Verifique sua conexão!";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("RetornaDados.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -755,20 +737,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id", usuario.getId() + "");
-            dataToSend.put("resposta", this.resposta);
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id","resposta"};
+            String valores[]={usuario.getId() + "",this.resposta};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Sem conexão!";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "aceitaRecusaCarona.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("aceitaRecusaCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -814,18 +790,13 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Usuario> doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id", this.usuario.getId() + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id"};
+            String valores[]={this.usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             List<Usuario> usuarios = new LinkedList<Usuario>();    //Variável que irá receber os dados do usuário.
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "buscarSolicitantesCaronas.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("buscarSolicitantesCaronas.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -894,19 +865,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Usuario doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("matricula", this.usuario.getMatricula());
-            dataToSend.put("senha", this.usuario.getSenha());
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"matricula","senha"};
+            String valores[]={this.usuario.getMatricula(),this.usuario.getSenha()};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             Usuario usuarioRetornado = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "buscaDadosUsuario.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("buscaDadosUsuario.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -977,19 +942,13 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Usuario> doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_usuario2", this.usuario.getId() + "");
-            dataToSend.put("status", this.status);
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_usuario2","status"};
+            String valores[]={this.usuario.getId() + "",this.status};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             List<Usuario> usuarios = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1006,11 +965,25 @@ public class RequisicoesServidor {
                         String nome = jObj.getString("nome_" + i);
                         String foto = jObj.getString("foto_" + i);
                         Integer id = jObj.getInt("id_" + i);
-                        Usuario usuario = new Usuario(id, nome);
+                        String telefone = jObj.getString("telefone_" + i);
+                        String sexo = jObj.getString("sexo_" + i);
+                        String cnh = jObj.getString("cnh_" + i);
+                        String sobrenome = jObj.getString("sobrenome_" + i);
+                        String matricula = jObj.getString("matricula_" + i);
+                        String email = jObj.getString("email_" + i);
+                        boolean cnhAdd;
+                        if (cnh.equals("1")) {
+                            cnhAdd=true;
+                        } else {
+                            cnhAdd=false;
+                        }
+                        Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnhAdd);
+                        usuario.setId(id);
                         usuario.setFoto(foto);
+                        usuario.setStatus(status);
                         usuarios.add(usuario);
-                        return usuarios;
                     }
+                    return usuarios;
                 }
             } catch (Exception e) {
                 e.getMessage();
@@ -1065,20 +1038,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_carona", carona + "");
-            dataToSend.put("id_usuario", usuario + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_carona","id_usuario"};
+            String valores[]={carona + "",usuario + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Sem conexão!";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "cancelarCarona.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("cancelarCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1148,26 +1115,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("origem", carona.getOrigem());
-            dataToSend.put("destino", carona.getDestino());
-            dataToSend.put("horario", carona.getHorario());
-            dataToSend.put("tipoVeiculo", carona.getTipoVeiculo());
-            dataToSend.put("ponto", carona.getPonto());
-            dataToSend.put("restricao", carona.getRestricao());
-            dataToSend.put("vagas", carona.getVagas() + "");
-            dataToSend.put("id_usuario", usuario + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"origem","destino","horario","tipoVeiculo","ponto","restricao","vagas","id_usuario"};
+            String valores[]={carona.getOrigem(),carona.getDestino(),carona.getHorario(),carona.getTipoVeiculo(),carona.getPonto(),carona.getRestricao(),carona.getVagas() + "",usuario + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Verifique sua conexão!";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("Registros.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1178,6 +1133,11 @@ public class RequisicoesServidor {
                     }
                     JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("teste");
+                    int valor=Integer.parseInt(teste);
+                    if(valor>0){
+                        String retornoId=jObjeto.getString("idCar");
+                        return retornoId;
+                    }
                     return teste;
                 }
             } catch (Exception e) {
@@ -1215,20 +1175,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_carona", idCarona + "");
-            dataToSend.put("id_usuario", usuario.getId() + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_carona","id_usuario"};
+            String valores[]={idCarona + "",usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             int teste = -100;
             Usuario usuario = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1270,7 +1224,6 @@ public class RequisicoesServidor {
     }
 
     public class exibirMinhasSolicitaçõesAsyncTask extends AsyncTask<Void, Void, List<Carona>> {
-
         Usuario usuario;
         GetRetorno retornoUsuario;
         int ttVsAtuais, ttBuscar;
@@ -1284,21 +1237,14 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Carona> doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id", this.usuario.getId() + "");
-            dataToSend.put("ttVsAtuais", this.ttVsAtuais + "");
-            dataToSend.put("ttBuscar", this.ttBuscar + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id","ttVsAtuais","ttBuscar"};
+            String valores[]={this.usuario.getId() + "",this.ttVsAtuais + "",this.ttBuscar + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             List<Carona> caronas = new LinkedList<Carona>();
 
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "caronasAceitas.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("caronasAceitas.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1387,23 +1333,15 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("sexoUsuario", usuario.getSexo());
-            dataToSend.put("idUser", usuario.getId() + "");
-            dataToSend.put("ultimoValor", ultimoValor + "");
-            dataToSend.put("totalViews", totalViews + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"sexoUsuario","idUser","ultimoValor","totalViews"};
+            String valores[]={usuario.getSexo(),usuario.getId() + "",ultimoValor + "",totalViews + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "Listas.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con=modoCon("Listas.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1514,18 +1452,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("email_user", emailUser + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"email_user"};
+            String valores[]={emailUser + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "RetornaDados.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1573,21 +1506,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("id_user", usuario.getId() + "");
-            dataToSend.put("ttViewsAtuais", ttViewsAtuais + "");
-            dataToSend.put("ttBuscar", ttBuscar + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"id_user","ttViewsAtuais","ttBuscar"};
+            String valores[]={usuario.getId() + "",ttViewsAtuais + "",ttBuscar + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + "buscaSolicitacoes.php");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon("buscaSolicitacoes.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1695,22 +1621,15 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("sexoUsuario", usuario.getSexo());
-            dataToSend.put("id_user", usuario.getId() + "");
-            dataToSend.put("id", this.idUltimaCarona + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"sexoUsuario","id_user","id"};
+            String valores[]={usuario.getSexo(),usuario.getId() + "",this.idUltimaCarona + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String arquivoServ = "UltimasCaronas.php";
             String teste = "Erro de conexão";
             JSONObject jObjeto = null;
             try {
-                URL url = new URL(ENDERECO_SERVIDOR + arquivoServ);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setConnectTimeout(TEMPO_CONEXAO);
-                con.setReadTimeout(TEMPO_CONEXAO);
+                HttpURLConnection con=modoCon(arquivoServ);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1742,7 +1661,7 @@ public class RequisicoesServidor {
             List<Usuario> usuarios = new LinkedList<Usuario>();
             try {
                 for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
-                    if (new ManipulaDados(cnt).getCaronaSolicitada() == jObjeto.getInt("id_" + i)) {
+                    if (new ManipulaDados(cnt).getCaronaSolicitada().getId() == jObjeto.getInt("id_" + i)) {
                         continue;
                     }
                     String origem = jObjeto.getString("origem_" + i);
@@ -1838,21 +1757,15 @@ public class RequisicoesServidor {
 
         @Override
         protected String[] doInBackground(Void... params) {
-            Map<String, String> dataToSend = new HashMap<>();
-            dataToSend.put("idCaronaSolicita", carona.getId() + "");
-            dataToSend.put("idUsuarioSolicita", usuario.getId() + "");
-            String encodedStr = getEncodedData(dataToSend);
+            String label[]={"idCaronaSolicita","idUsuarioSolicita"};
+            String valores[]={carona.getId() + "",usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label,valores));
             BufferedReader reader = null;
             String res[] = new String[2];
             res[0] = "Erro 404";
             try {
                 while (running) {
-                    URL url = new URL(ENDERECO_SERVIDOR + "Registros.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-                    con.setConnectTimeout(TEMPO_CONEXAO);
-                    con.setReadTimeout(TEMPO_CONEXAO);
+                    HttpURLConnection con= modoCon("Registros.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();

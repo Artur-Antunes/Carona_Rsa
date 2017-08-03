@@ -30,6 +30,18 @@
             android:textColor="@color/color3" />
 
         <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_clock"
+            android:background="@color/verde"
+            android:id="@+id/imageViewAndamento"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_alignEnd="@+id/tv_legenda"
+            android:layout_alignBottom="@+id/tv_legenda"
+            android:layout_alignTop="@+id/tv_legenda" />
+
+        <ImageView
             android:id="@+id/imageViewR"
             android:layout_width="20dp"
             android:layout_height="20dp"
