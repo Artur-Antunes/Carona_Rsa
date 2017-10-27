@@ -56,13 +56,23 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="15dp" />
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_margin="4dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_atnot"
+            android:layout_alignParentRight="true"
+            android:background="@color/icons"
+            android:id="@+id/imageViewAnd3"
+            />
+
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textViewSt2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="20dp"
             android:text="ACEITO"
             android:textSize="16dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />

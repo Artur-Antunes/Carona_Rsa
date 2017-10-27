@@ -6,21 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.util.List;
 
@@ -39,7 +34,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mSenhaView;
     private EditText mMatriculaView;
-    ManipulaDados mDados;
+    private ManipulaDados mDados;
+    private RequisicoesServidor rs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mDados = new ManipulaDados(LoginActivity.this);
-        mDados.limparDados();
+        //mDados.limparDados();
         new Funcoes().apagarNotificacoes(LoginActivity.this);
         if (mDados.getUsuario() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -55,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         mMatriculaView = (EditText) findViewById(R.id.matricula_login);
         mSenhaView = (EditText) findViewById(R.id.senha_login);
-
+        rs = new RequisicoesServidor(LoginActivity.this);
     }
 
     @Override
@@ -87,14 +83,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void autenticar(Usuario usuario) {
 
-        RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
         rs.buscaDadosDoUsuario(usuario, new GetRetorno() {
 
             @Override
             public void concluido(Object object) {
                 Usuario user= (Usuario) object;
                 if (user == null) {
-                    Toast.makeText(LoginActivity.this,R.string.alert_sem_conexao,Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,R.string.alert_sem_con,Toast.LENGTH_LONG).show();
                 } else if(user.getId()==0){
                     mostrarMensagemErro();
                 }else{
@@ -125,11 +120,9 @@ public class LoginActivity extends AppCompatActivity {
         ll.setPadding(10, 10, 10, 10);
         ll.addView(emailAtual);
         builder.setView(ll);
-
         builder.setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
                 rs.recuperarSenha(emailAtual.getText().toString(), new GetRetorno() {
                     @Override
                     public void concluido(Object object) {
@@ -164,17 +157,21 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void logarUsuario(Object object) {    //Usuário existente.
-        Usuario usuario = (Usuario) object;
+        final Usuario usuario = (Usuario) object;
+        Carona carNV= new Carona(usuario.getIdCaronaSolicitada());
         mDados.gravarDados(usuario);
         mDados.setLogado(true);
-        Servico.cntVerificaNovasCaronas=false;
+        Log.e("idDE:",usuario.getIdCaronaSolicitada()+"");
+        if(usuario.getIdCaronaSolicitada()!=-1){
+            mDados.setCaronaSolicitada(carNV);
+        }
+        Servico.cntVerificaNovasCaronas = false;
         Toast.makeText(LoginActivity.this, "Bem-Vindo", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     private void salvarDadosExtras(Usuario user) {//não utilizado
-        RequisicoesServidor rs = new RequisicoesServidor(LoginActivity.this);
         rs.exibirMinhasSolicitações(0, 6, user, new GetRetorno() {
             @Override
             public void concluido(Object object) {
@@ -208,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void semCon() {
-        Toast.makeText(LoginActivity.this, R.string.alert_sem_conexao, Toast.LENGTH_LONG).show();
+        Toast.makeText(LoginActivity.this, R.string.alert_sem_con, Toast.LENGTH_LONG).show();
     }
 
     @Override

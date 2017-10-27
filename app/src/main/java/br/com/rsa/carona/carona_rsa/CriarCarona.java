@@ -22,13 +22,11 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
-import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 
-public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnValueChangeListener{
+public class CriarCarona extends AppCompatActivity implements NumberPicker.OnValueChangeListener{
     private Spinner origem;
     private Spinner destino;
     private Spinner tipoVeiculo;
@@ -39,14 +37,14 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
     private Spinner vagas;
     private RadioGroup restricoes;
     private Button horario;
-    AlertDialog.Builder dialog;
+    private AlertDialog.Builder dialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_criar__carona);
+        setContentView(R.layout.activity_criar_carona);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.locais, android.R.layout.simple_spinner_dropdown_item);
         restricoes = (RadioGroup) findViewById(R.id.rd_restricoes);
         horario = (Button) findViewById(R.id.tp_horario);
@@ -57,7 +55,7 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
         adapter = ArrayAdapter.createFromResource(this, R.array.tipo_veiculos, android.R.layout.simple_spinner_dropdown_item);
         tipoVeiculo = (Spinner) findViewById(R.id.sp_tipos_veiculo);
         tipoVeiculo.setAdapter(adapter);
-        dialog = new AlertDialog.Builder(Criar_Carona.this);
+        dialog = new AlertDialog.Builder(CriarCarona.this);
         salvar = (Button) findViewById(R.id.b_salvar);
         ponto = (EditText) findViewById(R.id.c_ponto);
         ponto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -94,15 +92,15 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                     if (!vagas.getSelectedItem().toString().equals("")) {
                         if (!origem.getSelectedItem().toString().equals(destino.getSelectedItem().toString())) {
                             if (!(tipoVeiculo.getSelectedItem().equals("MOTOCICLETA") && !vagas.getSelectedItem().toString().equals("1"))) {
-                                dialog.setTitle(R.string.title_confirmacao)
+                                dialog.setTitle(R.string.title_conf)
                                         .setMessage(R.string.alert_criar_carona)
-                                        .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                                        .setNegativeButton(R.string.n, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialoginterface, int i) {
 
 
                                             }
                                         })
-                                        .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialoginterface, int i) {
                                                 String origemValor = origem.getSelectedItem().toString();
                                                 String destinoValor = destino.getSelectedItem().toString();
@@ -114,7 +112,7 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                                 Carona carona = new Carona(origemValor, destinoValor, horario.getText().toString(), tipoVeiculoValor, resticaoValor, vagasValor, pontoValor);
                                                 carona.setAtivo(1);
                                                 carona.setId(-2);
-                                                ManipulaDados md = new ManipulaDados(Criar_Carona.this);
+                                                ManipulaDados md = new ManipulaDados(CriarCarona.this);
                                                 md.setCaronaOferecida(carona);
                                                 criaBroadcastHome("atCarOfertada");
                                                 finish();
@@ -123,17 +121,17 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
                                         }).show();
 
                             } else {
-                                Toast.makeText(Criar_Carona.this, " MOTOCICLETA SÓ ACEITA 1 VAGA! ", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CriarCarona.this, " Motocicleta só aceita 1 vaga! ", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
-                            Toast.makeText(Criar_Carona.this, " ORIGEM E DESTINO PRECISAM SER DISTINTOS ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CriarCarona.this, "Origem e destino precisam ser distintos", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(Criar_Carona.this, " PREENCHA A QUANTIDADE DE VAGAS ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CriarCarona.this, "Preencha todas as vagas", Toast.LENGTH_SHORT).show();
                     }
                 }else {
-                    Toast.makeText(Criar_Carona.this, " O HORÁRIO DE SAÍDA É INVÁLIDO ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CriarCarona.this, "O horário de saída é inválido", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -165,9 +163,9 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
 
     /**
      public void show(View v) {
-     final Dialog d = new Dialog(Criar_Carona.this);
+     final Dialog d = new Dialog(CriarCarona.this);
      d.setTitle("Nº Vagas");
-     d.setContentView(R.layout.testador);
+     d.setContentView(R.layout.Testador);
      Button b1 = (Button) d.findViewById(R.id.button1);
      final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
      np.setMaxValue(5); // max value 100
@@ -192,7 +190,7 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(Criar_Carona.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(CriarCarona.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 timePicker.is24HourView();
@@ -229,6 +227,12 @@ public class Criar_Carona extends AppCompatActivity implements NumberPicker.OnVa
         dialogIntent.putExtra("mensagem", tipo);
         dialogIntent.putExtra("valor", valor + "");
         sendBroadcast(dialogIntent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(CriarCarona.this, "Crie sua carona", Toast.LENGTH_SHORT).show();
     }
 
     @Override

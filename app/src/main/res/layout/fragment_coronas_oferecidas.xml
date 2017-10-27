@@ -16,17 +16,10 @@
         android:textStyle="bold"
         android:visibility="visible" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
         <ScrollView
             android:id="@+id/scrollView1"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true">
 
             <LinearLayout
@@ -70,5 +63,4 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

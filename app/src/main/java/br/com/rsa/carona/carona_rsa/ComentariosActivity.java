@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,7 +30,6 @@ import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
-import br.com.rsa.carona.carona_rsa.entidades.BadgeView;
 import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
@@ -39,14 +37,14 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 public class ComentariosActivity extends AppCompatActivity implements Serializable{
 
     public static int idCarona;
-    LayoutInflater linf;
-    MyReceiver receiver;
-    LinearLayout llComentario;
-    ManipulaDados md;
-    ImageButton btComentar;
-    SwipeRefreshLayout swipeLayout;
-    IntentFilter filter = new IntentFilter();
-    EditText comentario;
+    private LayoutInflater linf;
+    private MyReceiver receiver;
+    private LinearLayout llComentario;
+    private ManipulaDados md;
+    private ImageButton btComentar;
+    private SwipeRefreshLayout swipeLayout;
+    private IntentFilter filter = new IntentFilter();
+    private EditText comentario;
     public static int active = -1;
 
 

@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="br.com.rsa.carona.carona_rsa.Criar_Carona">
+        tools:context="br.com.rsa.carona.carona_rsa.CriarCarona">
 
         <TextView
             android:id="@+id/textView7"

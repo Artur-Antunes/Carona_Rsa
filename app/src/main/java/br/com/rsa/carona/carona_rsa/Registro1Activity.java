@@ -32,13 +32,13 @@ public class Registro1Activity extends AppCompatActivity {
     private EditText nomeRegistro,sobrenomeRegistro;
     private TextView escolherFoto;
     private Button bSalvar;
-    ImageView imagem;
+    private ImageView imagem;
     private String foto = null;
     private String extFoto = null;
     public static final int IMAGEM_CAM = 2;
     public static final int PIC_CROP = 3;
     public static final int RESULT_SELECT_IMAGE = 5;
-    Uri selectedImage;
+    private Uri selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

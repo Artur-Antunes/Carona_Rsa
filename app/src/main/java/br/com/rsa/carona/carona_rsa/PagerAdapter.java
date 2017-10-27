@@ -1,10 +1,8 @@
 package br.com.rsa.carona.carona_rsa;
 
-import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
@@ -22,10 +20,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 frag = new Home();
                 break;
             case 1:
-                frag= new Caronas_Recebidas();
+                frag= new CaronasRecebidas();
                 break;
             case 2:
-                frag = new Coronas_oferecidas();
+                frag = new CoronasOferecidas();
                 break;
             default:
                 break;

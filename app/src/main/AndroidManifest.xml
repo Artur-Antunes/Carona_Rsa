@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.rsa.carona.carona_rsa">
+    package="br.com.rsa.carona.carona_rsa" >
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
-
     <service
         android:name=".entidades.Servico"
         android:exported="true" />
@@ -22,8 +21,8 @@
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <receiver android:name=".controllers.StarMeLeva">
+        android:theme="@style/AppTheme" >
+        <receiver android:name=".controllers.StartMeLeva" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -34,53 +33,53 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".EditarDadosActivity"
             android:label="@string/title_activity_edicao"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".Registro2Activity"
             android:label="@string/title_activity_registro"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".Criar_Carona"
+            android:name=".CriarCarona"
             android:label="@string/title_activity_criar__carona"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".UsuarioDetalhesActivity"
-            android:label="@string/action_perfil"></activity>
+            android:label="@string/action_perfil" />
         <activity
-            android:name=".Detalhes_Carona"
-            android:label="@string/title_activity_detalhes__carona"></activity>
+            android:name=".DetalhesCarona"
+            android:label="@string/title_activity_detalhes__carona" />
         <activity
             android:name=".Registro1Activity"
             android:label="@string/title_activity_registro"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".DetalheUsuario"
-            android:label="@string/title_activity_detalhe_usuario"></activity>
+            android:label="@string/title_activity_detalhe_usuario" />
 
         <service
             android:name=".entidades.Servico"
             android:exported="true" />
 
         <activity
-            android:name=".testador"
-            android:label="@string/title_activity_testador"></activity>
-
+            android:name=".Testador"
+            android:label="@string/title_activity_testador" />
         <activity
             android:name=".ComentariosActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>

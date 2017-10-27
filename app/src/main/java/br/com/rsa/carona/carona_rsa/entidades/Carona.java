@@ -3,10 +3,8 @@ package br.com.rsa.carona.carona_rsa.entidades;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by josehelder on 23/10/2016.
- */
-public class Carona implements Serializable{
+
+public class Carona implements Serializable {
     private String origem;
     private String destino;
     private String ponto;
@@ -24,35 +22,44 @@ public class Carona implements Serializable{
     private String statusUsuario;
     private Usuario proprietario;
 
-    public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, int vagas, String ponto){
-        this.origem=origem;
-        this.destino=destino;
-        this.horario=horario;
-        this.tipoVeiculo=tipoVeiculo;
-        this.ponto=ponto;
-        this.restricao=restricao;
-        this.vagas=vagas;
+    public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, int vagas, String ponto) {
+        this.origem = origem;
+        this.destino = destino;
+        this.horario = horario;
+        this.tipoVeiculo = tipoVeiculo;
+        this.ponto = ponto;
+        this.restricao = restricao;
+        this.vagas = vagas;
 
     }
 
-    public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, String ponto){
-        this.origem=origem;
-        this.destino=destino;
-        this.horario=horario;
-        this.tipoVeiculo=tipoVeiculo;
-        this.ponto=ponto;
-        this.restricao=restricao;
+    public Carona(String origem, String destino, String horario, String tipoVeiculo, String restricao, String ponto) {
+        this.origem = origem;
+        this.destino = destino;
+        this.horario = horario;
+        this.tipoVeiculo = tipoVeiculo;
+        this.ponto = ponto;
+        this.restricao = restricao;
     }
 
-    public Carona(int id){
-        this.id=id;
+    public Carona(int id) {
+        this.id = id;
     }
 
-    public void setProprietario(Usuario user){
-        this.proprietario=user;
+    public int getId() {
+        return id;
     }
 
-    public Usuario getProprietario(){
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setProprietario(Usuario user) {
+        this.proprietario = user;
+
+    }
+
+    public Usuario getProprietario() {
         return this.proprietario;
     }
 
@@ -62,6 +69,7 @@ public class Carona implements Serializable{
 
     public void setOrigem(String origem) {
         this.origem = origem;
+
     }
 
     public String getDestino() {
@@ -69,7 +77,9 @@ public class Carona implements Serializable{
     }
 
     public void setDestino(String destino) {
+
         this.destino = destino;
+
     }
 
     public String getPonto() {
@@ -78,6 +88,7 @@ public class Carona implements Serializable{
 
     public void setPonto(String ponto) {
         this.ponto = ponto;
+
     }
 
     public String getHorario() {
@@ -86,6 +97,7 @@ public class Carona implements Serializable{
 
     public void setHorario(String horario) {
         this.horario = horario;
+
     }
 
     public String getTipoVeiculo() {
@@ -93,7 +105,9 @@ public class Carona implements Serializable{
     }
 
     public void setTipoVeiculo(String tipoVeiculo) {
+
         this.tipoVeiculo = tipoVeiculo;
+
     }
 
     public String getRestricao() {
@@ -109,7 +123,10 @@ public class Carona implements Serializable{
     }
 
     public void setVagas(int vagas) {
+
         this.vagas = vagas;
+
+
     }
 
     public int getStatus() {
@@ -117,7 +134,9 @@ public class Carona implements Serializable{
     }
 
     public void setStatus(int status) {
+
         this.status = status;
+
     }
 
     public int getAtivo() {
@@ -125,15 +144,8 @@ public class Carona implements Serializable{
     }
 
     public void setAtivo(int ativo) {
+
         this.ativo = ativo;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getDataCriacao() {
@@ -141,7 +153,9 @@ public class Carona implements Serializable{
     }
 
     public void setDataCriacao(String dataCriacao) {
+
         this.dataCriacao = dataCriacao;
+
     }
 
     public List<Usuario> getParticipantes() {
@@ -149,7 +163,9 @@ public class Carona implements Serializable{
     }
 
     public void setParticipantes(List<Usuario> participantes) {
+
         this.participantes = participantes;
+
     }
 
     public List getParticipantesStatus() {
@@ -157,15 +173,19 @@ public class Carona implements Serializable{
     }
 
     public void setParticipantesStatus(List participantesStatus) {
+
         this.participantesStatus = participantesStatus;
+
     }
 
-    public void setStatusUsuario(String status){
-        this.statusUsuario=status;
-    }
-
-    public String getStatusUsuario(){
+    public String getStatusUsuario() {
         return this.statusUsuario;
+    }
+
+    public void setStatusUsuario(String status) {
+
+        this.statusUsuario = status;
+
     }
 
     public int getVagasOcupadas() {

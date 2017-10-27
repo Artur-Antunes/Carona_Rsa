@@ -3,14 +3,9 @@ package br.com.rsa.carona.carona_rsa;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +21,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class Detalhes_Carona extends AppCompatActivity {
+public class DetalhesCarona extends AppCompatActivity {
     private TextView tv_origem;
     private TextView tv_destino;
     private TextView tv_vagas;
@@ -42,7 +37,7 @@ public class Detalhes_Carona extends AppCompatActivity {
     private Button b_salvar;
     private RelativeLayout rl;
     private LinearLayout ll;
-    AlertDialog.Builder dialog;
+    private AlertDialog.Builder dialog;
     public static Carona carona = null;
     public static Usuario usuario = null;
     private String intencao;
@@ -50,10 +45,10 @@ public class Detalhes_Carona extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalhes__carona);
+        setContentView(R.layout.activity_detalhes_carona);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final ManipulaDados md = new ManipulaDados(Detalhes_Carona.this);
-        dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+        final ManipulaDados md = new ManipulaDados(DetalhesCarona.this);
+        dialog = new AlertDialog.Builder(DetalhesCarona.this);
         //solCar2 = (FloatingActionButton) findViewById(R.id.b_solicita2);
         //ll = (LinearLayout) findViewById(R.id.caixa_participantes);
         //rl = (RelativeLayout) findViewById(R.id.titulo);
@@ -72,7 +67,7 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_email = (TextView) findViewById(R.id.tv_email);
         b_salvar = (Button) findViewById(R.id.b_solicitar);
 
-        if ((md.getCaronaSolicitada().getId() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
+        if ((md.getCaronaSolicitada() != null && md.getCaronaSolicitada().getId() == carona.getId()) || (md.getUsuario().getId() == usuario.getId())) {
             intencao = "CANCELAR";
             b_salvar.setText("CANCELAR");
         } else {
@@ -83,22 +78,20 @@ public class Detalhes_Carona extends AppCompatActivity {
         tv_origem.setText(carona.getOrigem());
         tv_destino.setText(carona.getDestino());
 
-        Bundle b= getIntent().getExtras();
+        Bundle b = getIntent().getExtras();
         tv_vagas.setText(b.get("vagas") + "");
-        if(carona.getHorario().length()==4 || carona.getHorario().length()==5 ){
+        if (carona.getHorario().length() == 4 || carona.getHorario().length() == 5) {
             tv_horario.setText(carona.getHorario());
-        }else {
+        } else {
             tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
         }
         tv_ponto.setText(carona.getPonto());
-        Log.e("www","ok");
         tv_tipoVeiculo.setText(carona.getTipoVeiculo());
         if (carona.getStatus() == 1) {
             tv_status.setText("Ativa");
         } else {
             tv_status.setText("Inativa");
         }
-        Log.e("www","ok2");
         tv_matricula.setText(usuario.getMatricula());
         tv_telefone.setText(usuario.getTelefone());
         tv_nome.setText(usuario.getNome());
@@ -110,19 +103,19 @@ public class Detalhes_Carona extends AppCompatActivity {
         }
         //ll.removeAllViews();
         /**
-        for (int i = 0; i < carona.getParticipantes().size(); i++) {
-            final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
-            TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
-            TextView status = (TextView) modelo.findViewById(R.id.tv_status);
-            nome.setText(carona.getParticipantes().get(i).getNome());
-            status.setText(carona.getParticipantesStatus().get(i).toString());
-            if (carona.getParticipantesStatus().get(i).toString().equals("ACEITO")) {
-                status.setTextColor(getResources().getColor(R.color.verde));
-            } else {
-                status.setTextColor(getResources().getColor(R.color.color1));
-            }
-            ll.addView(modelo, 0);
-        }
+         for (int i = 0; i < carona.getParticipantes().size(); i++) {
+         final RelativeLayout modelo = (RelativeLayout) this.getLayoutInflater().inflate(R.layout.modelo_participantes, null);
+         TextView nome = (TextView) modelo.findViewById(R.id.tv_nome);
+         TextView status = (TextView) modelo.findViewById(R.id.tv_status);
+         nome.setText(carona.getParticipantes().get(i).getNome());
+         status.setText(carona.getParticipantesStatus().get(i).toString());
+         if (carona.getParticipantesStatus().get(i).toString().equals("ACEITO")) {
+         status.setTextColor(getResources().getColor(R.color.verde));
+         } else {
+         status.setTextColor(getResources().getColor(R.color.color1));
+         }
+         ll.addView(modelo, 0);
+         }
 
          **/
         b_salvar.setOnClickListener(new View.OnClickListener() {
@@ -132,22 +125,22 @@ public class Detalhes_Carona extends AppCompatActivity {
                 if (intencao.equals("CANCELAR")) {
                     if (md.getUsuario().getId() == usuario.getId()) {//O dono vai cancelar sua carona!
                         Log.e("usuario:", "dono_cancela");
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_cancelar_carona)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                        dialog.setTitle(R.string.title_conf)
+                                .setMessage(R.string.alert_cnl_car)
+                                .setNegativeButton(R.string.n, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
-                                        // startActivity(new Intent(Detalhes_Carona.this, UsuarioDetalhesActivity.class));
+                                        // startActivity(new Intent(DetalhesCarona.this, UsuarioDetalhesActivity.class));
                                     }
                                 })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
-                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                        RequisicoesServidor rs = new RequisicoesServidor(DetalhesCarona.this);
                                         rs.alteraStatusCarona(carona.getId(), 0, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
                                                 md.clearAtualCarOf();
-                                                Toast.makeText(Detalhes_Carona.this, (String) object, Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                                                Toast.makeText(DetalhesCarona.this, (String) object, Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(DetalhesCarona.this, MainActivity.class));
                                             }
 
                                             @Override
@@ -159,14 +152,14 @@ public class Detalhes_Carona extends AppCompatActivity {
                                 }).show();
                     } else if (md.getCaronaSolicitada().getId() == carona.getId()) {//O usuário vai cancelar sua solicitação!
                         Log.e("usuario:", "caroneiro_cancelando!");
-                        RequisicoesServidor rserv = new RequisicoesServidor(Detalhes_Carona.this);
+                        RequisicoesServidor rserv = new RequisicoesServidor(DetalhesCarona.this);
                         Usuario userLocal = new Usuario((md.getUsuario().getId()));
-                        rserv.desistirCarona(userLocal.getId(),carona.getId(), new GetRetorno() {
+                        rserv.desistirCarona(userLocal.getId(), carona.getId(), new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
-                                Toast.makeText(Detalhes_Carona.this, object.toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(DetalhesCarona.this, object.toString(), Toast.LENGTH_LONG).show();
                                 md.setCaronaSolicitada(new Carona(-1));
-                                startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                                startActivity(new Intent(DetalhesCarona.this, MainActivity.class));
                             }
 
                             @Override
@@ -178,25 +171,24 @@ public class Detalhes_Carona extends AppCompatActivity {
                     }
                 } else if (intencao.equals(("Me Leva!"))) {
                     if (md.getCaronaSolicitada().getId() == -1) {
-                        Log.e("usuario:", "caroneiro_pedindo!");
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_solicitar_carona)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                        dialog.setTitle(R.string.title_conf)
+                                .setMessage(R.string.alert_slt_car)
+                                .setNegativeButton(R.string.n, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
 
                                     }
                                 })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
                                         Usuario eu = md.getUsuario();
-                                        RequisicoesServidor rs = new RequisicoesServidor(Detalhes_Carona.this);
+                                        RequisicoesServidor rs = new RequisicoesServidor(DetalhesCarona.this);
                                         rs.solicitaCarona(carona, eu, new GetRetorno() {
                                             @Override
                                             public void concluido(Object object) {
                                                 if (object.toString().trim().equals("1")) {
-                                                    Toast.makeText(Detalhes_Carona.this, "CARONA SOLICITADA!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(DetalhesCarona.this,R.string.alert_car_slt, Toast.LENGTH_SHORT).show();
                                                     md.setCaronaSolicitada(carona);
-                                                    startActivity(new Intent(Detalhes_Carona.this, MainActivity.class));
+                                                    startActivity(new Intent(DetalhesCarona.this, MainActivity.class));
                                                 }
                                             }
 
@@ -211,7 +203,7 @@ public class Detalhes_Carona extends AppCompatActivity {
                                 }).show();
 
                     } else {
-                        Toast.makeText(Detalhes_Carona.this, " Você já tem uma carona solicitada ! ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetalhesCarona.this,R.string.alert_car_slt, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -221,7 +213,7 @@ public class Detalhes_Carona extends AppCompatActivity {
 
     public void show(View v) {
         String usuarios = "";
-        if ((carona.getParticipantes()!=null) && (carona.getParticipantes().size() > 0)) {
+        if ((carona.getParticipantes() != null) && (carona.getParticipantes().size() > 0)) {
             for (int i = 0; i < carona.getParticipantes().size(); i++) {
                 String nome = carona.getParticipantes().get(i).getNome();
                 String sobrenome = carona.getParticipantes().get(i).getSobrenome();
@@ -229,17 +221,17 @@ public class Detalhes_Carona extends AppCompatActivity {
             }
             getParticipantes(usuarios);
         } else {
-            Toast.makeText(Detalhes_Carona.this, "Nenhum participante", Toast.LENGTH_LONG).show();
+            Toast.makeText(DetalhesCarona.this, "Nenhum participante", Toast.LENGTH_LONG).show();
         }
     }
 
 
     private void getParticipantes(String usuarios) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(Detalhes_Carona.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DetalhesCarona.this);
         dialog.setCancelable(false);
         dialog.setTitle("PARTICIPANTES");
         dialog.setMessage(usuarios);
-        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(R.string.k, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
 

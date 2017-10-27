@@ -16,12 +16,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,16 +26,16 @@ import java.util.Map;
 
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
-import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class RequisicoesServidor {
     String TAG = "ERROS";
     ProgressDialog progressDialog;
     public static final int TEMPO_CONEXAO = 1000 * 10;
-    public static final String ENDERECO_SERVIDOR = "http://10.0.2.2/Caronas/";
+    public static final String ENDERECO_SERVIDOR = "http://carona.devdes.com.br/Caronas/";
     Context cnt;
     private volatile boolean running;
+    ManipulaDados mDados;
 
     public RequisicoesServidor(Context context) {
         progressDialog = new ProgressDialog(context);
@@ -46,6 +43,7 @@ public class RequisicoesServidor {
         progressDialog.setMessage("Aguarde...");
         running = true;
         cnt = context;
+        mDados = new ManipulaDados(cnt);
     }
 
     public boolean isConnectedToServer(String url) {
@@ -60,9 +58,9 @@ public class RequisicoesServidor {
         }
     }
 
-    private Map<String, String> mapaValores(String[] label, String[] valores){
+    private Map<String, String> mapaValores(String[] label, String[] valores) {
         Map<String, String> dataToSend = new HashMap<>();
-        for(int i=0;i< label.length;i++){
+        for (int i = 0; i < label.length; i++) {
             dataToSend.put(label[i], valores[i]);
         }
         return dataToSend;
@@ -79,16 +77,19 @@ public class RequisicoesServidor {
     }
 
     public void gravaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {
+        Log.e("esse:","1.3");
         progressDialog.show();
         new armazenaDadosUsuarioAsyncTask(usuario, retorno).execute();
     }
 
     public void buscaDadosDoUsuario(Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","1.4");
         progressDialog.show();
         new BuscaDadosUsuarioAsyncTask(usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     public void buscasSolicitacoesCaronas(int ttViewsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","1.5");
         progressDialog.show();// Mostra a barra de dialogo
         new BuscaSolicitacaoAsyncTask(ttViewsAtuais, ttBuscar, usuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
@@ -99,7 +100,7 @@ public class RequisicoesServidor {
     }
 
     public void gravaCarona(Carona carona, int idUsuario, GetRetorno retorno) {
-       // progressDialog.show();
+        // progressDialog.show();
         new armazenaCaronaAsyncTask(carona, idUsuario, retorno).execute();
 
     }
@@ -110,6 +111,7 @@ public class RequisicoesServidor {
     }
 
     public void recuperarSenha(String email, GetRetorno retorno) {
+        Log.e("esse:","2");
         progressDialog.show();
         new recuperarSenhaAsyncTask(email, retorno).execute();
     }
@@ -124,47 +126,53 @@ public class RequisicoesServidor {
     }
 
     public void solicitaCarona(Carona carona, Usuario usuario, GetRetorno retorno) {
-        //progressDialog.show();
         new solicitaCaronaAsyncTask(carona, usuario, retorno).execute();
     }
 
     public void fecharCaronaOferecida(int idCarona, int idUsuario, int tipo, GetRetorno retorno) {
+        Log.e("esse:","3");
         progressDialog.show();
         new fecharCaronaOferecidaAsyncTask(idCarona, idUsuario, tipo, retorno).execute();
     }
 
     public void exibirMinhasSolicitações(int ttVsAtuais, int ttBuscar, Usuario usuario, GetRetorno retorno) {
+        Log.e("esse:","4");
         progressDialog.show();// Mostra a barra de dialogo.
         new exibirMinhasSolicitaçõesAsyncTask(ttVsAtuais, ttBuscar, usuario, retorno).execute();
     }
 
     public void exibirSolicitacoesCaronas(Usuario usuario, GetRetorno retorno) {
+        Log.e("esse:","5");
         progressDialog.show();// Mostra a barra de dialogo.
         new exibirUsuariosSolicitantesAsyncTask(usuario, retorno).execute();
     }
 
     public void aceitarRecusarCaronas(Usuario usuario, String resposta, GetRetorno retorno) {
-        progressDialog.show();// Mostra a barra de dialogo.
+        //progressDialog.show();// Mostra a barra de dialogo.
         new aceitaOuRecusaCaronaAsyncTask(usuario, resposta, retorno).execute();
     }
 
     public void alteraStatusCarona(int idCarona, int valor, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","6");
         progressDialog.show();// Mostra a barra de dialogo.
         new alteraStatusCaronaAsyncTask(idCarona, valor, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
-    public void aguardaRespostaCarona(Usuario usuario, Carona carona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+    public void aguardaRespostaCarona(int idUser, int idCar, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","7");
         progressDialog.show();// Mostra a barra de dialogo.
-        new BuscaCaronaAsyncTask(usuario, carona, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
+        new BuscaCaronaAsyncTask(idUser, idCar, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
 
     public void desistirCarona(int idUsuario, int idCarona, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","8");
         progressDialog.show();// Mostra a barra de dialogo.
         new cancelarCaronaAsyncTask(idCarona, idUsuario, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
 
     public void buscaCaronas(Usuario usuario, int ultimoValor, int totalViews, GetRetorno retorno) {    //Método que busca a classe que vai receber os dados do usuario.
+        Log.e("esse:","9");
         progressDialog.show();// Mostra a barra de dialogo.
         new BuscaCaronasAsyncTask(usuario, ultimoValor, totalViews, retorno).execute();    //Criando um novo obj de de BDU passando dois objetos como parâmetro.
     }
@@ -206,20 +214,16 @@ public class RequisicoesServidor {
         @Override
         protected Object doInBackground(Void... params) {
             Map<String, String> dataToSend = new HashMap<>();
-            if(usuario.getNome()!=null)dataToSend.put("nome", usuario.getNome());
-            if(usuario.getSobrenome()!=null)dataToSend.put("sobrenome", usuario.getSobrenome());
-            if(usuario.getMatricula()!=null)dataToSend.put("matricula", usuario.getMatricula());
-            if(usuario.getTelefone()!=null)dataToSend.put("telefone", usuario.getTelefone());
-            if(usuario.getEmail()!=null)dataToSend.put("email", usuario.getEmail());
-            if(usuario.getSexo()!=null)dataToSend.put("sexo", usuario.getSexo());
+            if (usuario.getNome() != null) dataToSend.put("nome", usuario.getNome());
+            if (usuario.getSobrenome() != null) dataToSend.put("sobrenome", usuario.getSobrenome());
+            if (usuario.getMatricula() != null) dataToSend.put("matricula", usuario.getMatricula());
+            if (usuario.getTelefone() != null) dataToSend.put("telefone", usuario.getTelefone());
+            if (usuario.getEmail() != null) dataToSend.put("email", usuario.getEmail());
+            if (usuario.getSexo() != null) dataToSend.put("sexo", usuario.getSexo());
             dataToSend.put("ativo", usuario.getAtivo() + "");
-            if(usuario.getSenha()!=null)dataToSend.put("senha", usuario.getSenha());
-            if(usuario.getFoto()!=null)dataToSend.put("foto", usuario.getFoto());
-            if(usuario.getExtFoto()!=null)dataToSend.put("extencao", usuario.getExtFoto());
-
-
-
-
+            if (usuario.getSenha() != null) dataToSend.put("senha", usuario.getSenha());
+            if (usuario.getFoto() != null) dataToSend.put("foto", usuario.getFoto());
+            if (usuario.getExtFoto() != null) dataToSend.put("extencao", usuario.getExtFoto());
             String aquivoPhp = "Registros.php";
             if (usuario.getEdicao()) {
                 //dadosParaEnvio.add(new BasicNameValuePair("id_edicao", usuario.getId() + ""));
@@ -235,20 +239,19 @@ public class RequisicoesServidor {
                 //dadosParaEnvio.add(new BasicNameValuePair("cnh", "0"));
                 dataToSend.put("cnh", "0");
             }
-
             String encodedStr = getEncodedData(dataToSend);
             BufferedReader reader = null;
             String teste = "Sem conexão!";
 
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon(aquivoPhp);
+                    HttpURLConnection con = modoCon(aquivoPhp);
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
                     StringBuilder sb = new StringBuilder();
                     reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    while ((teste = reader.readLine()) != null) {
+                    while ((teste = reader.readLine())!= null) {
                         sb.append(teste + "\n");
                     }
                     JSONObject jObjeto = new JSONObject(sb.toString());
@@ -312,13 +315,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"id_carona","id_user","texto_comentario"};
-            String valores[]={idCarona + "",idUsuario + "",this.texto};
+            String label[] = {"id_carona", "id_user", "texto_comentario"};
+            String valores[] = {idCarona + "", idUsuario + "", this.texto};
             String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Sem conexão";
             try {
-                HttpURLConnection con=modoCon("Registros.php");
+                HttpURLConnection con = modoCon("Registros.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -351,14 +354,14 @@ public class RequisicoesServidor {
         }
     }
 
-    public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, List> {
-        Usuario usuario;
-        Carona carona;
+    public class BuscaCaronaAsyncTask extends AsyncTask<Void, Void, Object> {
+        int idUser;
+        int idCar;
         GetRetorno retornoUsuario;
 
-        public BuscaCaronaAsyncTask(Usuario usuario, Carona carona, GetRetorno retorno) {
-            this.usuario = usuario;
-            this.carona = carona; //O campo usuário recebe o parâmetro de usuário.
+        public BuscaCaronaAsyncTask(int idU, int idC, GetRetorno retorno) {
+            idUser = idU;
+            idCar = idC; //O campo usuário recebe o parâmetro de usuário.
             this.retornoUsuario = retorno;    //O campo retornoUsuario recebe o parâmetro de retorno.
         }
 
@@ -382,15 +385,15 @@ public class RequisicoesServidor {
         }
 
         @Override
-        protected List doInBackground(Void... params) {
-            String label[]={"id_usuario","id_carona"};
-            String valores[]={this.usuario.getId() + "",this.carona.getId() + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+        protected Carona doInBackground(Void... params) {
+            String label[] = {"id_usuario", "id_carona"};
+            String valores[] = {idUser + "", idCar + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
-            List dadosX = null;
+            Carona car = null;
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("aguardaConfirmacaoCarona.php");
+                    HttpURLConnection con = modoCon("aguardaConfirmacaoCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -402,9 +405,8 @@ public class RequisicoesServidor {
                     }
                     JSONObject jObj = new JSONObject(sb.toString());
                     if (jObj.length() == 0) {
-                        dadosX = null;
+                        return car;
                     } else {
-                        dadosX = new LinkedList();
                         String origem = jObj.getString("origem");
                         String destino = jObj.getString("destino");
                         String horario = jObj.getString("horario");
@@ -417,9 +419,9 @@ public class RequisicoesServidor {
                         Carona carona = new Carona(origem, destino, horario, veiculo, restricao, ponto);
                         carona.setVagas(vagas);
                         carona.setVagasOcupadas(vagasOculpadas);
-                        carona.setId(this.carona.getId());
+                        carona.setId(idCar);
+                        carona.setStatus(1);
                         carona.setStatusUsuario(statusUsuario);
-                        dadosX.add(carona);
                         List<Usuario> participantes = new LinkedList<Usuario>();
                         List participantesStatus = new LinkedList();
                         for (int j = 0; j < jObj.getInt("participantes_tamanho"); j++) {
@@ -432,6 +434,7 @@ public class RequisicoesServidor {
                             participantes.add(participante);
                             participantesStatus.add(statusSoliciacao);
                         }
+
                         carona.setParticipantes(participantes);
                         carona.setParticipantesStatus(participantesStatus);
                         String telefone = jObj.getString("telefone");
@@ -450,9 +453,10 @@ public class RequisicoesServidor {
                         Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnh);
                         usuario.setFoto(foto);
                         usuario.setId(idU);
-                        dadosX.add(usuario);
+                        carona.setProprietario(usuario);
+                        car = carona;
+                        return car;
                     }
-                    return dadosX;
                 }
             } catch (Exception e) {
                 Log.e(TAG, "doInBackground " + e.getMessage());
@@ -465,16 +469,16 @@ public class RequisicoesServidor {
                     }
                 }
             }
-            return dadosX;
+            return car;
         }
 
         @Override
-        protected void onPostExecute(List x) {
-            progressDialog.dismiss(); //Finalizar
-            retornoUsuario.concluido(x);
-            super.onPostExecute(x);
-        }//Fim método.
-    }//Fim classe.
+        protected void onPostExecute(Object car) {
+            progressDialog.dismiss();
+            retornoUsuario.concluido(car);
+            super.onPostExecute(car);
+        }
+    }
 
     public class alteraStatusCaronaAsyncTask extends AsyncTask<Void, Void, String> {
         int idCarona;
@@ -508,8 +512,8 @@ public class RequisicoesServidor {
 
         @Override
         protected String doInBackground(Void... params) {
-            String label[]={"status3","id_carona3"};
-            String valores[]={this.status + "",this.idCarona + ""};
+            String label[] = {"status3", "id_carona3"};
+            String valores[] = {this.status + "", this.idCarona + ""};
             String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String mensagem = "Sem conexão!";
@@ -567,13 +571,13 @@ public class RequisicoesServidor {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            String label[]={"id_comentario_carona","tt_buscar","tt_coments"};
-            String valores[]={this.idCarona + "",this.ttBuscar + "",this.ttComents + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_comentario_carona", "tt_buscar", "tt_coments"};
+            String valores[] = {this.idCarona + "", this.ttBuscar + "", this.ttComents + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             JSONObject jObjeto = null;
             try {
-                HttpURLConnection con=modoCon("RetornaDados.php");
+                HttpURLConnection con = modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -661,14 +665,14 @@ public class RequisicoesServidor {
 
         @Override
         protected String doInBackground(Void... params) {
-            String label[]={"id_user_close","id_carona_close","tipo"};
-            String valores[]={this.idUsuario + "",this.idCarona + "", this.tipo+""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_user_close", "id_carona_close", "tipo"};
+            String valores[] = {this.idUsuario + "", this.idCarona + "", this.tipo + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String mensagem = "Verifique sua conexão!";
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("RetornaDados.php");
+                    HttpURLConnection con = modoCon("RetornaDados.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -737,14 +741,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"id","resposta"};
-            String valores[]={usuario.getId() + "",this.resposta};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id", "resposta"};
+            String valores[] = {usuario.getId() + "", this.resposta};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Sem conexão!";
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("aceitaRecusaCarona.php");
+                    HttpURLConnection con = modoCon("aceitaRecusaCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -773,7 +777,7 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(Object resultado) {
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             retornoUsuario.concluido(resultado);
             super.onPostExecute(resultado);
         }
@@ -790,13 +794,13 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Usuario> doInBackground(Void... params) {
-            String label[]={"id"};
-            String valores[]={this.usuario.getId() + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id"};
+            String valores[] = {this.usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             List<Usuario> usuarios = new LinkedList<Usuario>();    //Variável que irá receber os dados do usuário.
             try {
-                HttpURLConnection con=modoCon("buscarSolicitantesCaronas.php");
+                HttpURLConnection con = modoCon("buscarSolicitantesCaronas.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -865,13 +869,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Usuario doInBackground(Void... params) {
-            String label[]={"matricula","senha"};
-            String valores[]={this.usuario.getMatricula(),this.usuario.getSenha()};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"matricula", "senha"};
+            String valores[] = {this.usuario.getMatricula(), this.usuario.getSenha()};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             Usuario usuarioRetornado = null;
             try {
-                HttpURLConnection con=modoCon("buscaDadosUsuario.php");
+                HttpURLConnection con = modoCon("buscaDadosUsuario.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -923,6 +927,7 @@ public class RequisicoesServidor {
 
         @Override
         protected void onPostExecute(Object usuarioRetornado) {
+            Log.e("okkkk", "sim");
             progressDialog.dismiss();
             retornoUsuario.concluido(usuarioRetornado);
             super.onPostExecute(usuarioRetornado);
@@ -942,13 +947,13 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Usuario> doInBackground(Void... params) {
-            String label[]={"id_usuario2","status"};
-            String valores[]={this.usuario.getId() + "",this.status};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_usuario2", "status"};
+            String valores[] = {this.usuario.getId() + "", this.status};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             List<Usuario> usuarios = null;
             try {
-                HttpURLConnection con=modoCon("RetornaDados.php");
+                HttpURLConnection con = modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -973,11 +978,11 @@ public class RequisicoesServidor {
                         String email = jObj.getString("email_" + i);
                         boolean cnhAdd;
                         if (cnh.equals("1")) {
-                            cnhAdd=true;
+                            cnhAdd = true;
                         } else {
-                            cnhAdd=false;
+                            cnhAdd = false;
                         }
-                        Usuario usuario = new Usuario(nome,sobrenome,matricula,email,telefone,sexo,cnhAdd);
+                        Usuario usuario = new Usuario(nome, sobrenome, matricula, email, telefone, sexo, cnhAdd);
                         usuario.setId(id);
                         usuario.setFoto(foto);
                         usuario.setStatus(status);
@@ -1038,14 +1043,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"id_carona","id_usuario"};
-            String valores[]={carona + "",usuario + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_carona", "id_usuario"};
+            String valores[] = {carona + "", usuario + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Sem conexão!";
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("cancelarCarona.php");
+                    HttpURLConnection con = modoCon("cancelarCarona.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1115,14 +1120,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"origem","destino","horario","tipoVeiculo","ponto","restricao","vagas","id_usuario"};
-            String valores[]={carona.getOrigem(),carona.getDestino(),carona.getHorario(),carona.getTipoVeiculo(),carona.getPonto(),carona.getRestricao(),carona.getVagas() + "",usuario + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"origem", "destino", "horario", "tipoVeiculo", "ponto", "restricao", "vagas", "id_usuario"};
+            String valores[] = {carona.getOrigem(), carona.getDestino(), carona.getHorario(), carona.getTipoVeiculo(), carona.getPonto(), carona.getRestricao(), carona.getVagas() + "", usuario + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Verifique sua conexão!";
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("Registros.php");
+                    HttpURLConnection con = modoCon("Registros.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1133,9 +1138,9 @@ public class RequisicoesServidor {
                     }
                     JSONObject jObjeto = new JSONObject(sb.toString());
                     teste = jObjeto.getString("teste");
-                    int valor=Integer.parseInt(teste);
-                    if(valor>0){
-                        String retornoId=jObjeto.getString("idCar");
+                    int valor = Integer.parseInt(teste);
+                    if (valor > 0) {
+                        String retornoId = jObjeto.getString("idCar");
                         return retornoId;
                     }
                     return teste;
@@ -1175,14 +1180,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"id_carona","id_usuario"};
-            String valores[]={idCarona + "",usuario.getId() + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_carona", "id_usuario"};
+            String valores[] = {idCarona + "", usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             int teste = -100;
             Usuario usuario = null;
             try {
-                HttpURLConnection con=modoCon("RetornaDados.php");
+                HttpURLConnection con = modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1237,14 +1242,14 @@ public class RequisicoesServidor {
 
         @Override
         protected List<Carona> doInBackground(Void... params) {
-            String label[]={"id","ttVsAtuais","ttBuscar"};
-            String valores[]={this.usuario.getId() + "",this.ttVsAtuais + "",this.ttBuscar + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id", "ttVsAtuais", "ttBuscar"};
+            String valores[] = {this.usuario.getId() + "", this.ttVsAtuais + "", this.ttBuscar + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             List<Carona> caronas = new LinkedList<Carona>();
 
             try {
-                HttpURLConnection con=modoCon("caronasAceitas.php");
+                HttpURLConnection con = modoCon("caronasAceitas.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1309,7 +1314,7 @@ public class RequisicoesServidor {
             this.ultimoValor = ultimoValor;
             this.totalViews = totalViews;
             this.retornoUsuario = retorno;
-
+            Log.e("dadoskk:","_sx:"+this.usuario.getSexo()+"_id:"+this.usuario.getId()+"_ultVl:"+this.ultimoValor+"_ttVw:"+this.totalViews);
         }
 
         @Override
@@ -1333,15 +1338,15 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"sexoUsuario","idUser","ultimoValor","totalViews"};
-            String valores[]={usuario.getSexo(),usuario.getId() + "",ultimoValor + "",totalViews + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"sexoUsuario", "idUser", "ultimoValor", "totalViews"};
+            String valores[] = {usuario.getSexo(), usuario.getId() + "", ultimoValor + "", totalViews + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
                 while (running) {
-                    HttpURLConnection con=modoCon("Listas.php");
+                    HttpURLConnection con = modoCon("Listas.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();
@@ -1351,11 +1356,6 @@ public class RequisicoesServidor {
                         sb.append(teste + "\n");
                     }
                     jObjeto = new JSONObject(sb.toString());
-                    if (jObjeto == null) {
-                        Log.e("objeto:", "nulo");
-                    } else {
-                        Log.e("objeto:", "não nulo");
-                    }
                     return jObjeto;
                 }
             } catch (Exception e) {
@@ -1430,7 +1430,6 @@ public class RequisicoesServidor {
                     usuario.setFoto(foto);
                     usuario.setId(idU);
                     usuarios.add(usuario);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1452,13 +1451,13 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"email_user"};
-            String valores[]={emailUser + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"email_user"};
+            String valores[] = {emailUser + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             try {
-                HttpURLConnection con=modoCon("RetornaDados.php");
+                HttpURLConnection con = modoCon("RetornaDados.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1491,7 +1490,6 @@ public class RequisicoesServidor {
             super.onPostExecute(resultado);
         }
     }
-
     public class BuscaSolicitacaoAsyncTask extends AsyncTask<Void, Void, Object> {
         Usuario usuario;
         int ttViewsAtuais, ttBuscar;
@@ -1506,14 +1504,14 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"id_user","ttViewsAtuais","ttBuscar"};
-            String valores[]={usuario.getId() + "",ttViewsAtuais + "",ttBuscar + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"id_user", "ttViewsAtuais", "ttBuscar"};
+            String valores[] = {usuario.getId() + "", ttViewsAtuais + "", ttBuscar + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String teste = "Não foi possível se conectar";
             JSONObject jObjeto = null;
             try {
-                HttpURLConnection con=modoCon("buscaSolicitacoes.php");
+                HttpURLConnection con = modoCon("buscaSolicitacoes.php");
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1545,62 +1543,64 @@ public class RequisicoesServidor {
         protected void onPostExecute(Object objeto) {
             JSONObject jObjeto = (JSONObject) objeto;
             List<Carona> caronas = new LinkedList<Carona>();
-            try {
-                for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
-                    String origem = jObjeto.getString("origem_" + i);
-                    String destino = jObjeto.getString("destino_" + i);
-                    String ponto = jObjeto.getString("ponto_" + i);
-                    String horario = jObjeto.getString("horario_" + i);
-                    String tipoVeiculo = jObjeto.getString("tipoVeiculo_" + i);
-                    String restricao = jObjeto.getString("restricao_" + i);
-                    int vagas = jObjeto.getInt("vagas_" + i);
-                    int vagasOcupadas = jObjeto.getInt("vagas_ocupadas_" + i);
-                    int status = jObjeto.getInt("status_" + i);
-                    int ativo = jObjeto.getInt("ativo_" + i);
-                    int id = jObjeto.getInt("id_" + i);
+            if(caronas!=null) {
+                try {
+                    for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
+                        String origem = jObjeto.getString("origem_" + i);
+                        String destino = jObjeto.getString("destino_" + i);
+                        String ponto = jObjeto.getString("ponto_" + i);
+                        String horario = jObjeto.getString("horario_" + i);
+                        String tipoVeiculo = jObjeto.getString("tipoVeiculo_" + i);
+                        String restricao = jObjeto.getString("restricao_" + i);
+                        int vagas = jObjeto.getInt("vagas_" + i);
+                        int vagasOcupadas = jObjeto.getInt("vagas_ocupadas_" + i);
+                        int status = jObjeto.getInt("status_" + i);
+                        int ativo = jObjeto.getInt("ativo_" + i);
+                        int id = jObjeto.getInt("id_" + i);
 
-                    String dataCriacao = jObjeto.getString("datacriacao_" + i);
-                    Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, vagas, ponto);
-                    car.setId(id);
-                    car.setStatus(status);
-                    car.setVagasOcupadas(vagasOcupadas);
-                    car.setAtivo(ativo);
-                    car.setDataCriacao(dataCriacao);
+                        String dataCriacao = jObjeto.getString("datacriacao_" + i);
+                        Carona car = new Carona(origem, destino, horario, tipoVeiculo, restricao, vagas, ponto);
+                        car.setId(id);
+                        car.setStatus(status);
+                        car.setVagasOcupadas(vagasOcupadas);
+                        car.setAtivo(ativo);
+                        car.setDataCriacao(dataCriacao);
 
-                    List<Usuario> participantes = new LinkedList<Usuario>();
-                    List participantesStatus = new LinkedList();
-                    for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
-                        int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
-                        String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
-                        String foto = jObjeto.getString("participantes_" + i + "_" + j + "_foto");
-                        String telefone = jObjeto.getString("participantes_" + i + "_" + j + "_telefone");
-                        String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
-                        String sexo = jObjeto.getString("participantes_" + i + "_" + j + "_sexo");
-                        String cnh = jObjeto.getString("participantes_" + i + "_" + j + "_cnh");
-                        String sobrenome = jObjeto.getString("participantes_" + i + "_" + j + "_sobrenome");
-                        String matricula = jObjeto.getString("participantes_" + i + "_" + j + "_matricula");
-                        String email = jObjeto.getString("participantes_" + i + "_" + j + "_email");
-                        Usuario participante = new Usuario(idPart, nomePart);
-                        participante.setFoto(foto);
-                        participante.setSobrenome(sobrenome);
-                        participante.setMatricula(matricula);
-                        participante.setEmail(email);
-                        participante.setTelefone(telefone);
-                        if (cnh.equals("1")) {
-                            participante.setChn(true);
-                        } else {
-                            participante.setChn(false);
+                        List<Usuario> participantes = new LinkedList<Usuario>();
+                        List participantesStatus = new LinkedList();
+                        for (int j = 0; j < jObjeto.getInt("participantes_" + i + "_tamanho"); j++) {
+                            int idPart = jObjeto.getInt("participantes_" + i + "_" + j + "_id");
+                            String nomePart = jObjeto.getString("participantes_" + i + "_" + j + "_nome");
+                            String foto = jObjeto.getString("participantes_" + i + "_" + j + "_foto");
+                            String telefone = jObjeto.getString("participantes_" + i + "_" + j + "_telefone");
+                            String statusSoliciacao = jObjeto.getString("participantes_" + i + "_" + j + "_status_solicitacao");
+                            String sexo = jObjeto.getString("participantes_" + i + "_" + j + "_sexo");
+                            String cnh = jObjeto.getString("participantes_" + i + "_" + j + "_cnh");
+                            String sobrenome = jObjeto.getString("participantes_" + i + "_" + j + "_sobrenome");
+                            String matricula = jObjeto.getString("participantes_" + i + "_" + j + "_matricula");
+                            String email = jObjeto.getString("participantes_" + i + "_" + j + "_email");
+                            Usuario participante = new Usuario(idPart, nomePart);
+                            participante.setFoto(foto);
+                            participante.setSobrenome(sobrenome);
+                            participante.setMatricula(matricula);
+                            participante.setEmail(email);
+                            participante.setTelefone(telefone);
+                            if (cnh.equals("1")) {
+                                participante.setChn(true);
+                            } else {
+                                participante.setChn(false);
+                            }
+                            participante.setSexo(sexo);
+                            participantes.add(participante);
+                            participantesStatus.add(statusSoliciacao);
                         }
-                        participante.setSexo(sexo);
-                        participantes.add(participante);
-                        participantesStatus.add(statusSoliciacao);
+                        car.setParticipantes(participantes);
+                        car.setParticipantesStatus(participantesStatus);
+                        caronas.add(car);
                     }
-                    car.setParticipantes(participantes);
-                    car.setParticipantesStatus(participantesStatus);
-                    caronas.add(car);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
             progressDialog.dismiss();
             retornoUsuario.concluido(caronas);
@@ -1621,15 +1621,16 @@ public class RequisicoesServidor {
 
         @Override
         protected Object doInBackground(Void... params) {
-            String label[]={"sexoUsuario","id_user","id"};
-            String valores[]={usuario.getSexo(),usuario.getId() + "",this.idUltimaCarona + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"sexoUsuario", "id_user", "id"};
+            String valores[] = {usuario.getSexo(), usuario.getId() + "", this.idUltimaCarona + ""};
+            Log.e("Dados:", usuario.getSexo() + " " + usuario.getId() + " " + this.idUltimaCarona);
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String arquivoServ = "UltimasCaronas.php";
             String teste = "Erro de conexão";
             JSONObject jObjeto = null;
             try {
-                HttpURLConnection con=modoCon(arquivoServ);
+                HttpURLConnection con = modoCon(arquivoServ);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                 writer.write(encodedStr);
                 writer.flush();
@@ -1661,9 +1662,10 @@ public class RequisicoesServidor {
             List<Usuario> usuarios = new LinkedList<Usuario>();
             try {
                 for (int i = 0; i <= jObjeto.getInt("tamanho"); i++) {
-                    if (new ManipulaDados(cnt).getCaronaSolicitada().getId() == jObjeto.getInt("id_" + i)) {
+                    if (mDados.getCaronaSolicitada() != null && mDados.getCaronaSolicitada().getId() == jObjeto.getInt("id_" + i)) {
                         continue;
                     }
+
                     String origem = jObjeto.getString("origem_" + i);
                     String destino = jObjeto.getString("destino_" + i);
                     String ponto = jObjeto.getString("ponto_" + i);
@@ -1697,7 +1699,6 @@ public class RequisicoesServidor {
                     car.setParticipantes(participantes);
                     car.setParticipantesStatus(participantesStatus);
                     caronas.add(car);
-
                     String telefone = jObjeto.getString("telefone_" + i);
                     String nome = jObjeto.getString("nome_" + i);
                     String sobrenome = jObjeto.getString("sobrenome_" + i);
@@ -1715,6 +1716,7 @@ public class RequisicoesServidor {
                     usuario.setFoto(foto);
                     usuario.setId(idU);
                     usuarios.add(usuario);
+                    Log.e("okok1", "sim");
                 }
 
             } catch (Exception e) {
@@ -1757,15 +1759,15 @@ public class RequisicoesServidor {
 
         @Override
         protected String[] doInBackground(Void... params) {
-            String label[]={"idCaronaSolicita","idUsuarioSolicita"};
-            String valores[]={carona.getId() + "",usuario.getId() + ""};
-            String encodedStr = getEncodedData(mapaValores(label,valores));
+            String label[] = {"idCaronaSolicita", "idUsuarioSolicita"};
+            String valores[] = {carona.getId() + "", usuario.getId() + ""};
+            String encodedStr = getEncodedData(mapaValores(label, valores));
             BufferedReader reader = null;
             String res[] = new String[2];
             res[0] = "Erro 404";
             try {
                 while (running) {
-                    HttpURLConnection con= modoCon("Registros.php");
+                    HttpURLConnection con = modoCon("Registros.php");
                     OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
                     writer.write(encodedStr);
                     writer.flush();

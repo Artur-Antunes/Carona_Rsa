@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Ainda estamos na versão Beta!"
+        android:text="Ainda estamos na versão Alpha!"
         android:layout_below="@+id/b_atualiza"
         android:layout_marginTop="25dp"
         android:textColor="@color/secondary_text"

@@ -3,7 +3,6 @@ package br.com.rsa.carona.carona_rsa;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +16,8 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class UsuarioDetalhesActivity extends AppCompatActivity {
 
-    ManipulaDados mDados;
-    Usuario usuarioEditar;
+    private ManipulaDados mDados;
+    private Usuario usuarioEditar;
     private TextView nomeExibir,emailExibir,matriculaExibir,telefoneExibir,sexoExibir,cnhExibir;
     private ImageView imFoto;
 
@@ -64,7 +63,7 @@ public class UsuarioDetalhesActivity extends AppCompatActivity {
     }
 
     public void editarDados(View view) {
-        if(mDados.getCaronaSolicitada().getId()==-1 && mDados.getCaronaOferecida()==null){
+        if(mDados.getCaronaSolicitada()==null && mDados.getCaronaOferecida()==null){
             Intent it = new Intent(this, EditarDadosActivity.class);
             startActivity(it);
             finish();

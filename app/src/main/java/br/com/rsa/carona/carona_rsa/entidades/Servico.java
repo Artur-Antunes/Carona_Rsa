@@ -5,11 +5,15 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import br.com.rsa.carona.carona_rsa.ComentariosActivity;
@@ -23,18 +27,22 @@ public class Servico extends IntentService {
     final Funcoes f = new Funcoes();
     private int cont;
     public static volatile boolean ativo;
-    private volatile boolean cntVerificaSolicitacao, cntVerificaCaronaOferecida, cntVerificaSolicitacaoAceita,
-            cntBuscarComentarios, cntsalvarAtualCaronaOferecida, cntsalvarAtualCaronaSolicitada;
+    /**
+     * Variáveis que controlam as funções...
+     * Siglas e seus significados: CNT->Controlar,V->Vefica,Of->Oferecida, Act->Aceita,B->busca,Cmt->comentários,S->Salvar
+     */
+    private volatile boolean cntVSlt, cntVCarOf, cntVSltAct, cntBCmt,cntSCarOf, cntSCarSlt, cntSCaroneiros;
     public static volatile boolean cntVerificaNovasCaronas;
 
     public Servico() {
         super("Servico");
-        cntVerificaSolicitacao = true;
-        cntVerificaCaronaOferecida = true;
-        cntVerificaSolicitacaoAceita = true;
-        cntBuscarComentarios = true;
-        cntsalvarAtualCaronaOferecida = true;
-        cntsalvarAtualCaronaSolicitada = true;
+        cntVerificaNovasCaronas = true;
+        cntVSlt = true;
+        cntVCarOf = true;
+        cntVSltAct = true;
+        cntBCmt = true;
+        cntSCarOf = true;
+        cntSCarSlt = true;
         ativo = true;
         cont = 0;
     }
@@ -51,37 +59,47 @@ public class Servico extends IntentService {
         RequisicoesServidor rs = new RequisicoesServidor(Servico.this);
         if (md.getUsuario() != null) {
             while (ativo) {
-                if (rs.isConnectedToServer("http://10.0.2.2/Caronas/")) {
-                    if (md.getCaronaOferecida() != null) {
-                        if (md.getCaronaOferecida().getId() == -2) {
-                            if (cntsalvarAtualCaronaOferecida)
-                                salvarAtualCaronaOferecida();//SALVAR A CARONA NO BANCO EXTERNO
-                        } else {
-                            if (cntVerificaCaronaOferecida) verificaCaronaOferecida();
-                        }
-                    } else if (md.getCaronaSolicitada().getId() != -1 && md.getCaronaSolicitada().getStatus() == 0) {
-                            if (cntsalvarAtualCaronaSolicitada) salvarAtualCaronaSolicitada();
+                if (rs.isConnectedToServer(RequisicoesServidor.ENDERECO_SERVIDOR)) {
+                    if (verificaIdLocal(1) == -2) {
+                        if (cntSCarOf)
+                            salvarAtualCaronaOferecida();//Função que salva a carona ofereida na Web.
+                    } else if (verificaIdLocal(1) > 0) {
+                        if (cntVCarOf) verificaCaronaOferecida();
                     }
-
-                    if (cntVerificaSolicitacao) {
+                    /**
+                     * OBS: ID da Carona oferecida = -2 -> Carona Salva Localmente,precisa ser salva no sevidor web.
+                     */
+                    if (verificaIdLocal(2) != -4) {
+                        if (md.getCaronaSolicitada().getStatus() == 0) {
+                            if (cntSCarSlt) salvarAtualCaronaSolicitada();
+                        }
+                    }
+                    /**
+                     * OBS: ID da Carona recebida = -1 -> Carona Salva Localmente,precisa ser salva no sevidor web.
+                     */
+                    if (cntVSlt) {
                         verificaSolicitacao("AGUARDANDO");
                         verificaSolicitacao("DESISTENCIA");
                     }
+
                     if ((cntVerificaNovasCaronas) && (ComentariosActivity.active == -1) && (md.getUltimoIdCarona() >= 0)) {
                         verificaNovasCaronas();
                     }
 
                     if (ComentariosActivity.active > -1) {
-                        if (cntBuscarComentarios)
+                        if (this.cntBCmt)
                             buscarComentarios(ComentariosActivity.active, ComentariosActivity.idCarona);
                     }
 
-                    if ((md.getCaronaSolicitada().getId() != -1) && (md.getCaronaSolicitada().getId() != md.getUltimoIdCaronaAceita())) {
-                        if (cntVerificaSolicitacaoAceita && cntsalvarAtualCaronaSolicitada)
+                    if (verificaIdLocal(2)!= -4) {
+                        Log.e("Oxeee",verificaIdLocal(2)+"");
+                        if (cntVSltAct && cntSCarSlt) {
                             verificaSolicitacaoAceita();
-                    } else if ((md.getCaronaSolicitada().getId() == md.getUltimoIdCaronaAceita()) && md.getCaronaSolicitada().getId() != -1) {
-                        if (cntVerificaSolicitacaoAceita && cntsalvarAtualCaronaSolicitada)
-                            verificaSolicitacaoAceita();
+                        }
+                    }
+
+                    if (cntSCaroneiros && sltsAtualizar().size() > 0) {
+                        atualizaSolicitacao();
                     }
                     cont++;
                     Log.e("testando", "cont" + cont);
@@ -98,6 +116,29 @@ public class Servico extends IntentService {
         }
     }
 
+    private int verificaIdLocal(int tipo) {
+        ManipulaDados md = new ManipulaDados(Servico.this);
+        if (tipo == 1) {//1: CARONA OFERECIDA
+            if (md.getCaronaOferecida() != null) {
+                try {
+                    return md.getCaronaOferecida().getId();
+                } catch (Exception ex) {
+                    return -4;
+                }
+            }
+        }else if (tipo == 2) {//1: CARONA SOLICITADA
+            if (md.getCaronaSolicitada()!=null) {
+                try {
+                    return md.getCaronaSolicitada().getId();
+                } catch (Exception ex) {
+                    return -4;
+                }
+            }
+        }
+        return -4;
+    }
+
+    //Tempo de pausa....
     private void setDelay(int tempo) {
         try {
             Thread.sleep(tempo);
@@ -135,9 +176,10 @@ public class Servico extends IntentService {
     }
 
 
+
     public void verificaSolicitacao(final String status) {
         final ManipulaDados md = new ManipulaDados(Servico.this);
-        cntVerificaSolicitacao = false;
+        cntVSlt = false;
         Usuario us = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.verificaSolicitacoes(status, us, new GetRetorno() {
@@ -150,7 +192,6 @@ public class Servico extends IntentService {
                     if (status.equals("AGUARDANDO")) {
                         tipoP = "solicitando";
                         if (usuarios.size() > 0) {
-                            Log.e("SERV:", usuarios.size() + "");
                             for (int z = 0; z < usuarios.size(); z++) {
                                 usuarios.get(z).setStatus(status);
                                 md.setParticipantesCarOferecida(usuarios.get(z), md.getTtParCarOf());
@@ -161,6 +202,9 @@ public class Servico extends IntentService {
                         tipoP = "desistindo da";
                         idNotificacao = 4;
                         if (usuarios.size() > 0) {
+                            for (int i = 0; i < usuarios.size(); i++) {
+                                md.clearParticipanteCarOferecida(usuarios.get(i));
+                            }
                             criaBroadcast(usuarios.size(), "solicitacao");
                         }
                     }
@@ -192,11 +236,12 @@ public class Servico extends IntentService {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         String titulo = "ME LEVA!";
                         String texto = usuarios.get(0).getNome() + " está " + tipoP + " carona:";
+                        criaBroadcastHome("atCarOfertada", null, null);
                         f.notificacaoAbertoFechado(Bitmap.createScaledBitmap(bitmap, 120, 120, false), titulo, texto, getApplicationContext(), idNotificacao);
                     }
                 }
                 setDelay(10);
-                cntVerificaSolicitacao = true;
+                cntVSlt = true;
             }
 
             @Override
@@ -206,8 +251,60 @@ public class Servico extends IntentService {
         });
     }
 
+    private List<Integer> sltsAtualizar() {//TOTAL DE SOLICITAÇÕES A SEREM ATUALIADAS...
+        final ManipulaDados md = new ManipulaDados(Servico.this);
+        List<Integer> posicoesAt = new LinkedList<Integer>();
+        for (int i = 0; i < md.getTtParCarOf(); i++) {
+            if (md.getParticipantesCarOferecida(i) != null) {
+                String status = md.getParticipantesCarOferecida(i).getStatus();
+                status = status.substring(0, 2);
+                if (status.equals("0_")) {
+                    posicoesAt.add(i);
+                }
+            }
+        }
+        return posicoesAt;
+    }
+
+
+    public void atualizaSolicitacao() {
+        final ManipulaDados md = new ManipulaDados(Servico.this);
+        final List<Integer> posicoesAt = sltsAtualizar();
+        cntSCaroneiros = false;
+        for (int i = 0; i < posicoesAt.size(); i++) {
+            final String status;
+            final Usuario userAtual = md.getParticipantesCarOferecida(posicoesAt.get(i));
+            if (userAtual.getStatus().equals("0_ACEITO")) {
+                status = "ACEITO";
+            } else {
+                status = "RECUSADO";
+            }
+            RequisicoesServidor rs2 = new RequisicoesServidor(this);
+            final int finalI = i;
+            rs2.aceitarRecusarCaronas(userAtual, status, new GetRetorno() {
+                @Override
+                public void concluido(Object object) {
+                    if (object.equals("1") || object.equals("2")) {
+                        userAtual.setStatus(status);
+                        md.setParticipantesCarOferecida(userAtual, posicoesAt.get(finalI));
+                        if (finalI == (posicoesAt.size() - 1)) {
+                            criaBroadcast(0, "myCarona");
+                            criaBroadcastHome("atCarOfertada", null, null);
+                        }
+                        cntSCaroneiros = true;
+                    }
+                }
+
+                @Override
+                public void concluido(Object object, Object object2) {
+
+                }
+            });
+        }
+    }
+
     public void salvarAtualCaronaOferecida() {
-        cntsalvarAtualCaronaOferecida = false;
+        cntSCarOf = false;
         RequisicoesServidor rs = new RequisicoesServidor(this);
         final ManipulaDados md = new ManipulaDados(Servico.this);
         rs.gravaCarona(md.getCaronaOferecida(), md.getUsuario().getId(), new GetRetorno() {
@@ -221,9 +318,10 @@ public class Servico extends IntentService {
                         md.setCaronaOferecida(c);
                         criaBroadcastHome("atCarOfertada", null, null);
                         criaBroadcast(0, "myCarona");
+                        cntSCaroneiros = true;
                     }
                 }
-                cntsalvarAtualCaronaOferecida = true;
+                cntSCarOf = true;
             }
 
             @Override
@@ -234,7 +332,7 @@ public class Servico extends IntentService {
     }
 
     public void salvarAtualCaronaSolicitada() {
-        cntsalvarAtualCaronaSolicitada = false;
+        cntSCarSlt = false;
         final ManipulaDados md = new ManipulaDados(Servico.this);
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.solicitaCarona(md.getCaronaSolicitada(), md.getUsuario(), new GetRetorno() {
@@ -243,36 +341,19 @@ public class Servico extends IntentService {
             public void concluido(Object object) {
                 String[] res = (String[]) object;
                 if (res[0].trim().equals("1")) {
-                    //md.setCaronaSolicitada(-1);
-                    Carona car=md.getCaronaSolicitada();
+                    Carona car = md.getCaronaSolicitada();
                     car.setVagasOcupadas(Integer.parseInt(res[1]));
                     car.setStatus(1);
                     md.setCaronaSolicitada(car);
-                    //tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), car.getVagas()));
-                    //atualizarEspera();
-                    //ll.removeView(modelo);
-                    //exibirMsg("Carona solicitada!");
-                    //new Funcoes().apagarNotificacaoEspecifica(this, 1);
                     criaBroadcastHome("okSlt", null, null);
                 } else if (res[0].trim().equals("2")) {
-                    //ll.removeView(modelo);
-                    //exibirMsg("Essa carona não está mais disponível!");
-                    //new Funcoes().apagarNotificacaoEspecifica(activity, 1);
                     criaBroadcastHome("erro1Slt", null, null);
                 } else if (res[0].trim().equals("-3")) {
-                    //exibirMsg(" Sem vagas!");
-                    //tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), car.getVagas()));
                     criaBroadcastHome("erro2Slt", null, null);
                 } else if (res[0].trim().equals("-2")) {
-                    //exibirMsg("Solicitação Recusada!");
-                    //tv_vagas.setText(organizaVagas(Integer.parseInt(res[1]), car.getVagas()));
                     criaBroadcastHome("erro3Slt", null, null);
-                } else {
-                    Log.e("SLT:", "NOT");
-                    //exibirMsg("Não foi possível realizar a solicitação! Cód:" + res[0]);
                 }
-                //limparBadge();
-                cntsalvarAtualCaronaSolicitada = true;
+                cntSCarSlt = true;
             }
 
             @Override
@@ -283,7 +364,7 @@ public class Servico extends IntentService {
     }
 
     public void verificaCaronaOferecida() {
-        cntVerificaCaronaOferecida = false;
+        cntVCarOf = false;
         ManipulaDados md = new ManipulaDados(Servico.this);
         final int idCarona = md.getCaronaOferecida().getId();
         RequisicoesServidor rs = new RequisicoesServidor(this);
@@ -298,10 +379,10 @@ public class Servico extends IntentService {
                     titulo = "Obrigado!";
                     texto = "Esperamos que volte a ofertar caronas!";
                     f.notificacaoAbertoFechado(bm, titulo, texto, getApplicationContext(), 5);
-                    criaBroadcastHome("removeCaronaOferecida", null, null);
+                    criaBroadcastHome("remCarOf", null, null);
                 }
                 setDelay(10);
-                cntVerificaCaronaOferecida = true;
+                cntVCarOf = true;
             }
 
             @Override
@@ -313,7 +394,7 @@ public class Servico extends IntentService {
 
 
     public void verificaSolicitacaoAceita() {
-        cntVerificaSolicitacaoAceita = false;
+        cntVSltAct = false;
         final ManipulaDados md = new ManipulaDados(this);
         Usuario usLoc = md.getUsuario();
         RequisicoesServidor rs = new RequisicoesServidor(this);
@@ -330,7 +411,7 @@ public class Servico extends IntentService {
                             titulo += "aceita";
                             texto += " aceitou sua solicitação de Carona";
                             criaBroadcast(1, "solicitacao_aceita");
-                            Carona c=md.getCaronaSolicitada();
+                            Carona c = md.getCaronaSolicitada();
                             c.setStatusUsuario("ACEITO");
                             md.setCaronaSolicitada(c);
                             criaBroadcastHome("atSolicitacao", null, null);
@@ -371,7 +452,7 @@ public class Servico extends IntentService {
                     }
                 }
                 setDelay(10);
-                cntVerificaSolicitacaoAceita = true;
+                cntVSltAct = true;
             }
 
             @Override
@@ -383,7 +464,7 @@ public class Servico extends IntentService {
     }
 
     public void buscarComentarios(int total, int idCarona) {
-        cntBuscarComentarios = false;
+        cntBCmt = false;
         RequisicoesServidor rs = new RequisicoesServidor(this);
         rs.buscarComentariosCarona(total, 10, idCarona, new GetRetorno() {
             @Override
@@ -399,7 +480,7 @@ public class Servico extends IntentService {
                     criaBroadcastComents("nvComents", usuarios, textos);
                 }
                 setDelay(10);
-                cntBuscarComentarios = true;
+                cntBCmt = true;
             }
         });
     }

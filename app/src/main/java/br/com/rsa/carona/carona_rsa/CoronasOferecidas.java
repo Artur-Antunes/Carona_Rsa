@@ -38,53 +38,46 @@ import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class Coronas_oferecidas extends Fragment {
-    FragmentActivity activity;
-    LinearLayout lloferecidas;
-    Resources resource;
-    View view;
-    ImageButton recarrega;
-    SwipeRefreshLayout swipeLayout;
-    MyReceiver receiver;
-    TextView labelOferecidas;
-    IntentFilter filter = new IntentFilter();
-    AlertDialog.Builder dialog;
-    ManipulaDados M;
+public class CoronasOferecidas extends Fragment {
+
+    private FragmentActivity activity;
+    private LinearLayout lloferecidas;
+    private Resources resource;
+    private View view;
+    private ImageButton recarrega;
+    private MyReceiver receiver;
+    private TextView labelOferecidas;
+    private final int ZERO=0;
+    private final int SEIS=6;
+    private IntentFilter filter = new IntentFilter();
+    private AlertDialog.Builder dialog;
+    private ManipulaDados M;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        activity = getActivity();
-        resource = getResources();
-        M = new ManipulaDados(getActivity());
-        view = inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
-        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-        labelOferecidas = (TextView) view.findViewById(R.id.label3Vazio);
-        recarrega = (ImageButton) view.findViewById(R.id.b_recarrega3);
-        lloferecidas = (LinearLayout) view.findViewById(R.id.caixa_oferecidas);
-        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                atualizarSolicitantes(0, 6, true);
-                swipeLayout.setRefreshing(false);
-            }
-        });
-
-        recarrega.setOnClickListener(new View.OnClickListener() {
+        this.activity = getActivity();
+        this.resource = getResources();
+        this.M = new ManipulaDados(getActivity());
+        this.view = inflater.inflate(R.layout.fragment_coronas_oferecidas, container, false);
+        this.labelOferecidas = (TextView) view.findViewById(R.id.label3Vazio);
+        this.recarrega = (ImageButton) view.findViewById(R.id.b_recarrega3);
+        this.lloferecidas = (LinearLayout) view.findViewById(R.id.caixa_oferecidas);
+        this.recarrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 atualizarSolicitantes(lloferecidas.getChildCount(), 1, false);
             }
         });
         if (M.getUsuario() != null) {
-            atualizarSolicitantes(0, 6, true);
+            atualizarSolicitantes(ZERO, SEIS, true);
         }
         dialog = new AlertDialog.Builder(getActivity());
         receiver = new MyReceiver(new Handler());
         return view;
     }
 
-    private RelativeLayout montarLayoutCaronaOferecida(final Carona carona){//DESENVOLVENDO
+    private RelativeLayout montarLayoutCarOf_parte1(final Carona carona) {
         final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
         TextView tv_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
         TextView tv_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
@@ -93,16 +86,16 @@ public class Coronas_oferecidas extends Fragment {
         ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
         tv_destino.setText(carona.getDestino());
         tv_origem.setText(carona.getOrigem());
-        if(carona.getHorario().length()==4 || carona.getHorario().length()==5){
+        if (carona.getHorario().length() == 4 || carona.getHorario().length() == 5) {
             tv_horario.setText(carona.getHorario());
-        }else{
+        } else {
             tv_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
         }
         tv_vagas.setText((carona.getVagas() - carona.getVagasOcupadas()) + "/" + carona.getVagas());
         modelo.setId(carona.getId());
-        final LinearLayout ll = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
         final List<Usuario> participantes = carona.getParticipantes();
         final List statusSolicitacao = carona.getParticipantesStatus();
+        final LinearLayout llsecundario = (LinearLayout) modelo.findViewById(R.id.caixa_partic);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,10 +104,10 @@ public class Coronas_oferecidas extends Fragment {
                     @Override
                     public void concluido(Object object) {
                         if (object.toString().equals("1")) {
-                            Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, R.string.alert_rmv, Toast.LENGTH_SHORT).show();
                             lloferecidas.removeView(modelo);
                         } else if (object.toString().equals("0")) {
-                            Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, R.string.alert_car_at, Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(activity, object.toString(), Toast.LENGTH_SHORT).show();
                         }
@@ -128,13 +121,10 @@ public class Coronas_oferecidas extends Fragment {
 
             }
         });
-
-
         for (int j = 0; j < participantes.size(); j++) {
-            final int k = j;
             if (statusSolicitacao.get(j).equals("AGUARDANDO")) {
                 final RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_solicitadas, null);
-                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
+                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);
                 TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
                 ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
                 ImageButton btnAceitar = (ImageButton) modelo2.findViewById(R.id.b_aceitar_usuario_carona);
@@ -152,93 +142,47 @@ public class Coronas_oferecidas extends Fragment {
                 fotoSolicitante.setScaleType(ImageView.ScaleType.FIT_XY);
                 final Usuario userAtual = new Usuario(participantes.get(j).getId());
                 modelo2.setId(participantes.get(j).getId());
-                ll.addView(modelo2, 0);
+                llsecundario.addView(modelo2, 0);
+                final int k=j;
                 btnAceitar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (modelo.getId()==M.getCaronaOferecida().getId()) {
-                            dialog.setTitle(R.string.title_confirmacao)
-                                    .setMessage(R.string.alert_aceitar_user)
-                                    .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                        if (modelo.getId() == M.getCaronaOferecida().getId()) {
+                            dialog.setTitle(R.string.title_conf)
+                                    .setMessage(R.string.alert_act_user)
+                                    .setNegativeButton(R.string.n, null)
+                                    .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialoginterface, int i) {
-
-                                        }
-                                    })
-                                    .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialoginterface, int i) {
-                                            RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                            rs2.aceitarRecusarCaronas(userAtual, "ACEITO", new GetRetorno() {
-                                                @Override
-                                                public void concluido(Object object) {
-                                                    Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                                    if (object.equals("Usuario Aceito!")) {
-                                                        ll.removeView(modelo2);
-                                                        criaBroadcastHome("nova(s)Carona(s)");
-                                                        RelativeLayout m = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                                                        TextView nomeSolicitante = (TextView) m.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
-                                                        TextView telefoneSolicitante = (TextView) m.findViewById(R.id.c_telefone);
-                                                        ImageView fotoSolicitante = (ImageView) m.findViewById(R.id.c_foto);
-                                                        nomeSolicitante.setText(participantes.get(k).getNome());
-                                                        telefoneSolicitante.setText(participantes.get(k).getTelefone());
-                                                        byte[] decodedString = Base64.decode(participantes.get(k).getFoto(), Base64.DEFAULT);
-                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                                        Resources res = resource;
-                                                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                                                        dr.setCircular(true);
-                                                        fotoSolicitante.setImageDrawable(dr);
-                                                        m.setId(k);
-                                                        ll.addView(m, 0);
-                                                        new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void concluido(Object object, Object object2) {
-
-                                                }
-                                            });
+                                            participantes.get(k).setStatus("0_ACEITO");
+                                            M.setParticipantesCarOferecida(participantes.get(k), M.getTtParCarOf());
+                                            RelativeLayout modelo3 = montarLayoutCarOf_parte3(participantes.get(k));
+                                            llsecundario.removeView(modelo2);
+                                            llsecundario.addView(modelo3, 0);
+                                            new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
                                         }
                                     }).show();
-                        }else{
-                            ll.removeView(modelo2);
-                            Toast.makeText(activity, R.string.alert_car_desativa,Toast.LENGTH_LONG).show();
+                        } else {
+                            llsecundario.removeView(modelo2);
+                            Toast.makeText(activity, R.string.alert_car_dst, Toast.LENGTH_LONG).show();
                         }
                     }
                 });
                 btnRecusar.setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
 
                         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_recusar_user)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                        dialog.setTitle(R.string.title_conf)
+                                .setMessage(R.string.alert_rcs_user)
+                                .setNegativeButton(R.string.n, null)
+                                .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
-
-
-                                    }
-                                })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-
-                                        RequisicoesServidor rs2 = new RequisicoesServidor(activity);
-                                        rs2.aceitarRecusarCaronas(userAtual, "RECUSADO", new GetRetorno() {
-                                            @Override
-                                            public void concluido(Object object) {
-                                                Toast.makeText(activity, (String) object, Toast.LENGTH_SHORT).show();
-                                                if (object.equals("Usuario Recusado!")) {
-                                                    tv_vagas.setText((carona.getVagas() - (carona.getVagasOcupadas() - 1)) + "/" + carona.getVagas());
-                                                    ll.removeView(modelo2);
-                                                    new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void concluido(Object object, Object object2) {
-
-                                            }
-                                        });
+                                        participantes.get(k).setStatus("0_RECUSADO");
+                                        M.setParticipantesCarOferecida(participantes.get(k), M.getTtParCarOf());
+                                        RelativeLayout modelo3 = montarLayoutCarOf_parte3(participantes.get(k));
+                                        llsecundario.removeView(modelo2);
+                                        llsecundario.addView(modelo3, 0);
+                                        new Funcoes().apagarNotificacaoEspecifica(getActivity(), 3);
                                     }
                                 }).show();
                     }
@@ -253,60 +197,83 @@ public class Coronas_oferecidas extends Fragment {
                     }
                 });
 
-
             } else {
-                RelativeLayout modelo2 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
-                TextView nomeSolicitante = (TextView) modelo2.findViewById(R.id.tv_destino_ACEITO2);//pega os elemetos do modelo para setar dados
-                TextView telefoneSolicitante = (TextView) modelo2.findViewById(R.id.c_telefone);
-                ImageView fotoSolicitante = (ImageView) modelo2.findViewById(R.id.c_foto);
-                nomeSolicitante.setText(participantes.get(j).getNome());
-                telefoneSolicitante.setText(participantes.get(j).getTelefone());
-                byte[] decodedString = Base64.decode(participantes.get(j).getFoto(), Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                Resources res = resource;
-                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
-                dr.setCircular(true);
-                fotoSolicitante.setImageDrawable(dr);
-
-                fotoSolicitante.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent it = new Intent(activity, DetalheUsuario.class);
-                        DetalheUsuario.usuarioEditar = participantes.get(k);
-                        startActivity(it);
-                    }
-                });
-                modelo2.setId(j);
-                ll.addView(modelo2, 0);
+                RelativeLayout modelo3 = montarLayoutCarOf_parte3(participantes.get(j));
+                llsecundario.addView(modelo3, 0);
             }
-
         }
         return modelo;
     }
 
+
+
+    private RelativeLayout montarLayoutCarOf_parte3(final Usuario user) {
+        RelativeLayout modelo3 = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_aceitas, null);
+        TextView nomeSolicitante = (TextView) modelo3.findViewById(R.id.tv_destino_ACEITO2);
+        TextView telefoneSolicitante = (TextView) modelo3.findViewById(R.id.c_telefone);
+        TextView status = (TextView) modelo3.findViewById(R.id.textViewSt2);
+        ImageView fotoSolicitante = (ImageView) modelo3.findViewById(R.id.c_foto);
+        ImageView imgAndamento = (ImageView) modelo3.findViewById(R.id.imageViewAnd3);
+        nomeSolicitante.setText(user.getNome());
+        telefoneSolicitante.setText(user.getTelefone());
+        byte[] decodedString = Base64.decode(user.getFoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        Resources res = resource;
+        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
+        dr.setCircular(true);
+        fotoSolicitante.setImageDrawable(dr);
+        modelo3.setId(user.getId());
+        String stt = user.getStatus();
+        String stt2 = user.getStatus();
+        stt = stt.substring(0, 2);
+        if (!stt.equals("0_")) {
+            imgAndamento.setImageResource(R.drawable.icon_atok);
+        }else{
+            stt2 = stt2.substring(2,stt2.length());
+        }
+        status.setText(stt2);
+        fotoSolicitante.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(activity, DetalheUsuario.class);
+                DetalheUsuario.usuarioEditar = user;
+                startActivity(it);
+            }
+        });
+        return modelo3;
+    }
+
+
     public void atualizaAtualCaronaOferecida() {
-        if(lloferecidas.getChildCount()>0){
-            int idPrimeiroFrame=lloferecidas.getChildAt(0).getId();
-            if(M.getCaronaOferecida().getId()==idPrimeiroFrame){
+
+        if (lloferecidas.getChildCount() > 0) {
+            int idPrimeiroFrame = lloferecidas.getChildAt(0).getId();
+            if (M.getCaronaOferecida().getId() == idPrimeiroFrame) {
                 lloferecidas.removeViewAt(0);
             }
         }
 
-        Carona car= M.getCaronaOferecida();
+        Carona car = M.getCaronaOferecida();
         final List<Usuario> participantes = new LinkedList<Usuario>();
         final List<String> statusParticipantes = new LinkedList<String>();
 
+        int vagasOc=0;
         for (int i = 0; i < M.getTtParCarOf(); i++) {
-            participantes.add(M.getParticipantesCarOferecida(i));
-            statusParticipantes.add(M.getParticipantesCarOferecida(i).getStatus());
+            if (M.getParticipantesCarOferecida(i) != null) {
+                participantes.add(M.getParticipantesCarOferecida(i));
+                statusParticipantes.add(M.getParticipantesCarOferecida(i).getStatus());
+                if(M.getParticipantesCarOferecida(i).getStatus().equals("ACEITO")){
+                    vagasOc++;
+                }
+            }
         }
 
         car.setParticipantes(participantes);
         car.setParticipantesStatus(statusParticipantes);
-        final RelativeLayout modelo=montarLayoutCaronaOferecida(car);
-        lloferecidas.addView(modelo,0);
+        car.setVagasOcupadas(vagasOc);
+        final RelativeLayout modelo = montarLayoutCarOf_parte1(car);
+        lloferecidas.addView(modelo, 0);
     }
-
 
     public void atualizarSolicitantes(int totalviewsAtual, int totalBuscar, final boolean remover) {
         if (remover) {
@@ -321,12 +288,12 @@ public class Coronas_oferecidas extends Fragment {
                 final List<Carona> caronas = (List<Carona>) object;
                 if (caronas.size() > 0) {
                     for (int i = 0; i < caronas.size(); i++) {
-                        final RelativeLayout modelo = montarLayoutCaronaOferecida(caronas.get(i));
+                        final RelativeLayout modelo = montarLayoutCarOf_parte1(caronas.get(i));
                         lloferecidas.addView(modelo);
                     }
                 } else {
                     if (remover == false)
-                        Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.alert_0_car, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -363,14 +330,12 @@ public class Coronas_oferecidas extends Fragment {
     }
 
 
-        @Override
+    @Override
     public void onStart() {
         super.onStart();
-
         if (((MainActivity) activity).numNovasSolicitacoes > 0) {
             ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge3, 2);
         }
-
     }
 
     public void setUserVisibleHint(boolean visible) {
@@ -409,9 +374,11 @@ public class Coronas_oferecidas extends Fragment {
 
     public class MyReceiver extends BroadcastReceiver {
         private final Handler handler; // Handler used to execute code on the UI thread
+
         public MyReceiver(Handler handler) {
             this.handler = handler;
         }
+
         @Override
         public void onReceive(final Context context, Intent intent) {
             String mensagem = intent.getStringExtra("mensagem");

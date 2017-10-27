@@ -15,38 +15,40 @@
 
 
 
-    <!-- Strings relacionadas to login -->
+    <!-- Strings relacionadas ao login -->
     <string name="prompt_matricula">Matricula</string>
-    <string name="prompt_senha">senha</string>
+    <string name="prompt_senha">Senha</string>
     <string name="sexo_usuario">Sexo</string>
     <string name="cnh_usuario">CNH</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_matricula">O número da matricula é invalido</string>
-    <string name="error_invalid_password">Esta senha é muito curta</string>
-    <string name="error_incorrect_password">A senha está incorreta</string>
-    <string name="error_field_required">Este campo é obrigatório</string>
+    <string name="error_invalid_matricula">O número da matricula é invalido.</string>
+    <string name="error_invalid_password">Esta senha é muito curta.</string>
+    <string name="error_incorrect_password">A senha está incorreta.</string>
+    <string name="error_field_required">Este campo é obrigatório.</string>
     <string name="homens">HOMENS</string>
     <string name="mulheres">MULHERES</string>
     <string name="todos">TODOS</string>
     <string name="add">Nova Carona</string>
     <string name="confirmacao_exclusao_viagem"> Tem certeza que deseja realizar essa ação ?</string>
-    <string name="sim"> SIM </string>
-    <string name="nao"> NÃO </string>
-    <string name="alert_editar_perfil">Editar Perfil. Deseja realmente continuar ? </string>
-    <string name="alert_cancelar_carona">Cancelar Carona. Deseja realmente continuar ? </string>
-    <string name="alert_solicitar_carona">Solicitar Carona. Deseja realmente continuar ? </string>
-    <string name="alert_aceitar_user">Aceitar Caroneiro. Deseja realmente continuar ? </string>
-    <string name="alert_recusar_user">Recusar Caroneiro. Deseja realmente continuar ? </string>
+    <string name="s"> SIM </string>
+    <string name="n"> NÃO </string>
+    <string name="k"> OK </string>
+    <string name="alert_edt_perfil">Editar Perfil. Deseja realmente continuar ? </string>
+    <string name="alert_cnl_car">Cancelar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_slt_can">A carona solicitada foi cancelada.</string>
+    <string name="alert_slt_car">Solicitar Carona. Deseja realmente continuar ? </string>
+    <string name="alert_act_user">Aceitar Caroneiro. Deseja realmente continuar ? </string>
+    <string name="alert_rcs_user">Recusar Caroneiro. Deseja realmente continuar ? </string>
     <string name="alert_criar_carona">Criar Carona. Deseja realmente continuar ? </string>
-    <string name="alert_car_solicitada">Você tem 1 carona solicitada!</string>
-    <string name="alert_car_oferecida">Você já ofereceu uma carona!</string>
-    <string name="alert_sem_conexao">Tente se conectar novamente!</string>
-    <string name="alert_car_ativa">A carona ainda está ativa!</string>
-    <string name="alert_car_desativa">A carona não está ativa!</string>
-    <string name="alert_removido">Removido!</string>
+    <string name="alert_car_slt">Você tem 1 carona solicitada!</string>
+    <string name="alert_car_ofd">Você já ofereceu uma carona!</string>
+    <string name="alert_sem_con">Tente se conectar novamente!</string>
+    <string name="alert_car_at">A carona ainda está ativa!</string>
+    <string name="alert_car_dst">A carona não está ativa!</string>
+    <string name="alert_rmv">Removido!</string>
     <string name="alert_versao">Ainda estamos na versão Beta!</string>
-    <string name="alert_0_caronas">Nenhuma carona encontrada!</string>
+    <string name="alert_0_car">Nenhuma carona encontrada!</string>
     <string name="campos_branco">Campo(s) em branco</string>
 
 
@@ -90,7 +92,8 @@
     </string-array>
 
     <string name="hello_blank_fragment">Tente mais tarde!</string>
-    <string name="title_confirmacao">Confirmar</string>
+    <string name="title_conf">Confirmar</string>
+    <string name="title_atn">Atenção!</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>

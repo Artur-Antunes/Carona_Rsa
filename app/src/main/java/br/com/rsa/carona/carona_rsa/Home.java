@@ -32,9 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.util.LinkedList;
 import java.util.List;
-
 import br.com.rsa.carona.carona_rsa.controllers.GetRetorno;
 import br.com.rsa.carona.carona_rsa.controllers.RequisicoesServidor;
 import br.com.rsa.carona.carona_rsa.entidades.Carona;
@@ -44,20 +43,22 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class Home extends Fragment {
-    LinearLayout ll;
-    View view;
-    FragmentActivity activity;
-    Resources resource;
-    ImageButton recarrega;
-    TextView labelHome;
-    SwipeRefreshLayout swipeLayout;
+    private LinearLayout ll;
+    private View view;
+    private FragmentActivity activity;
+    private Resources resource;
+    private ImageButton recarrega;
+    private TextView labelHome;
+    private SwipeRefreshLayout swipeLayout;
     public static FloatingActionButton load;
     public static FloatingActionButton newCarona;
-    MyReceiver receiver;
-    AlertDialog.Builder dialog;
-    ManipulaDados m;
-    ViewGroup container;
-    IntentFilter filter = new IntentFilter();
+    private MyReceiver receiver;
+    private AlertDialog.Builder dialog;
+    private ManipulaDados m;
+    private ViewGroup container;
+    private final int ZERO = 0;
+    private final int SEIS = 6;
+    private IntentFilter filter = new IntentFilter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,8 +80,10 @@ public class Home extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                atualizaCaronaSolicitada();
-                atualizaCaronas(0, 6, true);
+                if (m.getCaronaSolicitada() != null) {
+                    antigaSolicitacao(m.getUsuario().getId(), m.getCaronaSolicitada().getId());
+                }
+                atualizaCaronas(ZERO, SEIS, true);
                 swipeLayout.setRefreshing(false);
             }
         });
@@ -115,11 +118,14 @@ public class Home extends Fragment {
         tab3.setCustomView(R.layout.tab);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         if (m.getUsuario() != null) {
-            atualizaCaronas(0, 6, true);
-            if (m.getCaronaSolicitada().getId() != -1) {
-                atualizaCaronaSolicitada();
+            if (m.getCaronaSolicitada() != null) {
+                if (m.getCaronaSolicitada().getDestino() == null) {
+                    antigaSolicitacao(m.getUsuario().getId(), m.getCaronaSolicitada().getId());
+                }
             }
+            atualizaCaronas(ZERO, SEIS, true);
         }
+
         return view;
     }
 
@@ -138,7 +144,7 @@ public class Home extends Fragment {
         tv_nome.setText(proprietario.getNome());
         tv_telefone.setText(proprietario.getTelefone());
         byte[] decodedString = Base64.decode(proprietario.getFoto(), Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, ZERO, decodedString.length);
         Resources res = resource;
         RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(res, bitmap);
         dr.setCircular(true);
@@ -164,6 +170,16 @@ public class Home extends Fragment {
                 imgAndamento.setImageResource(R.drawable.icon_clock);
             }
         }
+
+        c_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(getActivity(), DetalheUsuario.class);
+                DetalheUsuario.usuarioEditar = proprietario;
+                startActivity(it);
+            }
+        });
+
         btnComentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,49 +191,40 @@ public class Home extends Fragment {
             public void onClick(View v) {
                 if (m.getUsuario().getId() != proprietario.getId()) {
                     if (m.getCaronaOferecida() == null) {
-                        if (m.getCaronaSolicitada().getId() == -1) {
-                            dialog.setTitle(R.string.title_confirmacao)
-                                    .setMessage(R.string.alert_solicitar_carona)
-                                    .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialoginterface, int i) {
-
-
-                                        }
-                                    })
-                                    .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                        if (m.getCaronaSolicitada() == null) {
+                            dialog.setTitle(R.string.title_conf)
+                                    .setMessage(R.string.alert_slt_car)
+                                    .setNegativeButton(R.string.n, null)
+                                    .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialoginterface, int i) {
                                             car.setProprietario(proprietario);
                                             car.setStatusUsuario("AGUARDANDO");
-                                            car.setStatus(0);
+                                            car.setStatus(ZERO);
                                             m.setCaronaSolicitada(car);
                                             atualizaCaronaSolicitada();
                                         }
                                     }).show();
                         } else {
-                            Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), R.string.alert_car_slt, Toast.LENGTH_LONG).show();
 
                         }
                     } else {
-                        Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.alert_car_ofd, Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                    dialog.setTitle(R.string.title_confirmacao)
-                            .setMessage(R.string.alert_cancelar_carona)
-                            .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialoginterface, int i) {
-
-                                }
-                            })
-                            .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                    dialog.setTitle(R.string.title_conf)
+                            .setMessage(R.string.alert_cnl_car)
+                            .setNegativeButton(R.string.n, null)
+                            .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialoginterface, int i) {
                                     RequisicoesServidor rs = new RequisicoesServidor(getActivity());
-                                    rs.alteraStatusCarona(car.getId(), 0, new GetRetorno() {
+                                    rs.alteraStatusCarona(car.getId(), ZERO, new GetRetorno() {
                                         @Override
                                         public void concluido(Object object) {
                                             exibirMsg((String) object);
                                             ll.removeView(modelo);
                                             m.clearAtualCarOf();
+                                            getExtra();
                                         }
 
                                         @Override
@@ -230,6 +237,29 @@ public class Home extends Fragment {
                 }
             }
         });
+        modelo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(getActivity()).setNeutralButton("Detalhes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        final String vagas = organizaVagas(car.getVagasOcupadas(), car.getVagas());
+                        detalhesCarona(proprietario, car, vagas);
+                    }
+                })
+                        .setPositiveButton("Ocultar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialoginterface, int i) {
+                                if (!isMotorista(proprietario)) {
+                                    ll.removeView(modelo);
+                                } else {
+                                    Toast.makeText(getActivity(), "A carona não pode ser removida.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }).show();
+                return true;
+            }
+        });
+
+
         modelo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,9 +271,29 @@ public class Home extends Fragment {
         return modelo;
     }
 
+    public void antigaSolicitacao(int idUser, int idCar) {
+        Servico.ativo = false;
+        RequisicoesServidor rs = new RequisicoesServidor(getActivity());
+        rs.aguardaRespostaCarona(idUser, idCar, new GetRetorno() {
+            @Override
+            public void concluido(Object object) {
+                Carona c = (Carona) object;
+                m.setCaronaSolicitada(c);
+                atualizaCaronaSolicitada();
+                Servico.ativo = true;
+            }
 
+            @Override
+            public void concluido(Object object, Object object2) {
+
+            }
+        });
+    }
+
+
+    //Atualiza a solicitação
     public void atualizaCaronaSolicitada() {
-        if (m.getCaronaSolicitada().getId() != -1) {
+        if (m.getCaronaSolicitada() != null) {
             final Carona carona = m.getCaronaSolicitada();
             final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas_recebidas, null);
             TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destinoR);
@@ -285,40 +335,52 @@ public class Home extends Fragment {
             btnCancelar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
-                    rserv.desistirCarona(m.getUsuario().getId(), m.getCaronaSolicitada().getId(), new GetRetorno() {
-                        @Override
-                        public void concluido(Object object) {
-                            Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
-                            m.setCaronaSolicitada(new Carona(-1));
-                            atualizaCaronas(0, 6, true);
-                            ll.removeView(modelo);
-                        }
 
-                        @Override
-                        public void concluido(Object object, Object object2) {
+                    dialog.setTitle(R.string.title_conf)
+                            .setMessage(R.string.alert_slt_car)
+                            .setNegativeButton(R.string.n, null)
+                            .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialoginterface, int i) {
+                                    RequisicoesServidor rserv = new RequisicoesServidor(getActivity());
+                                    rserv.desistirCarona(m.getUsuario().getId(), m.getCaronaSolicitada().getId(), new GetRetorno() {
+                                        @Override
+                                        public void concluido(Object object) {
+                                            Toast.makeText(getActivity(), object.toString(), Toast.LENGTH_LONG).show();
+                                            m.setCaronaSolicitada(new Carona(-1));
+                                            //atualizaCaronas(0, 6, true);
+                                            ll.removeView(modelo);
+                                        }
 
-                        }
-                    });
+                                        @Override
+                                        public void concluido(Object object, Object object2) {
+
+                                        }
+                                    });
+                                }
+                            }).show();
+
                 }
             });
         }
         getExtra();
     }
 
-    private boolean closePosicao_1(int id) {
+    //Método que faz o verifica a primeira posição de todas as caronas ofertadas e solicitadas
+    private boolean isPosicao_1(int id) {
         if (ll.getChildCount() > 0) {
             if (ll.getChildAt(0).getId() == id) {
-                ll.removeViewAt(0);
                 return true;
             }
         }
         return false;
     }
 
+    //Remover a solicitação que foi realizada pelo usuário
     private void removerSolicitacao() {
-        closePosicao_1(m.getCaronaSolicitada().getId());
-        m.setCaronaSolicitada(new Carona(-1));
+        if (isPosicao_1(m.getCaronaSolicitada().getId())) {
+            ll.removeViewAt(0);
+        }
+        m.closeCaronaSolicitada();
         limparBadge();
     }
 
@@ -333,6 +395,7 @@ public class Home extends Fragment {
     }
 
 
+    //Testa se um novo modelo pode ser adicionada
     private int verificaModeloAdd(RelativeLayout modelo) {
         for (int i = 0; i < ll.getChildCount(); i++) {
             if (ll.getChildAt(i) != null) {
@@ -345,6 +408,7 @@ public class Home extends Fragment {
     }
 
 
+    //Atualiza os botões da tela Principal...
     private void getExtra() {
         if (ll.getChildCount() == 0) {
             labelHome.setVisibility(View.VISIBLE);
@@ -358,7 +422,20 @@ public class Home extends Fragment {
             recarrega.setVisibility(View.INVISIBLE);
         }
 
-        if ((m.getCaronaOferecida() != null) || (m.getCaronaSolicitada().getId() != -1) || (load.getVisibility() == View.VISIBLE)) {
+        if ((m.getCaronaOferecida() != null) || (m.getCaronaSolicitada() != null) || (load.getVisibility() == View.VISIBLE)) {
+            if (m.getCaronaOferecida() != null) {
+                Log.e("Tst1:", m.getCaronaOferecida().getId() + "<-");
+            }
+
+            if (m.getCaronaSolicitada() != null) {
+                Log.e("Tst2:", m.getCaronaSolicitada().getId() + "<-");
+            }
+
+            if (load.getVisibility() == View.VISIBLE) {
+                Log.e("Tst3:", "visible<-");
+            }
+
+
             newCarona.setVisibility(View.INVISIBLE);
         } else {
             newCarona.setVisibility(View.VISIBLE);
@@ -366,6 +443,7 @@ public class Home extends Fragment {
 
     }
 
+    //Remove as caronas que foram desativadas...
     private void removeCaronasAntigas(List<Carona> caronas) {
         if (caronas.size() > 0) {
             int[] selecionaIds = new int[caronas.size()];
@@ -373,43 +451,64 @@ public class Home extends Fragment {
                 selecionaIds[i] = caronas.get(i).getId();
             }
             atualizaCaronasTela(selecionaIds);
+        } else {
+            int n = -9;
+            if (m.getCaronaSolicitada() != null) {
+                n = m.getCaronaSolicitada().getId();
+            } else if (m.getCaronaOferecida() != null) {
+                n = m.getCaronaOferecida().getId();
+            }
+            atualizaCaronasTela(n);
         }
     }
 
+    //Inicia uma nova Activity com os comentários...
     private void comentarios(int idCar) {
         Intent it = new Intent(getActivity(), ComentariosActivity.class);
         ComentariosActivity.idCarona = idCar;
         startActivity(it);
     }
 
+    //Inicia uma nova Activity com os detalhes da carona...
     private void detalhesCarona(Usuario user, Carona car, String vagas) {
-        Intent it = new Intent(getActivity(), Detalhes_Carona.class);
-        Detalhes_Carona.usuario = user;
-        Detalhes_Carona.carona = car;
+        Intent it = new Intent(getActivity(), DetalhesCarona.class);
+        DetalhesCarona.usuario = user;
+        DetalhesCarona.carona = car;
         it.putExtra("vagas", vagas);
         startActivity(it);
     }
 
+    //Atualiza os frames na página Home
     private void atualizaCaronasTela(int[] ids) {
         boolean comparador;
+        boolean tCarOf = m.getCaronaOferecida() != null ? true : false;
+        boolean tCarSol = m.getCaronaSolicitada() != null ? true : false;
         for (int j = 0; j < ll.getChildCount(); j++) {
             comparador = false;
             for (int i = 0; i < ids.length; i++) {
-                if ((ll.getChildAt(j).getId() == ids[i]) && (m.getCaronaOferecida() != null)) {
-                    if (ll.getChildAt(j).getId() != m.getCaronaOferecida().getId()) {
+                if ((ll.getChildAt(j).getId() == ids[i])) {
+                    if (tCarOf || tCarSol) {
                         i = ids.length;
                         comparador = true;
                     }
                 }
             }
-            if (comparador == false) {
+            if (!comparador) {
                 ll.removeViewAt(j);
             }
         }
-        getExtra();
-        getActivity();
     }
 
+    private void atualizaCaronasTela(int n) {
+        for (int j = 0; j < ll.getChildCount(); j++) {
+            int id = ll.getChildAt(j).getId();
+            if (id != n) {
+                ll.removeViewAt(j);
+            }
+        }
+    }
+
+    //Verifica se um usuário é o proprietário...
     private boolean isMotorista(Usuario user) {
         if (m.getUsuario().getId() == user.getId()) {
             return true;
@@ -420,7 +519,7 @@ public class Home extends Fragment {
     }
 
     public void atualizaCaronas(int ultNum, int ttViews, final boolean removerAntigas) {
-        Servico.cntVerificaNovasCaronas = false;
+        Servico.ativo = false;
         limparBadge();
         MainActivity.badge1.hide();
         final ManipulaDados M = new ManipulaDados(getActivity());
@@ -441,8 +540,10 @@ public class Home extends Fragment {
                             removeCaronasAntigas(caronas);
                         }
                         for (int i = 0; i < caronas.size(); i++) {
-                            if (caronas.get(i).getId() == m.getCaronaSolicitada().getId()) {
-                                continue;
+                            if (m.getCaronaSolicitada() != null) {
+                                if (caronas.get(i).getId() == m.getCaronaSolicitada().getId()) {
+                                    continue;
+                                }
                             }
                             RelativeLayout modelo = montarLayoutCaronaDisponivel(caronas.get(i), usuarios.get(i));
                             if (isMotorista(usuarios.get(i))) {
@@ -452,6 +553,8 @@ public class Home extends Fragment {
                                 } else {
                                     ll.addView(modelo, 0);
                                 }
+                                caronas.get(i).setProprietario(usuarios.get(i));
+                                m.setCaronaOferecida(caronas.get(i));
                             } else {
                                 if (verificaModeloAdd(modelo) != -1) {
                                     ll.removeViewAt(verificaModeloAdd(modelo));
@@ -462,17 +565,17 @@ public class Home extends Fragment {
                             }
                         }
                     } else {
-                        if (removerAntigas == false)
-                            Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
+                        removeCaronasAntigas(caronas);
                     }
                     setBusca();
                     getExtra();
-                    Servico.cntVerificaNovasCaronas = true;
+                    Servico.ativo = true;
                 }
             });
         }
     }
 
+    //Armazenar a ultima carona inserida(visualizada)
     private void setBusca() {
         int maiorId = m.getUltimoIdCarona();
         for (int i = 0; i < ll.getChildCount(); i++) {
@@ -483,12 +586,29 @@ public class Home extends Fragment {
         m.gravarUltimaCarona(maiorId);
     }
 
+    //Exibir uma messagem qualquer...
     private void exibirMsg(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
 
+    //Atualiza os dados da carona oferecida pelo usuário...
     private void atualizaAtualCaronaOferecida() {
-        final RelativeLayout modelo = montarLayoutCaronaDisponivel(m.getCaronaOferecida(), m.getUsuario());
+        Carona car = m.getCaronaOferecida();
+        List<Usuario> participantes = new LinkedList<Usuario>();
+        for (int i = 0; i < m.getTtParCarOf(); i++) {
+            if (m.getParticipantesCarOferecida(i) != null) {
+                if (m.getParticipantesCarOferecida(i).getStatus().equals("ACEITO")) {
+                    participantes.add(m.getParticipantesCarOferecida(i));
+                }
+            }
+        }
+
+        if (participantes.size() > 0) {
+            car.setParticipantes(participantes);
+            car.setVagasOcupadas(participantes.size());
+        }
+
+        final RelativeLayout modelo = montarLayoutCaronaDisponivel(car, m.getUsuario());
         int t1 = verificaModeloAdd(modelo);
         if (t1 != -1) {
             ll.removeViewAt(t1);
@@ -498,6 +618,8 @@ public class Home extends Fragment {
             if (id == -2) {
                 ll.removeViewAt(0);
                 ll.addView(modelo, 0);
+            } else {
+                ll.addView(modelo, 0);
             }
         } else {
             ll.addView(modelo, 0);
@@ -506,18 +628,19 @@ public class Home extends Fragment {
 
     private void novaCarona() {
         if (load.getVisibility() == View.INVISIBLE) {
-            if (m.getUsuario().getIdCaronaSolicitada() == -1 && m.getCaronaOferecida() == null) {
-                startActivity(new Intent(getContext(), Criar_Carona.class));
-            } else if (m.getUsuario().getIdCaronaSolicitada() != -1) {
-                Toast.makeText(getActivity(), R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+            if (m.getCaronaSolicitada() == null && m.getCaronaOferecida() == null) {
+                startActivity(new Intent(getContext(), CriarCarona.class));
+            } else if (m.getCaronaSolicitada() != null) {
+                Toast.makeText(getActivity(), R.string.alert_car_slt, Toast.LENGTH_LONG).show();
             } else if (m.getCaronaOferecida() != null) {
-                Toast.makeText(getActivity(), R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.alert_car_ofd, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(getActivity(), R.string.alert_sem_conexao, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.alert_sem_con, Toast.LENGTH_LONG).show();
         }
     }
 
+    //Organizar a visualização das vagas da carona
     private String organizaVagas(int vagasOculpadas, int vagasTotal) {
         int vagasDisponiveis = vagasTotal - vagasOculpadas;
         String res = vagasDisponiveis + "/" + vagasTotal;
@@ -566,7 +689,7 @@ public class Home extends Fragment {
 
     public void ultimasCaronas(final List<Carona> caronas, final List<Usuario> usuarios) {
         for (int i = 0; i < caronas.size(); i++) {
-            if (caronas.get(i).getId() == m.getCaronaSolicitada().getId()) {
+            if (caronas.get(i).getId() == m.getUsuario().getIdCaronaSolicitada()) {
                 continue;
             }
             RelativeLayout modelo = montarLayoutCaronaDisponivel(caronas.get(i), usuarios.get(i));
@@ -583,13 +706,13 @@ public class Home extends Fragment {
                 int t2 = verificaModeloAdd(modelo);
                 if (t2 != -1) {
                     ll.removeViewAt(t2);
-                    if (m.getCaronaOferecida() == null && m.getCaronaSolicitada().getId() == -1) {
+                    if (m.getCaronaOferecida() == null && m.getCaronaSolicitada() != null) {
                         ll.addView(modelo, 0);
                     } else {
                         ll.addView(modelo);
                     }
                 } else {
-                    if (m.getCaronaOferecida() == null && m.getCaronaSolicitada().getId() == -1) {
+                    if (m.getCaronaOferecida() == null && m.getUsuario().getIdCaronaSolicitada() == -1) {
                         ll.addView(modelo, 0);
                     } else {
                         ll.addView(modelo);
@@ -636,9 +759,11 @@ public class Home extends Fragment {
                         @Override
                         public void run() {
                             new Funcoes().apagarNotificacaoEspecifica(getActivity(), 1);
-                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                            if (isPosicao_1(m.getCaronaSolicitada().getId())) {
+                                ll.removeViewAt(0);
                                 atualizaCaronaSolicitada();
                                 exibirMsg("Carona solicitada!");
+                                ((MainActivity) activity).LimparBadge(((MainActivity) activity).badge1, 1);
                             }
                         }
                     });
@@ -647,11 +772,14 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
-                                m.setCaronaSolicitada(new Carona(-1));
-                                exibirMsg("Essa carona não está mais disponível!");
+                            if (m.getCaronaSolicitada() != null && isPosicao_1(m.getCaronaSolicitada().getId())) {
+                                ll.removeViewAt(0);
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle(R.string.title_atn)
+                                        .setMessage(R.string.alert_slt_can)
+                                        .setPositiveButton(R.string.k, null).show();
+                                m.closeCaronaSolicitada();
                             }
-                            new Funcoes().apagarNotificacaoEspecifica(activity, 1);
                         }
                     });
                     break;
@@ -659,7 +787,9 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                            if (isPosicao_1(m.getCaronaSolicitada().getId())) {
+                                ll.removeViewAt(0);
+                                m.closeCaronaSolicitada();
                                 exibirMsg("Sem vagas!");
                             }
                         }
@@ -669,7 +799,9 @@ public class Home extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (closePosicao_1(m.getCaronaSolicitada().getId())) {
+                            if (isPosicao_1(m.getCaronaSolicitada().getId())) {
+                                ll.removeViewAt(0);
+                                m.closeCaronaSolicitada();
                                 exibirMsg("Solicitação Recusada!");
                             }
                         }
@@ -710,19 +842,18 @@ public class Home extends Fragment {
                         }
                     });
                     break;
-                case "removeCaronaOferecida":
+                case "remCarOf":
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (closePosicao_1(m.getCaronaOferecida().getId())) {
+                            if (isPosicao_1(m.getCaronaOferecida().getId())) {
                                 ll.removeViewAt(0);
-                                m.clearAtualCarOf();
-                                getExtra();
                             }
+                            m.clearAtualCarOf();
+                            getExtra();
                         }
                     });
                     break;
-
             }
         }
     }

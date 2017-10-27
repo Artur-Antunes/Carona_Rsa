@@ -33,21 +33,19 @@ public class MainActivity extends AppCompatActivity {
     public int numNovasCaronas = 0;
     public int numNovasSolicitacoes = 0;
     public int numCarAceita=0;
-    MyReceiver receiver;
-    View v1,v2,v3;
-    PagerAdapter adapter;
+    private MyReceiver receiver;
+    private View v1,v2,v3;
+    private PagerAdapter adapter;
     public static BadgeView badge1,badge2,badge3;
-    TabLayout tabLayout;
-    IntentFilter filter = new IntentFilter();
-    ManipulaDados md;
+    private TabLayout tabLayout;
+    private IntentFilter filter = new IntentFilter();
+    private ManipulaDados md;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         md=new ManipulaDados(MainActivity.this);
-        //Intent it = new Intent(this, Servico.class);
-        //startService(it);
         receiver = new MyReceiver(new Handler());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -174,14 +172,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.add) {
             if(Home.load.getVisibility()==View.INVISIBLE) {
                 if (md.getUsuario().getIdCaronaSolicitada() == -1 && md.getCaronaOferecida() == null) {
-                    startActivity(new Intent(this, Criar_Carona.class));
+                    startActivity(new Intent(this, CriarCarona.class));
                 } else if (md.getUsuario().getIdCaronaSolicitada() != -1) {
-                    Toast.makeText(MainActivity.this, R.string.alert_car_solicitada, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.alert_car_slt, Toast.LENGTH_LONG).show();
                 } else if (md.getCaronaOferecida() != null) {
-                    Toast.makeText(MainActivity.this, R.string.alert_car_oferecida, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.alert_car_ofd, Toast.LENGTH_LONG).show();
                 }
             }else {
-                Toast.makeText(MainActivity.this, R.string.alert_sem_conexao, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, R.string.alert_sem_con, Toast.LENGTH_LONG).show();
             }
             return true;
         } else if (id == R.id.action_perfil) {

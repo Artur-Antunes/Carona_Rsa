@@ -31,17 +31,17 @@ import br.com.rsa.carona.carona_rsa.entidades.Funcoes;
 import br.com.rsa.carona.carona_rsa.entidades.ManipulaDados;
 import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
-public class Caronas_Recebidas extends Fragment {
-    View view;
-    LinearLayout ll;
-    FragmentActivity activity;
-    ManipulaDados M;
-    MyReceiver receiver;
-    ImageButton recarrega;
-    TextView labelRecebidas;
-    SwipeRefreshLayout swipeLayout;
-    int ultimoIdCaronaIncluida = -2;//Ultima carona exibida
-    IntentFilter filter = new IntentFilter();
+public class CaronasRecebidas extends Fragment {
+
+    private View view;
+    private LinearLayout ll;
+    private FragmentActivity activity;
+    private ManipulaDados M;
+    private MyReceiver receiver;
+    private ImageButton recarrega;
+    private TextView labelRecebidas;
+    private int utmIdCarIncluida = -2;//Ultima carona exibida
+    private IntentFilter filter = new IntentFilter();
 
 
     @Override
@@ -50,16 +50,7 @@ public class Caronas_Recebidas extends Fragment {
         view = inflater.inflate(R.layout.fragment_caronas__recebidas, container, false);
         ll = (LinearLayout) view.findViewById(R.id.caixa_aceito);
         recarrega = (ImageButton) view.findViewById(R.id.b_recarrega2);
-        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container2);
-        swipeLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
         labelRecebidas = (TextView) view.findViewById(R.id.label2Vazio);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                atualizarCaronasAceitas(0, 6, true);
-                swipeLayout.setRefreshing(false);
-            }
-        });
         recarrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +61,55 @@ public class Caronas_Recebidas extends Fragment {
         receiver = new MyReceiver(new Handler());
         atualizarCaronasAceitas(0, 6, true);
         return view;
+    }
+
+    private RelativeLayout  montarLayoutCar(final Carona carona){
+        final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
+        TextView ta_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
+        TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
+        TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
+        TextView ta_aceito = (TextView) modelo.findViewById(R.id.tv_vagas3);
+        TextView img5 = (TextView) modelo.findViewById(R.id.textV5);
+        ta_origem.setText(carona.getOrigem());
+        ta_destino.setText(carona.getDestino());
+        img5.setVisibility(View.INVISIBLE);
+        ta_aceito.setText("ACEITO");
+        int color = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
+        ta_aceito.setTextColor(color);
+        ta_horario.setText(new Funcoes().horaSimples(carona.getHorario()));
+        ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
+        modelo.setId(carona.getId());
+        final int idCarona = carona.getId();
+        final int idUsuario = M.getUsuario().getId();
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (M.getCaronaSolicitada().getId() != idCarona) {//ERRO AQUI<-----
+                    RequisicoesServidor rs3 = new RequisicoesServidor(activity);
+                    rs3.fecharCaronaOferecida(idCarona, idUsuario, 2, new GetRetorno() {
+                        @Override
+                        public void concluido(Object object) {
+                            if (object.toString().equals("1")) {
+                                Toast.makeText(activity, R.string.alert_rmv, Toast.LENGTH_SHORT).show();
+                                ll.removeView(modelo);
+                                getRecarrega();
+                                getRecebidas();
+                            } else if (object.toString().equals("0")) {
+                                Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void concluido(Object object, Object object2) {
+
+                        }
+                    });
+                } else {
+                    Toast.makeText(activity, R.string.alert_car_at, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        return modelo;
     }
 
     public void atualizarCaronasAceitas(int totalviewsAtual, int totalBuscar, final boolean remover) {
@@ -85,57 +125,12 @@ public class Caronas_Recebidas extends Fragment {
                     final List<Carona> caronas = (List<Carona>) object;
                     if (caronas != null) {
                         for (int i = 0; i < caronas.size(); i++) {
-                            final RelativeLayout modelo = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.modelo_caronas, null);
-                            TextView ta_origem = (TextView) modelo.findViewById(R.id.tv_origem2);
-                            TextView ta_destino = (TextView) modelo.findViewById(R.id.tv_destino2);
-                            TextView ta_horario = (TextView) modelo.findViewById(R.id.tv_horario2);
-                            TextView ta_aceito = (TextView) modelo.findViewById(R.id.tv_vagas3);
-                            TextView img5 = (TextView) modelo.findViewById(R.id.textV5);
-                            ta_origem.setText(caronas.get(i).getOrigem());
-                            ta_destino.setText(caronas.get(i).getDestino());
-                            img5.setVisibility(View.INVISIBLE);
-                            ta_aceito.setText("ACEITO");
-                            int color = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
-                            ta_aceito.setTextColor(color);
-                            ta_horario.setText(new Funcoes().horaSimples(caronas.get(i).getHorario()));
-                            ImageButton btnClose = (ImageButton) modelo.findViewById(R.id.b_close_oferecida);
-                            modelo.setId(caronas.get(i).getId());
+                            final RelativeLayout modelo = montarLayoutCar(caronas.get(i));
                             ll.addView(modelo);
-                            final int idCarona = caronas.get(i).getId();
-                            final int idUsuario = M.getUsuario().getId();
-                            btnClose.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (M.getCaronaSolicitada().getId() != idCarona) {
-                                        RequisicoesServidor rs3 = new RequisicoesServidor(activity);
-                                        rs3.fecharCaronaOferecida(idCarona, idUsuario, 2, new GetRetorno() {
-                                            @Override
-                                            public void concluido(Object object) {
-                                                if (object.toString().equals("1")) {
-                                                    Toast.makeText(activity, R.string.alert_removido, Toast.LENGTH_SHORT).show();
-                                                    ll.removeView(modelo);
-                                                    getRecarrega();
-                                                    getRecebidas();
-                                                } else if (object.toString().equals("0")) {
-                                                    Toast.makeText(activity, "Erro ao tentar executar está ação!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void concluido(Object object, Object object2) {
-
-                                            }
-                                        });
-                                    } else {
-                                        Toast.makeText(activity, R.string.alert_car_ativa, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                            ultimoIdCaronaIncluida = (ll.getChildCount() > 0) ? ll.getChildAt(0).getId() : -2;
+                            utmIdCarIncluida = (ll.getChildCount() > 0) ? ll.getChildAt(0).getId() : -2;
                         }
                     } else if (caronas == null && remover == false)
-                        Toast.makeText(getActivity(), R.string.alert_0_caronas, Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getActivity(), R.string.alert_0_car, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -198,7 +193,7 @@ public class Caronas_Recebidas extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (M.getUltimoIdCaronaAceita() != ultimoIdCaronaIncluida) {
+                            if (M.getUltimoIdCaronaAceita() != utmIdCarIncluida) {
                                 atualizarCaronasAceitas(0, 6, true);
                             }
                         }

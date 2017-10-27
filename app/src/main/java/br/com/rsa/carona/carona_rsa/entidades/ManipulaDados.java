@@ -2,18 +2,7 @@ package br.com.rsa.carona.carona_rsa.entidades;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.google.gson.Gson;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
-import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class ManipulaDados {// Classe normal sem nenhuma herança !
 	
@@ -26,25 +15,21 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 	
 	public void gravarDados(Usuario usuario){ // Metodo para guardar os dados do usuario quando logar,exige um parametro do tipo usuario !
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
-		editorBancoDeDados.putInt("id", usuario.getId());//Editardo os valores que serao guardados por meio da interface Editor do Shered prefeneces!
-		editorBancoDeDados.putString("nome", usuario.getNome()); 	// Guardando o nome de usuario com uma clave chamada "nome".
+		editorBancoDeDados.putInt("id", usuario.getId());
+		editorBancoDeDados.putString("nome", usuario.getNome());
 		editorBancoDeDados.putString("sobrenome",usuario.getSobrenome());
 		editorBancoDeDados.putString("matricula",usuario.getMatricula());
-		editorBancoDeDados.putString("email", usuario.getEmail());	// Guardando a idade do usuario com uma clave chamada "idade".
-		editorBancoDeDados.putString("telefone", usuario.getTelefone()); // Guardando o usuario do usuario com uma clave chamada "usuario".
+		editorBancoDeDados.putString("email", usuario.getEmail());
+		editorBancoDeDados.putString("telefone", usuario.getTelefone());
 		editorBancoDeDados.putString("sexo", usuario.getSexo());
 		editorBancoDeDados.putBoolean("cnh", usuario.isCnh());
 		editorBancoDeDados.putString("senha", usuario.getSenha());
 		editorBancoDeDados.putString("foto", usuario.getFoto());
 		editorBancoDeDados.putInt("quant_caronas_aceitas", 0);
-		Carona car=new Carona(usuario.getIdCaronaSolicitada());
-		setCaronaSolicitada(car);
-		editorBancoDeDados.commit(); //Executando a ediçao.
+		editorBancoDeDados.commit();
 	}
 
 	//CARONA OFERECIDA ->
-
-
 	public void setCaronaOferecida(Carona car){//Setar a carona oferecida
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
 		Gson gson = new Gson();
@@ -55,7 +40,7 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 
 	public Carona getCaronaOferecida(){//Retorna a carona oferecida
 		Gson gson = new Gson();
-		String json = usuarioLocal.getString("carOf", "");
+		String json = usuarioLocal.getString("carOf",null);
 		Carona car= gson.fromJson(json, Carona.class);
 		return car;
 	}
@@ -84,9 +69,18 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.commit();
 	}
 
+	public void clearParticipanteCarOferecida(Usuario user){
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		int vr=verificaUsuarioBDLocal(user);
+		if(vr!=-1){
+			editorBancoDeDados.remove("partCarOf_"+vr);
+			editorBancoDeDados.commit();
+		}
+	}
+
 	public Usuario getParticipantesCarOferecida(int pos){//Retorna um usuário
 		Gson gson = new Gson();
-		String json = usuarioLocal.getString("partCarOf_"+pos, "");
+		String json = usuarioLocal.getString("partCarOf_" + pos, "");
 		Usuario caroneiro= gson.fromJson(json, Usuario.class);
 		return caroneiro;
 	}
@@ -130,14 +124,18 @@ public class ManipulaDados {// Classe normal sem nenhuma herança !
 		editorBancoDeDados.commit();
 	}
 
-	public Carona getCaronaSolicitada(){//Retornando a carona solicitada...
+	public Carona getCaronaSolicitada(){
 		Gson gson = new Gson();
-		String json = usuarioLocal.getString("carSltd", "");
+		String json = usuarioLocal.getString("carSltd",null);
 		Carona car= gson.fromJson(json, Carona.class);
 		return car;
 	}
 
-
+	public void closeCaronaSolicitada(){
+		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();
+		editorBancoDeDados.remove("carSltd");
+		editorBancoDeDados.commit();
+	}
 
 	public void gravarCaronasAceita(Carona car){//NÃO UTILIZADO AINDA
 		SharedPreferences.Editor editorBancoDeDados=usuarioLocal.edit();

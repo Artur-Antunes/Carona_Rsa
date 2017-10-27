@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -40,8 +39,8 @@ import br.com.rsa.carona.carona_rsa.entidades.Usuario;
 
 public class EditarDadosActivity extends AppCompatActivity {
 
-    ManipulaDados mDados;
-    Usuario usuarioEditar;
+    private ManipulaDados mDados;
+    private Usuario usuarioEditar;
     private EditText nomeEditar;
     private EditText sobrenomeEditar;
     private EditText emailEditar;
@@ -49,7 +48,7 @@ public class EditarDadosActivity extends AppCompatActivity {
     private EditText telefoneEditar;
     private Spinner sexoEditar;
     private Switch cnhEditar;
-    Uri selectedImage;
+    private Uri selectedImage;
     private ImageView imFoto;
     private String foto = null;
     private ImageButton editarFoto;
@@ -57,7 +56,7 @@ public class EditarDadosActivity extends AppCompatActivity {
     public static final int RESULT_SELECT_IMAGE = 5;
     private String extFoto = null;
     public static final int PIC_CROP = 3;
-    AlertDialog actions;
+    private AlertDialog actions;
     private Button salvarAteracoes;
     private boolean vCampos[]={true,true,true,true,true};
     boolean imagemEditada = false;
@@ -206,15 +205,15 @@ public class EditarDadosActivity extends AppCompatActivity {
                 if (usuarioEditado != null) {
                     if (vCampos[0] && vCampos[4] && vCampos[1] && vCampos[2] && vCampos[3]) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(EditarDadosActivity.this);
-                        dialog.setTitle(R.string.title_confirmacao)
-                                .setMessage(R.string.alert_editar_perfil)
-                                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                        dialog.setTitle(R.string.title_conf)
+                                .setMessage(R.string.alert_edt_perfil)
+                                .setNegativeButton(R.string.n, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
                                         finish();
                                         startActivity(new Intent(EditarDadosActivity.this, UsuarioDetalhesActivity.class));
                                     }
                                 })
-                                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.s, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialoginterface, int i) {
                                         usuarioEditado.setEditado(true);
                                         usuarioEditado.setId(usuarioEditar.getId());

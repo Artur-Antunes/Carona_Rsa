@@ -56,7 +56,7 @@ public class Registro2Activity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (matriculaRegistro.length() <= 7) {
+                    if (matriculaRegistro.length() <= 4) {
                         matriculaRegistro.setError(" Digite todos os números !");
                         vCampos[0]=false;
                     }else{
@@ -124,7 +124,7 @@ public class Registro2Activity extends AppCompatActivity {
                         rs.gravaDadosDoUsuario(usuario1, new GetRetorno() {
                             @Override
                             public void concluido(Object object) {
-                                if (object.toString().equals("1")) {
+                                if (object.toString().equals("1")){
                                     Toast.makeText(Registro2Activity.this, "Dados salvos com sucesso", Toast.LENGTH_SHORT).show();
                                     RequisicoesServidor rs = new RequisicoesServidor(Registro2Activity.this);
                                     rs.buscaDadosDoUsuario(usuario1, new GetRetorno() {
@@ -143,7 +143,7 @@ public class Registro2Activity extends AppCompatActivity {
                                 } else if (object.toString().equals("0")) {
                                     Toast.makeText(Registro2Activity.this, "Matricula já existe", Toast.LENGTH_SHORT).show();
                                 } else  {
-                                    Toast.makeText(Registro2Activity.this, R.string.alert_sem_conexao, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Registro2Activity.this, R.string.alert_sem_con, Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -166,8 +166,7 @@ public class Registro2Activity extends AppCompatActivity {
         ManipulaDados mDados;
         mDados = new ManipulaDados(Registro2Activity.this);
         Usuario usuario = (Usuario) object;
-        mDados.gravarDados(usuario);    //Guardando os dados do usuário logado.
-        mDados.setCaronaSolicitada(new Carona(-1));
+        mDados.gravarDados(usuario);
         mDados.setLogado(true);
         startActivity(new Intent(this, MainActivity.class));
         Toast.makeText(Registro2Activity.this, R.string.alert_versao, Toast.LENGTH_LONG).show();

@@ -8,7 +8,7 @@ import br.com.rsa.carona.carona_rsa.entidades.Servico;
 /**
  * Created by Artur Antunes on 06/03/2017.
  */
-public class StarMeLeva extends BroadcastReceiver {
+public class StartMeLeva extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

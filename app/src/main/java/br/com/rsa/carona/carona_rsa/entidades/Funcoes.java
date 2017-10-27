@@ -151,7 +151,6 @@ public class Funcoes {
         List nomes=new LinkedList();
         List<Usuario> users=new LinkedList<Usuario>();
         for(int i=0;i<lista.size();i++){
-            Log.e("oioioioio ", lista.get(i).getId() + " "+i);
             if(!verIgualdade(lista.get(i).getId()+"",nomes)){
                 users.add(lista.get(i));
                 nomes.add(lista.get(i).getId()+"");
